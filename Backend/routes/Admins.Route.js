@@ -6,6 +6,8 @@ const nodemailer = require("nodemailer");
 const { NurseModel } = require("../models/Nurse.model");
 const { DoctorModel } = require("../models/Doctor.model");
 const { PatientModel } = require("../models/Patient.model");
+const bcrypt = require('bcryptjs');
+
 
 const router = express.Router();
 
@@ -22,17 +24,28 @@ router.get("/", async (req, res) => {
 router.post("/register", async (req, res) => {
   const { email } = req.body;
   try {
+    console.log('body', req.body)
     const admin = await AdminModel.findOne({ email });
     if (admin) {
       return res.send({
         message: "Admin already exists",
       });
     }
-    let value = new AdminModel(req.body);
-    await value.save();
-    const data = await AdminModel.findOne({ email });
-    return res.send({ data, message: "Registered" });
+    
+
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(req.body.password, salt, async function(err, hash) {
+          // Store hash in your password DB.
+          console.log("passwordhash", hash)
+          let value = new AdminModel(req.body);
+          value.password = hash;
+          await value.save();
+          const data = await AdminModel.findOne({ email });
+          return res.send({ data, message: "Registered" });
+      });
+  });
   } catch (error) {
+    console.log("err", error)
     res.send({ message: "error" });
   }
 });
@@ -40,13 +53,26 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { adminID, password } = req.body;
   try {
-    const admin = await AdminModel.findOne({ adminID, password });
+    console.log("admin login==== body", req.body)
+    const admin = await AdminModel.findOne({ adminID });
 
     if (admin) {
-      const token = jwt.sign({ foo: "bar" }, process.env.key, {
-        expiresIn: "24h",
-      });
-      res.send({ message: "Successful", user: admin, token: token });
+
+      bcrypt.compare(password, admin.password).then((val) => {
+        // res === true
+      console.log('passwordIsCorrect', val);
+      if(val == true) {
+        const token = jwt.sign({ foo: "bar" }, process.env.key, {
+          expiresIn: "24h",
+        });
+        res.send({ message: "Successful", user: admin, token: token });
+      }else {
+        res.send({ message: "Wrong credentials" });
+
+      }
+    });
+
+      
     } else {
       res.send({ message: "Wrong credentials" });
     }

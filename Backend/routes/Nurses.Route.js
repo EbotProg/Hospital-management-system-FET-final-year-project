@@ -2,6 +2,7 @@ const express = require("express");
 const { NurseModel } = require("../models/Nurse.model");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
@@ -25,10 +26,20 @@ router.post("/register", async (req, res) => {
         message: "Nurse already exists",
       });
     }
-    let value = new NurseModel(req.body);
-    await value.save();
-    const data = await NurseModel.findOne({ email });
-    return res.send({ data, message: "Registered" });
+    
+
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(req.body.password, salt, async function(err, hash) {
+          // Store hash in your password DB.
+          console.log("passwordhash", hash)
+          let value = new NurseModel(req.body);
+          value.password = hash;
+          await value.save();
+          const data = await NurseModel.findOne({ email });
+          return res.send({ data, message: "Registered" });
+      });
+  });
+
   } catch (error) {
     res.send({ message: "error" });
   }
@@ -39,13 +50,26 @@ router.post("/login", async (req, res) => {
   const { nurseID, password } = req.body;
   try {
     console.log('req.body', req.body)
-    const nurse = await NurseModel.findOne({ nurseID, password });
+    const nurse = await NurseModel.findOne({ nurseID });
+
+    
 
     if (nurse) {
-      const token = jwt.sign({ foo: "bar" }, process.env.key, {
-        expiresIn: "24h",
-      });
-      res.send({ message: "Successful", user: nurse, token: token });
+
+      bcrypt.compare(password, nurse.password).then((val) => {
+        // res === true
+      console.log('passwordIsCorrect', val);
+      if(val == true) {
+        const token = jwt.sign({ foo: "bar" }, process.env.key, {
+          expiresIn: "24h",
+        });
+        res.send({ message: "Successful", user: nurse, token: token });
+      }else {
+        res.send({ message: "Wrong credentials" });
+
+      }
+    });
+      
     } else {
       res.send({ message: "Wrong credentials" });
     }

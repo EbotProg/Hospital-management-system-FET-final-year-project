@@ -3,6 +3,8 @@ const { PatientModel } = require("../models/Patient.model");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { ReportModel } = require("../models/Report.model");
+const bcrypt = require('bcryptjs');
+
 
 const router = express.Router();
 
@@ -27,9 +29,19 @@ router.post("/register", async (req, res) => {
         id: patient.patientID,
       });
     }
-    const newPatient = new PatientModel(req.body);
-    await newPatient.save();
-    res.send({ id: newPatient.patientID });
+
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(req.body.password, salt, async function(err, hash) {
+          // Store hash in your password DB.
+          console.log("passwordhash", hash)
+          const newPatient = new PatientModel(req.body);
+          newPatient.password = hash;
+          await newPatient.save();
+          res.send({ id: newPatient.patientID });
+      });
+  });
+
+    
   } catch (error) {
     res.send({ error });
   }
@@ -38,20 +50,34 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { patientID, password } = req.body;
   try {
-    const patient = await PatientModel.findOne({ patientID, password });
+    const patient = await PatientModel.findOnpmne({ patientID });
 
     if (patient) {
-      const token = jwt.sign({ foo: "bar" }, process.env.key, {
-        expiresIn: "24h",
-      });
-      let email = patient.email;
-      let report = await ReportModel.find({ email });
-      res.send({
-        message: "Login Successful.",
-        user: patient,
-        token: token,
-        report,
-      });
+
+      bcrypt.compare(password, patient.password).then(async (val) => {
+        // res === true
+      console.log('passwordIsCorrect', val);
+      if(val == true) {
+
+        const token = jwt.sign({ foo: "bar" }, process.env.key, {
+          expiresIn: "24h",
+        });
+        let email = patient.email;
+        let report = await ReportModel.find({ email });
+        res.send({
+          message: "Login Successful.",
+          user: patient,
+          token: token,
+          report,
+        });
+
+      }else {
+        res.send({ message: "Wrong credentials, Please try again." });
+
+      }
+    });
+
+      
     } else {
       res.send({ message: "Wrong credentials, Please try again." });
     }
