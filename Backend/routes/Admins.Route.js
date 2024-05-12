@@ -54,6 +54,7 @@ router.post("/login", async (req, res) => {
   const { adminID, password } = req.body;
   try {
     console.log("admin login==== body", req.body)
+    console.log('key', process.env.key)
     const admin = await AdminModel.findOne({ adminID });
 
     if (admin) {

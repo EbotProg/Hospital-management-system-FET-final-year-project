@@ -38,11 +38,13 @@ app.use("/reports", reportRouter);
 
 app.listen(process.env.port, async () => {
   try {
-    await connection;
+    console.log('dburl', process.env.dbUrl)
+    await connection(process.env.dbUrl);
     console.log("Connected to DB");
   } catch (error) {
     console.log("Unable to connect to DB");
     console.log(error);
   }
   console.log(`Listening at port ${process.env.port}`);
+  
 });
