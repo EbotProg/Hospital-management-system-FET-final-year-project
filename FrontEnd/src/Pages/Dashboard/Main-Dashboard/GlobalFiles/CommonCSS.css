@@ -1,3 +1,5 @@
+
+
 /* *********************************  TOP BAR STYLE PART  ****************************************/
 
 .MainDiv {
@@ -124,8 +126,8 @@ main {
 }
 
 .AfterSideBar {
-  width: 90%;
-  margin: 2rem;
+  width: 100%;
+  padding: 4rem;
 }
 
 /**************************************** FRONT PAGE STYLE  *****************************************/
@@ -134,7 +136,22 @@ main {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  margin-top: 2rem;
+  margin: 2rem;
+}
+
+.middlediv {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem;
+  /* max-width: 70%; */
+  justify-content: center;
+  align-items: center;
+}
+
+.statValue {
+  /* font-size: 1.2cqw; */
+  font-size: 1.2rem;
 }
 
 .commondiv {
@@ -144,15 +161,87 @@ main {
   text-align: center;
 }
 
+.wardStatsDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 2px solid;
+  border-radius: 1rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  /* max-width: 50cqw; */
+}
+
+.dynamicFontSize {
+  font-size: 1%;
+}
+
+.light-grey-font {
+  color: rgb(184 191 234);
+}
+
+.wardStatBottom {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.stats {
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.wardStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+
 .patientDetails {
   margin-top: 5rem;
 }
+
+.wardDetails {
+  margin-top: 5rem;
+}
+
 .patientDetails h1 {
   margin-bottom: 1rem;
   color: rgb(184 191 234);
 }
 
+.wardDetails h1 {
+  margin-bottom: 1rem;
+  color: rgb(184 191 234);
+}
+
 .patientBox {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 100%;
+  background-color: white;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0px 0px 36px -3px #00000026;
+}
+
+.wardBox {
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
@@ -173,10 +262,18 @@ main {
   background-color: white;
 }
 
+.wardStatsDiv {
+  box-shadow: 0px 0px 36px -3px #00000026;
+  border: none;
+  background-color: white;
+}
+
 .overviewIcon {
   font-size: 4rem;
   color: rgb(184 191 234);
 }
+
+
 
 /* ******************************************************** */
 
@@ -184,34 +281,97 @@ main {
   .maindiv {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .middlediv {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
   .commondiv {
     gap: 2.5rem;
+  }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+
+  .container {
+    position: relative;
+    /* width: 100vw;
+    height: 100vh; */
+  }
+
+  .AfterSideBar {
+    position: absolute;
+    left: 3rem;
+    top: 0;
+    /* width: 200rem; */
+    background-color: rgba(131, 220, 255, 0.29);
+    /* margin: 0; */
+    /* padding: 4rem; */
+    /* padding-top: 4rem;
+    padding-bottom: 4rem; */
+  }
+
+  .sidebar {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media only screen and (max-width: 850px) {
   .maindiv {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
   .commondiv {
-    gap: 4rem;
+    gap: 2rem;
   }
   .container {
     width: 100%;
   }
-}
-
-@media only screen and (max-width: 550px) {
-  .maindiv {
-    grid-template-columns: repeat(1, 1fr);
+  
+  .middlediv{
+    margin-right: 5vw;
   }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+ 
 }
 
 @media only screen and (max-width: 600px) {
   .container {
     gap: 10px;
   }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+
 }
+
+@media only screen and (max-width: 550px) {
+  .maindiv {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+}
+
+
 
 @media only screen and (max-width: 450px) {
   .hidesidebar {
@@ -230,4 +390,17 @@ main {
   .MainDiv {
     border: 1px solid;
   }
+
+  .middlediv {
+    margin: 1rem;
+  }
+
+  .wardStatBottom {
+    grid-template-columns: repeat(1, 0.5fr);
+  }
+
+ .AfterSideBar {
+  padding: 2rem;
+ }
+
 }

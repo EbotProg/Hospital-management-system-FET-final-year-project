@@ -3,6 +3,7 @@ const { NurseModel } = require("../models/Nurse.model");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
+const { generateReportPdf } = require("../controllers/generateReport")
 
 const router = express.Router();
 
@@ -108,5 +109,37 @@ router.delete("/:nurseId", async (req, res) => {
     res.status(400).send({ error: "Something went wrong, unable to Delete." });
   }
 });
+
+
+router.post("/generatePdf", async (req, res) => {
+
+  try{
+    const headers = ["Field1", "Field2", "Field3", "Field4", "Field5", "Field6", "Field7", "Field8", "Field9", "Field10"]
+    const rows = [
+      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"]
+    ]
+    const patient = {
+      name: "Achale Ebot",
+      address: "Bokwai"
+    }
+
+    const hospital = {
+      name: "Buea General Hospital",
+      address: "Buea"
+    }
+
+    const startDate = new Date("2024-01-01");
+    const endDate = new Date();
+    generateReportPdf(headers, rows, patient, hospital, startDate, endDate)
+    res.end();
+  }catch(err) {
+    console.log(err)
+    res.status(400).send({ error: "Something went wrong, unable to generatePdf"})
+  }
+})
 
 module.exports = router;

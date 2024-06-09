@@ -13,23 +13,22 @@ services:
       - 8000:8000
     volumes:
       - ./Backend:/app
+      # - ./app/node_modules
     environment:
       port: 8000
       dbUrl: 'mongodb://mongo_db:27017/hospital' 
       key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
     depends_on:
       - mongo_db
-    # volumes:
-    #   - ./Backend:/app
-    #   - ./app/node_modules
+    
   frontend:
     build: ./FrontEnd
     container_name: frontend
     ports: 
       - 3000:3000
-    # volumes:
-    #   - ./FrontEnd:/app
-    #   - ./app/node_modules
+    volumes:
+      - ./FrontEnd:/app
+      # - ./app/node_modules
     stdin_open: true
     tty: true
 volumes:
