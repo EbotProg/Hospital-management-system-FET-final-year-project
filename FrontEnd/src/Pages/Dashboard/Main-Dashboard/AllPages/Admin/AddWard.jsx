@@ -1,41 +1,38 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../../GlobalFiles/Sidebar";
-import { AddBed } from "../../../../../Redux/Datas/action";
+import { AddWard } from "../../../../../Redux/Datas/action";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navigate } from "react-router-dom";
 const notify = (text) => toast(text);
 
-const AddBeds = () => {
+const AddWards = () => {
   const { data } = useSelector((store) => store.auth);
 
   const InitData = {
-    roomNumber: "none",
-    bedNumber: "",
-    occupied: "available",
+    wardNumber: ""
   };
-  const [BedData, setBedData] = useState(InitData);
+  const [wardData, setWardData] = useState(InitData);
 
   const [loading, setloading] = useState(false);
 
   const dispatch = useDispatch();
 
-  const HandleAmbuChange = (e) => {
-    setBedData({
-      ...BedData,
+  const HandleWardChange = (e) => {
+    setWardData({
+      ...wardData,
       [e.target.name]: e.target.value,
     });
-    console.log('bedData', BedData);
   };
 
-  const HandleAmbuSubmit = (e) => {
+  const HandleWardSubmit = (e) => {
     e.preventDefault();
     setloading(true);
-    dispatch(AddBed(BedData));
+    dispatch(AddWard(wardData));
     setloading(false);
-    setBedData(InitData);
-    notify("Bed Added");
+    setWardData(InitData);
+    notify("Added Ward Successfully");
   };
 
   if (data?.isAuthticated === false) {
@@ -53,36 +50,36 @@ const AddBeds = () => {
         <Sidebar />
         <div className="AfterSideBar">
           <div className="mainAmbupance">
-            <h1>Add Beds</h1>
+            <h1>Add Wards</h1>
 
             {/* ******************************************************** */}
-            <form onSubmit={HandleAmbuSubmit}>
+            <form onSubmit={HandleWardSubmit}>
               <div>
-                <label>Bed Number</label>
+                <label>Ward Name</label>
                 <div className="inputdiv">
                   <input
-                    type="number"
-                    placeholder="bed No"
-                    name="bedNumber"
-                    value={BedData.bedNumber}
-                    onChange={HandleAmbuChange}
+                    type="text"
+                    placeholder="Ward Name"
+                    name="wardName"
+                    value={wardData.wardNumber}
+                    onChange={HandleWardChange}
                     required
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label>Room Number</label>
                 <div className="inputdiv">
                   <input
                     type="number"
                     placeholder="room no"
                     name="roomNumber"
-                    value={BedData.roomNumber}
-                    onChange={HandleAmbuChange}
+                    value={WardData.roomNumber}
+                    onChange={HandleWardChange}
                     required
                   />
                 </div>
-              </div>
+              </div> */}
 
               <button type="submit" className="formsubmitbutton">
                 {loading ? "Loading..." : "Submit"}
@@ -95,4 +92,4 @@ const AddBeds = () => {
   );
 };
 
-export default AddBeds;
+export default AddWards;

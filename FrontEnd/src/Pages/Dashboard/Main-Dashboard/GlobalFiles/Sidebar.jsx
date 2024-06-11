@@ -153,6 +153,40 @@ const Sidebar = () => {
               </Link>
             ) : null}
 
+              {user?.userType === "admin" ? (
+              <Link className="link" activeclassname="active" to={"/ward"}>
+                <div className="icon">
+                  <RiAdminLine
+                    className="mainIcon"
+                    style={{ color: "white" }}
+                  />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Add Ward
+                </div>
+              </Link>
+            ) : null}
+              
+              {user?.userType === "admin" ? (
+              <Link className="link" activeclassname="active" to={"/room"}>
+                <div className="icon">
+                  <RiAdminLine
+                    className="mainIcon"
+                    style={{ color: "white" }}
+                  />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Add Room
+                </div>
+              </Link>
+            ) : null}
+
             {user?.userType === "admin" ? (
               <Link className="link" activeclassname="active" to={"/addbeds"}>
                 <div className="icon">
@@ -219,6 +253,23 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
+            {user?.userType === "doctor" ? (
+              <Link
+                className="link"
+                activeclassname="active"
+                to={"/consultpatient"}
+              >
+                <div className="icon">
+                  <SlUserFollow className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Consult Patient
+                </div>
+              </Link>
+            ) : null}
             <Link className="link" activeclassname="active" to={"/rooms"}>
               <div className="icon">
                 <MdBedroomChild className="mainIcon" />
@@ -243,6 +294,7 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
+
             {user?.userType === "doctor" ? (
               <Link
                 className="link"
@@ -277,6 +329,25 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
+
+              {user?.userType === "doctor" ? (
+              <Link
+                className="link"
+                activeclassname="active"
+                to={"/createLabReport"}
+              >
+                <div className="icon">
+                  <BiDetail className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Create Lab Report
+                </div>
+              </Link>
+            ) : null}
+
             {/* {user?.userType === "doctor" ? (
               <Link
                 className="link"

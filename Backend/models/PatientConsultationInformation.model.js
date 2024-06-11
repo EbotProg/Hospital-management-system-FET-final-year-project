@@ -42,9 +42,8 @@ const patientConsultationInformationSchema = mongoose.Schema({
     type: Number,
   },
 
-  timeStamp: {
-    type: String,
-  },
+  date: String,
+  time: String
 
 });
 

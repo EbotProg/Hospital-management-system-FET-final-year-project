@@ -1,26 +1,18 @@
 const mongoose = require("mongoose");
 
-const bedSchema = mongoose.Schema({
-  bedNumber: {
-    type: Number,
-    required: true,
-  },
-
-  roomNumber: {
-    type: Number,
-    required: true,
-  },
-
-  occupied: {
+const wardSchema = mongoose.Schema({
+  wardName: {
     type: String,
+    required: true,
   },
 
-  patientID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "patient",
+  hosptialID: {
+    type: Number
   },
+
+  
 });
 
-const BedModel = mongoose.model("bed", bedSchema);
+const wardModel = mongoose.model("ward", wardSchema);
 
-module.exports = { BedModel };
+module.exports = { wardModel };

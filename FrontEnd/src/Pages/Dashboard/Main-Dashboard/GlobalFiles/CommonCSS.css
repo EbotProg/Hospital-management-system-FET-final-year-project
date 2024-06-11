@@ -100,7 +100,7 @@ main {
 .link {
   display: flex;
   color: #fff;
-  padding: 10px 15px;
+  padding: 6.5px 15px;
   gap: 15px;
   text-decoration: none;
   list-style: none;
@@ -271,6 +271,30 @@ main {
 .overviewIcon {
   font-size: 4rem;
   color: rgb(184 191 234);
+}
+
+.view_lab_report_div {
+  padding-top: 4rem;
+}
+
+.medicines_div, .medicine_inputs_div {
+  display: flex;
+  flex-direction: column;
+}
+
+.add_prescription_btn {
+  text-align: center;
+  width: 15%;
+  height: 2.8rem;
+  font-size: 1.3rem;
+  border-radius: 5px;
+  border: none;
+  background: #c5cbd1;
+  display: block;
+  margin: auto;
+  /* margin-top: 2rem; */
+  font-weight: bold;
+  cursor: pointer;
 }
 
 

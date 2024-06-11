@@ -28,6 +28,56 @@ export const CreateReport = (data) => async (dispatch) => {
   }
 };
 
+export const AddConsulationInfo = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.CREATE_CONSULATION_INFO_REQUEST });
+    const res = await axios.post(
+      `${API}/patientConsultationInformation/create`,
+      data
+    );
+    console.log(res);
+    return res.data;
+    // dispatch({
+    //   type: types.CREATE_REPORT_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+  } catch (error) {
+    dispatch({
+      type: types.CREATE_CONSULATION_INFO_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+export const CreateLabReport = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.CREATE_LAB_REPORT_REQUEST });
+    const res = await axios.post(
+      `${API}/labReports/create`,
+      data
+    );
+    console.log(res);
+    return res.data;
+    // dispatch({
+    //   type: types.CREATE_REPORT_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+  } catch (error) {
+    dispatch({
+      type: types.CREATE_LAB_REPORT_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
 // GET DOCTOR DETAILS
 export const GetDoctorDetails = () => async (dispatch) => {
   try {
@@ -188,6 +238,60 @@ export const AddBed = (data) => async (dispatch) => {
   }
 };
 
+
+export const AddWard = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.ADD_WARD_REQUEST });
+    const res = await axios.post(
+      `${API}/wards/add`,
+      data
+    );
+    console.log(res);
+    // dispatch({
+    //   type: types.ADD_BEDS_SUCCESS,
+    //   payload: {
+
+    //   },
+    // });
+    return res.data;
+  } catch (error) {
+    dispatch({
+      type: types.ADD_WARD_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+
+export const AddRoom = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.ADD_ROOM_REQUEST });
+    const res = await axios.post(
+      `${API}/rooms/add`,
+      data
+    );
+    console.log(res);
+    // dispatch({
+    //   type: types.ADD_BEDS_SUCCESS,
+    //   payload: {
+
+    //   },
+    // });
+    return res.data;
+  } catch (error) {
+    dispatch({
+      type: types.ADD_ROOM_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+
+
 // GET SINGLE BED
 export const GetSingleBed = (data) => async (dispatch) => {
   try {
@@ -345,6 +449,23 @@ export const GetAllReports = () => async (dispatch) => {
     dispatch({ type: types.GET_REPORTS_REQUEST });
     const res = await axios.get(
       `${API}/reports`
+    );
+    // console.log(res.data);
+    return res.data;
+    // dispatch({
+    //   type: types.DELETE_APPOINTMENT_SUCCESS,
+    //   payload: id,
+    // });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GetLabReports = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_LAB_REPORTS_REQUEST });
+    const res = await axios.get(
+      `${API}/labReports`
     );
     // console.log(res.data);
     return res.data;

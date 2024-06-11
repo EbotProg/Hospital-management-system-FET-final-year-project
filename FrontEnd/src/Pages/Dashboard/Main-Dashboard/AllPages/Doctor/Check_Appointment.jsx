@@ -15,12 +15,35 @@ const Check_Appointment = () => {
   const disptach = useDispatch();
 
   const columns = [
-    { title: "Patient Name", dataIndex: "patientName", key: "patientName" },
-    { title: "Mobile", dataIndex: "mobile", key: "mobile" },
-    { title: "Disease", dataIndex: "disease", key: "disease" },
-    { title: "Department", dataIndex: "department", key: "department" },
-    { title: "Date", dataIndex: "date", key: "date" },
+    { title: "Patient Name", dataIndex: "patientName"},
+    { title: "Mobile", dataIndex: "phoneNumber"},
+    { title: "Disease", dataIndex: "disease"},
+    { title: "Department", dataIndex: "department"},
+    { title: "Date", dataIndex: "date"},
+    { title: "Resolve", dataIndex: "delete"},
   ];
+
+  const appointments = [
+      { 
+        patientName: "Achale Ebot",
+        phoneNumber: "6784858339",
+        disease: "Cough",
+        department: "maternity",
+        date: "2022-01-01",
+        delete: <button
+        style={{
+          border: "none",
+          color: "red",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => DeleteAppoint(1)}
+      >
+        Delete
+      </button>
+      },
+  ]
 
   const AllAppointment = useSelector((state) => state.data.Appointments);
 
@@ -44,7 +67,15 @@ const Check_Appointment = () => {
       <div className="container">
         <Sidebar />
         <div className="AfterSideBar">
-          <div className="Payment_Page">
+
+        <div className="Payment_Page">
+          <h1 style={{ marginBottom: "2rem" }}>Appointment Details</h1>
+          <div className="wardBox">
+            <Table columns={columns} dataSource={appointments} />
+          </div>
+        </div>
+
+          {/* <div className="Payment_Page">
             <h1 style={{ marginBottom: "2rem" }}>Appointment Details</h1>
             <div className="patientBox">
               <table>
@@ -87,7 +118,7 @@ const Check_Appointment = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
