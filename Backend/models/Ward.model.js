@@ -7,12 +7,13 @@ const wardSchema = mongoose.Schema({
   },
 
   hosptialID: {
-    type: Number
+    type: Number,
+    ref: "hospital"
   },
 
   
 });
 
-const wardModel = mongoose.model("ward", wardSchema);
+const WardModel = mongoose.model("ward", wardSchema);
 
-module.exports = { wardModel };
+module.exports = { WardModel };

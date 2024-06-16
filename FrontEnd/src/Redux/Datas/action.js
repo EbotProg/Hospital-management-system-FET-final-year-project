@@ -127,6 +127,54 @@ export const AddPatients = (data) => async (dispatch) => {
   }
 };
 
+export const admitPatientInfos = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.ADMIT_PATIENT_REQUEST });
+    const res = await axios.post(
+      `${API}/patients/admit`,
+      data
+    );
+    return res.data;
+    // dispatch({
+    //   type: types.ADD_PATIENT_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+  } catch (error) {
+    dispatch({
+      type: types.ADMIT_PATIENT_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+export const dischargePatientInfos = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.DISCHARGE_PATIENT_REQUEST });
+    const res = await axios.post(
+      `${API}/patients/discharge`,
+      data
+    );
+    return res.data;
+    // dispatch({
+    //   type: types.ADD_PATIENT_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+  } catch (error) {
+    dispatch({
+      type: types.DISCHARGE_PATIENT_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
 //ADD BEDS
 export const CreateBeds = (data) => async (dispatch) => {
   try {
@@ -257,6 +305,31 @@ export const AddWard = (data) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.ADD_WARD_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+export const getAllWards = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_WARDS_REQUEST });
+    const res = await axios.get(
+      `${API}/wards`,
+      data
+    );
+    console.log(res);
+    // dispatch({
+    //   type: types.ADD_BEDS_SUCCESS,
+    //   payload: {
+
+    //   },
+    // });
+    return res.data;
+  } catch (error) {
+    dispatch({
+      type: types.GET_ALL_WARDS_ERROR,
       payload: {
         message: error,
       },
@@ -443,6 +516,24 @@ export const DeleteAppointment = (id) => async (dispatch) => {
   }
 };
 
+export const deleteWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.DELETE_WARD_REQUEST });
+    const res = await axios.delete(
+      `${API}/wards/${id}`
+    );
+    console.log(res.data);
+    // return res.data;
+    dispatch({
+      type: types.DELETE_WARD_SUCCESS,
+      payload: id,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // GET ALL REPORTS
 export const GetAllReports = () => async (dispatch) => {
   try {
@@ -466,6 +557,40 @@ export const GetLabReports = () => async (dispatch) => {
     dispatch({ type: types.GET_LAB_REPORTS_REQUEST });
     const res = await axios.get(
       `${API}/labReports`
+    );
+    // console.log(res.data);
+    return res.data;
+    // dispatch({
+    //   type: types.DELETE_APPOINTMENT_SUCCESS,
+    //   payload: id,
+    // });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const SearchMedHistory = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
+    const res = await axios.get(
+      `${API}/medicalHistory`
+    );
+    // console.log(res.data);
+    return res.data;
+    // dispatch({
+    //   type: types.DELETE_APPOINTMENT_SUCCESS,
+    //   payload: id,
+    // });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const SearchMyPatient = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_MY_PATIENTS_REQUEST });
+    const res = await axios.get(
+      `${API}/medicalHistory`
     );
     // console.log(res.data);
     return res.data;

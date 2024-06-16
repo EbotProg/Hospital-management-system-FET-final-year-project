@@ -97,6 +97,42 @@ const Sidebar = () => {
               <Link
                 className="link"
                 activeclassname="active"
+                to={"/admitPatient"}
+              >
+                <div className="icon">
+                  <FaHospitalUser className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Admit Patient
+                </div>
+              </Link>
+            ) : null}
+
+              {user?.userType === "nurse" ? (
+              <Link
+                className="link"
+                activeclassname="active"
+                to={"/dischargePatient"}
+              >
+                <div className="icon">
+                  <FaHospitalUser className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  Discharge Patient
+                </div>
+              </Link>
+            ) : null}
+
+            {user?.userType === "nurse" ? (
+              <Link
+                className="link"
+                activeclassname="active"
                 to={"/bookappointment"}
               >
                 <div className="icon">
@@ -253,7 +289,7 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
-            {user?.userType === "doctor" ? (
+            {user?.userType === "doctor" || user?.userType === "nurse" ? (
               <Link
                 className="link"
                 activeclassname="active"
@@ -270,6 +306,43 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
+
+            {user?.userType === "doctor" || user?.userType === "nurse" ? (
+              <Link
+                className="link"
+                activeclassname="active"
+                to={"/viewmedicalhistory"}
+              >
+                <div className="icon">
+                  <SlUserFollow className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  View Medical History
+                </div>
+              </Link>
+            ) : null}
+
+{user?.userType === "doctor" || user?.userType === "nurse" ? (
+              <Link
+                className="link"
+                activeclassname="active"
+                to={"/viewMyPatients"}
+              >
+                <div className="icon">
+                  <SlUserFollow className="mainIcon" />
+                </div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                >
+                  My Patients
+                </div>
+              </Link>
+            ) : null}
+
             <Link className="link" activeclassname="active" to={"/rooms"}>
               <div className="icon">
                 <MdBedroomChild className="mainIcon" />

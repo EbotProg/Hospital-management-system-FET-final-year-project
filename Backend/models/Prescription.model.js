@@ -4,11 +4,13 @@ const prescriptionSchema = mongoose.Schema({
   docName: {
     type: String,
     required: true,
+    ref: "doctor"
   },
 
   nurseName: {
     type: String,
     required: true,
+    ref: "nurse"
   },
 
   hospital: {

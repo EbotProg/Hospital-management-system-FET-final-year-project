@@ -1,4 +1,4 @@
-import React, { useState, createElement } from "react";
+import React, { useState, createElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { CreatePayment, AddConsulationInfo } from "../../../../../Redux/Datas/action";
@@ -16,32 +16,53 @@ const AddConsultations = () => {
   const [inputs, setInputs] = useState([]);
 
   const handleAdd = () => {
-    setInputs([...inputs, { id: Math.random().toString(36).substring(2), value: '' }])
+    setInputs([...inputs, { id: Math.random().toString(36).substring(2), medName: '', duration: 'Duration', dosage: 'Dosage' }])
   }
 
-  const handleChange = (id, event) => {
-    setInputs(inputs.map(input => (input.id === id ? { ...input, value: event.target.value } : input)))
+  const handleMedInputChange = (id, event) => {
+    setInputs(inputs.map(input => (input.id === id ? { ...input, medName: event.target.value } : input)))
+  }
+  const handleMedFirstSelectChange = (id, event) => {
+    setInputs(inputs.map(input => (input.id === id ? { ...input, duration: event.target.value } : input)))
+  }
+  const handleMedSecondSelectChange = (id, event) => {
+    setInputs(inputs.map(input => (input.id === id ? { ...input, dosage: event.target.value } : input)))
   }
 
   const handleRemove = (id) => {
     setInputs(inputs.filter((input) => input.id !== id))
   }
 
+ 
+
  ////
 
   const dispatch = useDispatch();
-  const initmed = {
-    medName: "",
-    dosage: "",
-    duration: "",
-  };
-  const [med, setmed] = useState(initmed);
+  // const initmed = {
+  //   medName: "",
+  //   dosage: "",
+  //   duration: "",
+  // };
+  // const [med, setmed] = useState(initmed);
 
-  const [medicines, setmedicines] = useState([]);
+  const [medicines, setMedicines] = useState([]);
 
-  const HandleMedChange = (e) => {
-    setmed({ ...med, [e.target.name]: e.target.value });
-  };
+  useEffect(()=> {
+    let array = []
+    for( let input of inputs) {
+      let obj = {}
+      obj.medName = input.medName
+      obj.duration = input.duration
+      obj.dosage = input.dosage
+      array.push(obj)
+    }
+    console.log('array', array)
+    setMedicines([...array])
+  }, [inputs])
+
+  // const HandleMedChange = (e) => {
+  //   setmed({ ...med, [e.target.name]: e.target.value });
+  // };
 
   const InitData = {
     docName: "",
@@ -64,18 +85,20 @@ const AddConsultations = () => {
     setConsultationInfo({ ...consultationInfo, [e.target.name]: e.target.value });
   };
 
-  const HandleMedAdd = (e) => {
-    e.preventDefault();
-    setmedicines([...medicines, med]);
-    setmed(initmed);
-  };
+  // const HandleMedAdd = (e) => {
+  //   e.preventDefault();
+  //   setMedicines([...medicines, med]);
+  //   setmed(initmed);
+  // };
 
   const handleConsultationInfoSubmit = (e) => {
     e.preventDefault();
+    
     let data = {
       ...consultationInfo,
       medicines,
     };
+    console.log('data', data)
     try {
       setLoading(true);
       dispatch(AddConsulationInfo(data)).then((res) => {
@@ -94,10 +117,12 @@ const AddConsultations = () => {
   };
 
   if (data?.isAuthticated === false) {
+    console.log("not authenticated", data?.isAuthticated )
     return <Navigate to={"/"} />;
   }
 
-  if (data?.user.userType !== "doctor") {
+  if (data?.user.userType !== "doctor" && data?.user.userType !== "nurse") {
+    console.log("usertype", data?.user.userType)
     return <Navigate to={"/dashboard"} />;
   }
   return (
@@ -312,15 +337,15 @@ const AddConsultations = () => {
                     type="text"
                     placeholder="PCM"
                     name="medName"
-                    value={input.value}
-                    onChange={e => handleChange(input.id, e)}
+                    value={input.medName}
+                    onChange={e => handleMedInputChange(input.id, e)}
                   />
-                  <select name="duration" >
+                  <select name="duration" onChange={e => handleMedFirstSelectChange(input.id, e)}>
                     <option value="Dosage">Duration</option>
                     <option value="After Meal">After Meal</option>
                     <option value="Before Meal">Before Meal</option>
                   </select>
-                  <select name="dosage" >
+                  <select name="dosage" onChange={e => handleMedSecondSelectChange(input.id, e)} >
                     <option value="Dosage">Dosage</option>
                     <option value="1">1</option>
                     <option value="2">2</option>

@@ -21,6 +21,10 @@ import FrontPage from "../Pages/Dashboard/Main-Dashboard/GlobalFiles/FrontPage";
 import AddRooms from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/AddRoom";
 import CreateLabReports from "../Pages/Dashboard/Main-Dashboard/AllPages/Doctor/CreateLabReport";
 import ConsultPatient from "../Pages/Dashboard/Main-Dashboard/AllPages/Doctor/ConsultPatient";
+import Admit_Patient from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Admit_Patient";
+import Discharge_Patient from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Discharge_Patient";
+import ViewMedHistory from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/ViewMedHistory";
+import SeeMyPatients from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/SeeMyPatients";
 const AllRoutes = () => {
   return (
     <>
@@ -47,6 +51,10 @@ const AllRoutes = () => {
         <Route path="/addpatient" element={<Add_Patient />} />
         <Route path="/bookappointment" element={<Book_Appointment />} />
         <Route path="/nurseprofile" element={<Nurse_Profile />} />
+        <Route path="/admitPatient" element={<Admit_Patient />} />
+        <Route path="/dischargePatient" element={<Discharge_Patient />} />
+        <Route path="/viewmedicalhistory" element={<ViewMedHistory />} />
+        <Route path="/viewMyPatients" element={<SeeMyPatients />} />
       </Routes>
     </>
   );
