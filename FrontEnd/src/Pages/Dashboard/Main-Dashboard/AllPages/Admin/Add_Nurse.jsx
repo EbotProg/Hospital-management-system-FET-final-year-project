@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CSS/Add_Doctor.css";
 import nurse from "../../../../../img/nurseavatar.png";
-import { message, Upload } from "antd";
+import { message, Upload, Table } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { NurseRegister, SendPassword } from "../../../../../Redux/auth/action";
+import { getAllNurses } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Navigate } from "react-router-dom";
 const notify = (text) => toast(text);
+// const showPassword = (password) => toast(password, {
+//   autoClose: false
+// });
 
 const Add_Nurse = () => {
   const { data } = useSelector((store) => store.auth);
@@ -27,32 +31,115 @@ const Add_Nurse = () => {
     DOB: "",
     address: "",
     education: "",
-    department: "",
-    nurseID: Date.now(),
+    // department: "",
+    // nurseID: Date.now(),
     password: "",
     details: "",
     bloodGroup: "",
+    wardName: ""
   };
   const [NurseValue, setNurseValue] = useState(InitData);
+  const [fetchedNurses, setFetchedNurses] = useState([])
+  const [mappedNurses, setMappedNurses] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
 
   const HandleDoctorChange = (e) => {
     setNurseValue({ ...NurseValue, [e.target.name]: e.target.value });
   };
 
+  const nurseColumns = [
+    { title: "NurseID", dataIndex: "nurseID"},
+    { title: "Name", dataIndex: "nurseName"},
+    { title: "Ward", dataIndex: "wardName"},
+    { title: "Available", dataIndex: "isAvaible"},
+    { title: "Address", dataIndex: "address"},
+    { title: "Email", dataIndex: "email"},
+    { title: "Gender", dataIndex: "gender"},
+    { title: "Date of Birth", dataIndex: "DOB"},
+    // { title: "", dataIndex: "viewMore"}
+  ];
+
+  const mapNurseInfo = () => {
+    let arr = []
+    fetchedNurses.forEach((nurse)=>{
+      let obj = {};
+      obj.key = nurse._id
+      obj.nurseID = nurse.nurseID;
+      obj.nurseName = nurse.nurseName;
+      obj.wardName = nurse.wardID.wardName;
+      obj.isAvailable = nurse.isAvailble;
+      obj.address = nurse.address;
+      obj.email = nurse.email;
+      obj.gender = nurse.gender;
+      obj.DOB = nurse.DOB;
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMoreNurseInfo(nurse._id)}
+    // >
+    //   View more
+    // </button>
+    arr.push(obj);
+    
+  });
+
+  setMappedNurses([...arr])
+
+  }
+
+
+  useEffect(()=> {
+    dispatch(getAllNurses()).then(res => {
+      console.log('get all nurses res', res)
+      setFetchedNurses(res);
+    })
+    
+  }, [])
+
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(getAllNurses()).then(res => {
+        console.log('get all nurses res', res)
+        setFetchedNurses(res);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedNurses', fetchedNurses)
+    mapNurseInfo()
+
+  }, [fetchedNurses])
+
+
   const HandleDoctorSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     dispatch(NurseRegister(NurseValue)).then((res) => {
-      if (res.message === "Nures already exists") {
+      console.log('res', res)
+      if (
+        res.message === "Nurse already exists" || 
+        res.message === "ward not found" ||
+        res.message === "could not send email" ||
+        res.message === "Internal server error" 
+      ) {
         setLoading(false);
-        return notify("Nurse Already Exist");
+        return notify(res.message);
       }
-      if (res.message === "error") {
-        setLoading(false);
-        return notify("Something went wrong, Please try Again");
-      }
-      notify("Nurse Added");
-
+      // if (res.message === "error") {
+      //   setLoading(false);
+      //   // return notify("Something went wrong, Please try Again");
+      // }
+      notify(res.message);
+      setIsSubmitted(true)
       let data = {
         email: res.data.email,
         password: res.data.password,
@@ -108,6 +195,21 @@ const Add_Nurse = () => {
                   />
                 </div>
               </div>
+
+              <div>
+                <label>Ward</label>
+                <div className="inputdiv">
+                  <input
+                    type="text"
+                    placeholder="ward name"
+                    name="wardName"
+                    value={NurseValue.wardName}
+                    onChange={HandleDoctorChange}
+                    required
+                  />
+                </div>
+              </div>
+
               <div>
                 <label>Contact Number</label>
                 <div className="inputdiv">
@@ -212,7 +314,7 @@ const Add_Nurse = () => {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label>Password</label>
                 <div className="inputdiv">
                   <input
@@ -224,7 +326,7 @@ const Add_Nurse = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               <div>
                 <label>Other Info</label>
                 <div className="inputdiv">
@@ -236,7 +338,7 @@ const Add_Nurse = () => {
                     name="details"
                     value={NurseValue.details}
                     onChange={HandleDoctorChange}
-                    required
+                    // required
                   />
                 </div>
               </div>
@@ -245,6 +347,13 @@ const Add_Nurse = () => {
               </button>
             </form>
           </div>
+          <div className="wardDetails">
+          <h1>Nurses</h1>
+          <div className="wardBox">
+            <Table columns={nurseColumns} dataSource={mappedNurses} />
+          </div>
+        </div>
+
         </div>
       </div>
     </>

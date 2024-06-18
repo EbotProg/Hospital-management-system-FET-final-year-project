@@ -124,10 +124,10 @@ export const NurseRegister = (data) => async (dispatch) => {
     //   data
     // );
     const res = await axios.post(
-      `${API}/nurses/login`,
+      `${API}/nurses/register`,
       data
     );
-    // console.log(res);
+    console.log('nurse register action', res);
     return res.data;
     // dispatch({
     //   type: types.REGISTER_NURSE_SUCCESS,

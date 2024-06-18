@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./CSS/Add_Doctor.css";
 import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
 import { DoctorRegister, SendPassword } from "../../../../../Redux/auth/action";
+import { getAllDoctors } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
+import { Table } from "antd";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,29 +29,108 @@ const AddDoctor = () => {
     DOB: "",
     address: "",
     education: "",
-    department: "",
-    docID: Date.now(),
+    // department: "",
+    // docID: Date.now(),
     password: "",
     details: "",
+    wardName: ""
   };
   const [DoctorValue, setDoctorValue] = useState(initData);
+  const [fetchedDoctors, setFetchedDoctors] = useState([])
+  const [mappedDoctors, setMappedDoctors] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const HandleDoctorChange = (e) => {
     setDoctorValue({ ...DoctorValue, [e.target.name]: e.target.value });
   };
 
+  const doctorColumns = [
+    { title: "DoctorID", dataIndex: "docID"},
+    { title: "Name", dataIndex: "docName"},
+    { title: "Ward", dataIndex: "wardName"},
+    { title: "Available", dataIndex: "isAvaible"},
+    { title: "Address", dataIndex: "address"},
+    { title: "Email", dataIndex: "email"},
+    { title: "Gender", dataIndex: "gender"},
+    { title: "Date of Birth", dataIndex: "DOB"},
+    // { title: "", dataIndex: "viewMore"}
+  ];
+
+  const mapDoctorInfo = () => {
+    let arr = []
+    fetchedDoctors.forEach((doctor)=>{
+      let obj = {};
+      obj.key = doctor._id
+      obj.docID = doctor.docID;
+      obj.docName = doctor.docName;
+      obj.wardName = doctor.wardID.wardName;
+      obj.isAvailable = doctor.isAvailble;
+      obj.address = doctor.address;
+      obj.email = doctor.email;
+      obj.gender = doctor.gender;
+      obj.DOB = doctor.DOB;
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMoreDoctorInfo(doctor._id)}
+    // >
+    //   View more
+    // </button>
+    arr.push(obj);
+    
+  });
+
+  setMappedDoctors([...arr])
+
+  }
+
+
+  useEffect(()=> {
+    dispatch(getAllDoctors()).then(res => {
+      console.log('get all doctors res', res)
+      setFetchedDoctors(res);
+    })
+    
+  }, [])
+
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(getAllDoctors()).then(res => {
+        console.log('get all doctors res', res)
+        setFetchedDoctors(res);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedDoctors', fetchedDoctors)
+    mapDoctorInfo()
+
+  }, [fetchedDoctors])
+
   const HandleDoctorSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     dispatch(DoctorRegister(DoctorValue)).then((res) => {
-      if (res.message === "Doctor already exists") {
+      if (
+        res.error
+      ) {
         setLoading(false);
-        return notify("Doctor Already Exist");
+        return notify(res.error);
       }
-      if (res.message === "error") {
-        setLoading(false);
-        return notify("Something went wrong, Please try Again");
-      }
+      // if (res.message === "error") {
+      //   setLoading(false);
+      //   return notify("Something went wrong, Please try Again");
+      // }
+      notify(res.message);
+      setIsSubmitted(true)
 
       let data = {
         email: res.data.email,
@@ -94,6 +175,21 @@ const AddDoctor = () => {
                   />
                 </div>
               </div>
+
+              <div>
+                <label>Ward</label>
+                <div className="inputdiv">
+                  <input
+                    type="text"
+                    placeholder="ward Name"
+                    name="wardName"
+                    value={DoctorValue.wardName}
+                    onChange={HandleDoctorChange}
+                    required
+                  />
+                </div>
+              </div>
+
               <div>
                 <label>Age</label>
                 <div className="inputdiv">
@@ -209,7 +305,7 @@ const AddDoctor = () => {
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label>Department</label>
                 <div className="inputdiv">
                   <select
@@ -229,9 +325,9 @@ const AddDoctor = () => {
                     <option value="Psychiatrist">Psychiatrist</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <label>Password</label>
                 <div className="inputdiv">
                   <input
@@ -243,7 +339,7 @@ const AddDoctor = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               <div>
                 <label>Other Details</label>
                 <div className="inputdiv">
@@ -255,7 +351,7 @@ const AddDoctor = () => {
                     name="details"
                     value={DoctorValue.details}
                     onChange={HandleDoctorChange}
-                    required
+                    // required
                   />
                 </div>
               </div>
@@ -264,6 +360,13 @@ const AddDoctor = () => {
               </button>
             </form>
           </div>
+
+          <div className="wardDetails">
+          <h1>Doctors</h1>
+          <div className="wardBox">
+            <Table columns={doctorColumns} dataSource={mappedDoctors} />
+          </div>
+        </div>
         </div>
       </div>
     </>

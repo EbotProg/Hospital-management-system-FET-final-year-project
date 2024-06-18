@@ -4,12 +4,16 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { generateReportPdf } = require("../controllers/generateReport")
+const { findWardByName } = require("../controllers/modelControllers/ward.controller")
+const {generateUserId, generatePassword } = require("../controllers/generatePasswordAndID")
+const nodemailer = require("nodemailer");
+
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const nurses = await NurseModel.find();
+    const nurses = await NurseModel.find().populate("wardID");
     res.status(200).send(nurses);
   } catch (error) {
     console.log(error);
@@ -19,7 +23,9 @@ router.get("/", async (req, res) => {
 
 
 router.post("/register", async (req, res) => {
+  let successMsg = ''
   const { email } = req.body;
+  const payload = {...req.body}
   try {
     const nurse = await NurseModel.findOne({ email });
     if (nurse) {
@@ -27,22 +33,89 @@ router.post("/register", async (req, res) => {
         message: "Nurse already exists",
       });
     }
+
+    /****check ward */
+//if the change made is a ward 
+if(payload.wardName) {
+  console.log('payload has ward info')
+
+  const ward = await findWardByName(payload.wardName)
+  if(!ward) {
+    console.log('no ward was found with the name given')
+
+    return  res.send({ message: "ward not found"})
+  }else {
+    console.log('deleted wardName property from payload')
+
+    delete payload.wardName
+    payload.wardID = ward._id;
+    console.log('patch doctor: payload', payload)
+
+  }
+}
+    /*************** */
     
+    let hospitalAbbrev;
+
+    if(payload.hospitalName) {
+      const hospital = await findHospitalByName(payload.hospitalName)
+
+      if(hospital) {
+        hospitalAbbrev = hospital.abbrev
+      }else {
+        hospitalAbbrev = "WASPITAL"
+      }
+
+    }else {
+      hospitalAbbrev = "WASPITAL"
+    }
+    
+    const userId = generateUserId(hospitalAbbrev)
+    const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(req.body.password, salt, async function(err, hash) {
+      bcrypt.hash(password, salt, async function(err, hash) {
           // Store hash in your password DB.
           console.log("passwordhash", hash)
-          let value = new NurseModel(req.body);
+          let value = new NurseModel(payload);
           value.password = hash;
+          value.nurseID = userId
           await value.save();
           const data = await NurseModel.findOne({ email });
-          return res.send({ data, message: "Registered" });
+
+            /////////////////////////////////send email
+            // const transporter = nodemailer.createTransport({
+            //   service: "gmail",
+            //   auth: {
+            //     user: 'digitalwaspital@gmail.com',
+            //     pass: 'pnkbfjddzymtzfev'
+            //   },
+            // });
+          
+            // const mailOptions = {
+            //   from: "DW<digitalwaspital@gmail.com>",
+            //   to: email,
+            //   subject: "Account ID and Password",
+            //   text: `This is your User Id : ${userId} and  Password : ${password} .`,
+            // };
+          
+            // transporter.sendMail(mailOptions, (error, info) => {
+            //   if (error) {
+            //     return  res.send({ message: "could not send email"})
+            //   }
+            //   //  res.send({message: "An email has been sent to the nurse"});
+            //   // successMsg = successMsg + "Account Details sent"
+            //   console.log("info", info)
+            // });
+            /////////////////////////////////////////////
+            data.password = password;
+            data.nurseID = userId;
+            return res.send({ data, message: "Registered" });
       });
   });
 
   } catch (error) {
-    res.send({ message: "error" });
+    res.send({ message: "Internal server error" });
   }
 });
 
@@ -82,8 +155,28 @@ router.post("/login", async (req, res) => {
 
 router.patch("/:nurseId", async (req, res) => {
   const id = req.params.nurseId;
-  const payload = req.body;
+  const payload = {...req.body};
   try {
+
+    //if the change made is a ward 
+    if(payload.wardName) {
+      console.log('payload has ward info')
+
+      const ward = await findWardByName(payload.wardName)
+      if(!ward) {
+        console.log('no ward was found with the name given')
+
+        return  res.status(404).send({ error: "ward not found"})
+      }else {
+        console.log('deleted wardName property from payload')
+
+        delete payload.wardName
+        payload.wardID = ward._id;
+        console.log('patch doctor: payload', payload)
+
+      }
+    }
+
     await NurseModel.findByIdAndUpdate({ _id: id }, payload);
     const nurse = await NurseModel.findById(id);
     if (!nurse) {

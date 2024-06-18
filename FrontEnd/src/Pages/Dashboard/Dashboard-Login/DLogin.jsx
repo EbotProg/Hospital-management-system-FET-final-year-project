@@ -186,7 +186,7 @@ const DLogin = () => {
             <form onSubmit={HandleSubmit}>
               <h3>{placement} ID</h3>
               <input
-                type="number"
+                type="text"
                 name="ID"
                 value={formvalue.ID}
                 onChange={Handlechange}

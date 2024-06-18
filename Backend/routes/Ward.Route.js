@@ -17,9 +17,11 @@ router.post("/add", async (req, res)=> {
     try{
         console.log("entered add route for routes")
         const { wardName } = req.body;
+
         console.log("entered add route for routes", wardName)
 
-        let ward = await WardModel.findOne({ wardName })
+        const wardNameStr = wardName.toUpperCase();
+        let ward = await WardModel.findOne({ wardName: wardNameStr })
         console.log("entered add route for routes", ward)
 
         if(ward) {
@@ -29,7 +31,7 @@ router.post("/add", async (req, res)=> {
         } else {
             console.log("ward does not exist")
 
-            ward = new WardModel({ wardName })
+            ward = new WardModel({ wardName: wardNameStr })
             console.log("entered add route for routes", ward)
             await ward.save();
             console.log("ward saved")

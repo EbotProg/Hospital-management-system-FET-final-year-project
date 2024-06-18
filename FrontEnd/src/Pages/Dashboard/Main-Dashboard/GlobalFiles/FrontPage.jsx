@@ -130,6 +130,15 @@ const FrontPage = () => {
             <FaBed className="overviewIcon" />
           </div>
 
+          <div className="four commondiv">
+            {" "}
+            <div>
+              <h1>{data?.ward}</h1>
+              <p>Wards</p>
+            </div>
+            <FaBed className="overviewIcon" />
+          </div>
+
           <div className="five commondiv">
             {" "}
             <div>

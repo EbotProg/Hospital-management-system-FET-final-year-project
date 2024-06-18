@@ -118,13 +118,13 @@ router.post("/password", (req, res) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "agrawaljoy1@gmail.com",
-      pass: "zxkyjqfuhiizmxrg",
+      user: 'digitalwaspital@gmail.com',
+      pass: 'pnkbfjddzymtzfev'
     },
   });
 
   const mailOptions = {
-    from: "agrawaljoy1@gmail.com",
+    from: "DW<digitalwaspital@gmail.com>",
     to: email,
     subject: "Account ID and Password",
     text: `This is your User Id : ${userId} and  Password : ${password} .`,
@@ -174,13 +174,13 @@ router.post("/forgot", async (req, res) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "agrawaljoy1@gmail.com",
-      pass: "zxkyjqfuhiizmxrg",
+      user: 'digitalwaspital@gmail.com',
+      pass: 'pnkbfjddzymtzfev'
     },
   });
 
   const mailOptions = {
-    from: "agrawaljoy1@gmail.com",
+    from: "DW<digitalwaspital@gmail.com>",
     to: email,
     subject: "Account ID and Password",
     text: `This is your User Id : ${userId} and  Password : ${password} .`,

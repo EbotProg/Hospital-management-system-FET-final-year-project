@@ -141,7 +141,7 @@ const AddWards = () => {
     fetchedWards.forEach((ward)=>{
       let obj = {};
       obj.key = ward._id
-      obj.wardName = ward.wardName.toUpperCase();
+      obj.wardName = ward.wardName;
       obj.deleteWard = <button
       style={{
         border: "none",

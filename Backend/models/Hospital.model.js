@@ -32,6 +32,28 @@ const hospitalSchema = mongoose.Schema({
   reportsNumbers: {
     type: Number,
   },
+
+  wardNumbers: {
+    type: Number
+    
+  },
+
+  name: {
+    type: String
+  },
+
+  location: {
+    type: String
+  },
+
+  type: {
+    type: String
+  },
+
+  abbrev: {
+    type: String
+  }
+
 });
 
 const HospitalModel = mongoose.model("hospital", hospitalSchema);

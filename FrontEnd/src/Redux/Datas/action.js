@@ -463,6 +463,40 @@ export const GetPatients = () => async (dispatch) => {
   }
 };
 
+export const getAllNurses = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_NURSES_REQUEST });
+    const res = await axios.get(
+      `${API}/nurses`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_NURSES_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllDoctors = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DOCTORS_REQUEST });
+    const res = await axios.get(
+      `${API}/doctors`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DOCTORS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // GET ALL DATA
 export const GetAllData = () => async (dispatch) => {
   try {

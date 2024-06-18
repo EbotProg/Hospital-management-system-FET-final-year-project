@@ -7,7 +7,7 @@ const doctorSchema = mongoose.Schema({
   },
 
   docID: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -65,6 +65,16 @@ const doctorSchema = mongoose.Schema({
   details: {
     type: String,
   },
+
+  wardID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ward'
+  },
+
+  hospital: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'hospital'
+  }
 });
 
 const DoctorModel = mongoose.model("doctor", doctorSchema);
