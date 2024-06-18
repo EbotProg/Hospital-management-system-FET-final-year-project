@@ -48,7 +48,7 @@ const AddDoctor = () => {
     { title: "DoctorID", dataIndex: "docID"},
     { title: "Name", dataIndex: "docName"},
     { title: "Ward", dataIndex: "wardName"},
-    { title: "Available", dataIndex: "isAvaible"},
+    { title: "Available", dataIndex: "isAvailable"},
     { title: "Address", dataIndex: "address"},
     { title: "Email", dataIndex: "email"},
     { title: "Gender", dataIndex: "gender"},
@@ -64,7 +64,7 @@ const AddDoctor = () => {
       obj.docID = doctor.docID;
       obj.docName = doctor.docName;
       obj.wardName = doctor.wardID.wardName;
-      obj.isAvailable = doctor.isAvailble;
+      obj.isAvailable = doctor.isAvailable === true? "Yes": "No";
       obj.address = doctor.address;
       obj.email = doctor.email;
       obj.gender = doctor.gender;

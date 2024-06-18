@@ -8,6 +8,8 @@ const { NurseModel } = require("../models/Nurse.model");
 const { PatientModel } = require("../models/Patient.model");
 const { ReportModel } = require("../models/Report.model");
 const { WardModel } = require("../models/Ward.model");
+const { RoomModel } = require("../models/Room.model");
+const { LabReportModel } = require("../models/LabReport.model");
 const { getAllWardStats } = require("../controllers/modelControllers/hospital.controller")
 
 const router = express.Router();
@@ -42,6 +44,8 @@ router.get("/", async (req, res) => {
     let appointment = await AppointmentModel.countDocuments();
     let doctor = await DoctorModel.countDocuments();
     let ward = await WardModel.countDocuments()
+    let room = await RoomModel.countDocuments()
+    let labReport = await LabReportModel.countDocuments();
     let wardStats = await getAllWardStats()
     let data = {
       admin,
@@ -53,6 +57,8 @@ router.get("/", async (req, res) => {
       doctor,
       appointment,
       ward,
+      room,
+      labReport,
       wardStats
     };
 

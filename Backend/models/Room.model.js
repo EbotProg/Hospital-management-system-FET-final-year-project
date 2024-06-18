@@ -10,11 +10,17 @@ const roomSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "ward",
     required: true,
+  },
+
+  isAvailable: {
+    type: Boolean,
+    default: false,
+    required: true,
   }
 
   
 });
 
-const roomModel = mongoose.model("room", roomSchema);
+const RoomModel = mongoose.model("room", roomSchema);
 
-module.exports = { roomModel };
+module.exports = { RoomModel };

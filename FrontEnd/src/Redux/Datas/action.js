@@ -497,6 +497,23 @@ export const getAllDoctors = () => async (dispatch) => {
   }
 };
 
+export const getAllAdmins = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_ADMINS_REQUEST });
+    const res = await axios.get(
+      `${API}/admin`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_ADMINS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // GET ALL DATA
 export const GetAllData = () => async (dispatch) => {
   try {

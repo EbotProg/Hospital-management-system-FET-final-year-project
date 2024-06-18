@@ -5,6 +5,7 @@ import { FaUserNurse } from "react-icons/fa";
 import { RiEmpathizeLine } from "react-icons/ri";
 import { FaBed } from "react-icons/fa";
 import { MdOutlineBedroomParent } from "react-icons/md";
+import { LiaHospitalAltSolid } from "react-icons/lia";
 import { FaAmbulance } from "react-icons/fa";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 import { MdPayment } from "react-icons/md";
@@ -13,6 +14,8 @@ import Sidebar from "./Sidebar";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetAllData, GetPatients } from "../../../../Redux/Datas/action";
+import { SiGoogleclassroom } from "react-icons/si";
+import { FaUserDoctor } from "react-icons/fa6";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from "react-router-dom";
 
@@ -114,22 +117,22 @@ const FrontPage = () => {
           <div className="one commondiv">
             <div>
               <h1>{data?.doctor}</h1>
-              <p>Doctor</p>
+              <p>Doctors</p>
             </div>
-            <MdPersonAdd className="overviewIcon" />
+            <FaUserDoctor className="overviewIcon" />
           </div>
           <div className="two commondiv">
             {" "}
             <div>
               <h1>{data?.nurse}</h1>
-              <p>Nurse</p>
+              <p>Nurses</p>
             </div>
             <FaUserNurse className="overviewIcon" />
           </div>
           <div className="three commondiv">
             <div>
               <h1>{data?.patient}</h1>
-              <p>Patient</p>
+              <p>Patients</p>
             </div>
             <RiEmpathizeLine className="overviewIcon" />
           </div>
@@ -137,7 +140,7 @@ const FrontPage = () => {
             {" "}
             <div>
               <h1>{data?.admin}</h1>
-              <p>Admin</p>
+              <p>Admins</p>
             </div>
             <RiAdminLine className="overviewIcon" />
           </div>
@@ -156,14 +159,25 @@ const FrontPage = () => {
               <h1>{data?.ward}</h1>
               <p>Wards</p>
             </div>
-            <FaBed className="overviewIcon" />
+            <LiaHospitalAltSolid className="overviewIcon" />
+
+          </div>
+
+          <div className="four commondiv">
+            {" "}
+            <div>
+              <h1>{data?.room}</h1>
+              <p>Rooms</p>
+            </div>
+            <SiGoogleclassroom className="overviewIcon" />
+
           </div>
 
           <div className="five commondiv">
             {" "}
             <div>
               <h1>{data?.ambulance}</h1>
-              <p>Ambulance</p>
+              <p>Ambulances</p>
             </div>
             <FaAmbulance className="overviewIcon" />
           </div>
@@ -171,15 +185,15 @@ const FrontPage = () => {
             {" "}
             <div>
               <h1>{data?.appointment}</h1>
-              <p>Appointment</p>
+              <p>Appointments</p>
             </div>
             <BsFillBookmarkCheckFill className="overviewIcon" />
           </div>
           <div className="six commondiv">
             {" "}
             <div>
-              <h1>{data?.report}</h1>
-              <p>Reports</p>
+              <h1>{data?.labReport}</h1>
+              <p>Lab Reports</p>
             </div>
             <MdPayment className="overviewIcon" />
           </div>

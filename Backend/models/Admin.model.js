@@ -7,7 +7,7 @@ const adminSchema = mongoose.Schema({
   },
 
   adminID: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -54,6 +54,13 @@ const adminSchema = mongoose.Schema({
     default:
       "https://res.cloudinary.com/diverse/image/upload/v1674562453/diverse/oipm1ecb1yudf9eln7az.jpg",
   },
+
+
+  isAvailable: {
+    type: Boolean,
+    default: false,
+    required: true,
+  }
 });
 
 const AdminModel = mongoose.model("admin", adminSchema);

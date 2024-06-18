@@ -17,6 +17,9 @@ import { RiAdminLine } from "react-icons/ri";
 import { TbBed } from "react-icons/tb";
 import { MdDashboardCustomize } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { LiaHospitalAltSolid } from "react-icons/lia";
+import { SiGoogleclassroom } from "react-icons/si";
+import { FaUserDoctor } from "react-icons/fa6";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +39,7 @@ const Sidebar = () => {
         <div style={{ width: isOpen ? "200px" : "70px" }} className={`sidebar`}>
           <div className="top_section">
             <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">
-              HMS
+              DW
             </h1>
             <div
               style={{ marginLeft: isOpen ? "50px" : "0px" }}
@@ -149,7 +152,7 @@ const Sidebar = () => {
             {user?.userType === "admin" ? (
               <Link className="link" activeclassname="active" to={"/addoctor"}>
                 <div className="icon">
-                  <AiOutlineUserAdd className="mainIcon" />
+                  <FaUserDoctor  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -192,7 +195,7 @@ const Sidebar = () => {
               {user?.userType === "admin" ? (
               <Link className="link" activeclassname="active" to={"/ward"}>
                 <div className="icon">
-                  <RiAdminLine
+                  <LiaHospitalAltSolid
                     className="mainIcon"
                     style={{ color: "white" }}
                   />
@@ -209,7 +212,7 @@ const Sidebar = () => {
               {user?.userType === "admin" ? (
               <Link className="link" activeclassname="active" to={"/room"}>
                 <div className="icon">
-                  <RiAdminLine
+                  <SiGoogleclassroom
                     className="mainIcon"
                     style={{ color: "white" }}
                   />

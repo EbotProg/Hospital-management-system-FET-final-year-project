@@ -7,6 +7,9 @@ const { NurseModel } = require("../models/Nurse.model");
 const { DoctorModel } = require("../models/Doctor.model");
 const { PatientModel } = require("../models/Patient.model");
 const bcrypt = require('bcryptjs');
+const {generateUserId, generatePassword } = require("../controllers/generatePasswordAndID")
+const { findHospitalByName } = require("../controllers/modelControllers/hospital.controller")
+
 
 
 const router = express.Router();
@@ -23,30 +26,52 @@ router.get("/", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   const { email } = req.body;
+  const payload = {...req.body}
   try {
-    console.log('body', req.body)
+    console.log('body', payload)
     const admin = await AdminModel.findOne({ email });
     if (admin) {
       return res.send({
-        message: "Admin already exists",
+        error: "Admin already exists",
       });
     }
     
+   
+    
+    let hospitalAbbrev;
+
+    if(payload.hospitalName) {
+      const hospital = await findHospitalByName(payload.hospitalName)
+
+      if(hospital) {
+        hospitalAbbrev = hospital.abbrev
+      }else {
+        hospitalAbbrev = "WASPITAL"
+      }
+
+    }else {
+      hospitalAbbrev = "WASPITAL"
+    }
+    
+    const userId = generateUserId(hospitalAbbrev)
+    const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(req.body.password, salt, async function(err, hash) {
+      bcrypt.hash(password, salt, async function(err, hash) {
           // Store hash in your password DB.
           console.log("passwordhash", hash)
-          let value = new AdminModel(req.body);
+          let value = new AdminModel(payload);
           value.password = hash;
+          value.adminID = userId
           await value.save();
           const data = await AdminModel.findOne({ email });
+          data.password = password;
           return res.send({ data, message: "Registered" });
       });
   });
   } catch (error) {
     console.log("err", error)
-    res.send({ message: "error" });
+    res.send({ error: "Internal Server Error" });
   }
 });
 

@@ -71,6 +71,12 @@ const nurseSchema = mongoose.Schema({
   hospital: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'hospital'
+  },
+
+  isAvailable: {
+    type: Boolean,
+    default: false,
+    required: true,
   }
 
 });

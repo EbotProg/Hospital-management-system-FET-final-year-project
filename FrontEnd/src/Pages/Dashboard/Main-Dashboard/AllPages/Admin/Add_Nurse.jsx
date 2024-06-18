@@ -52,7 +52,7 @@ const Add_Nurse = () => {
     { title: "NurseID", dataIndex: "nurseID"},
     { title: "Name", dataIndex: "nurseName"},
     { title: "Ward", dataIndex: "wardName"},
-    { title: "Available", dataIndex: "isAvaible"},
+    { title: "Available", dataIndex: "isAvailable"},
     { title: "Address", dataIndex: "address"},
     { title: "Email", dataIndex: "email"},
     { title: "Gender", dataIndex: "gender"},
@@ -68,7 +68,7 @@ const Add_Nurse = () => {
       obj.nurseID = nurse.nurseID;
       obj.nurseName = nurse.nurseName;
       obj.wardName = nurse.wardID.wardName;
-      obj.isAvailable = nurse.isAvailble;
+      obj.isAvailable = nurse.isAvailable === true? "Yes": "No";
       obj.address = nurse.address;
       obj.email = nurse.email;
       obj.gender = nurse.gender;

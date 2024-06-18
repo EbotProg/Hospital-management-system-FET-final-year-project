@@ -76,7 +76,11 @@ const doctorSchema = mongoose.Schema({
     ref: 'hospital'
   },
 
-  isAvailable: Boolean
+  isAvailable: {
+    type: Boolean,
+    default: false,
+    required: true,
+  }
 });
 
 const DoctorModel = mongoose.model("doctor", doctorSchema);

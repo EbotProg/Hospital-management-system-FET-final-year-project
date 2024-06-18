@@ -81,7 +81,7 @@ if(payload.wardName) {
           await value.save();
           const data = await DoctorModel.findOne({ email });
           data.password = password;
-          data.docID = userId;
+          // data.docID = userId;
           return res.send({ data, message: "Registered" });
       });
   });

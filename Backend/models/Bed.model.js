@@ -19,6 +19,13 @@ const bedSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "patient",
   },
+
+
+  isAvailable: {
+    type: Boolean,
+    default: false,
+    required: true,
+  }
 });
 
 const BedModel = mongoose.model("bed", bedSchema);
