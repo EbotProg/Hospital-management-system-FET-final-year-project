@@ -18,6 +18,9 @@ import { Link } from "react-router-dom";
 
 
 const FrontPage = () => {
+
+  const [mappedWardStats, setMappedWardStats] = useState([])
+
   const columns = [
     { title: "Name", dataIndex: "patientName", key: "patientName" },
     { title: "Age", dataIndex: "age", key: "age" },
@@ -35,36 +38,52 @@ const FrontPage = () => {
     { title: "Beds(Av | Tot)", dataIndex: "beds"},
   ];
 
-  const wards = [
-    { 
-      wardName: "Ward 01", 
-      doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
-    },
-    { 
-      wardName: "Ward 01", 
-      doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
-    },
-    { 
-      wardName: "Ward 01", 
-      doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
-    },
-    { 
-      wardName: "Ward 01", 
-      doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
-      beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
+  const mapWards = (wards) => {
+    let arr = []
+    for(let ward of wards) {
+      let obj = { 
+        key: ward._id,
+        wardName: ward.wardName, 
+        doctors: (<><Link to={"#"}>{ward.doctors[0]}</Link> | <Link to={"#"}>{ward.doctors[1]}</Link></>), 
+        nurses: (<><Link to={"#"}>{ward.nurses[0]}</Link> | <Link to={"#"}>{ward.nurses[1]}</Link></>), 
+        rooms: (<><Link to={"#"}>{ward.rooms[0]}</Link> | <Link to={"#"}>{ward.rooms[1]}</Link></>), 
+        beds: (<><Link to={"#"}>{ward.beds[0]}</Link> | <Link to={"#"}>{ward.beds[1]}</Link></>)
+      }
+      arr.push(obj)
     }
-  ]
+    setMappedWardStats([...arr])
+  }
+
+  // const wards = [
+  //   { 
+  //     wardName: "Ward 01", 
+  //     doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
+  //   },
+  //   { 
+  //     wardName: "Ward 01", 
+  //     doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
+  //   },
+  //   { 
+  //     wardName: "Ward 01", 
+  //     doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
+  //   },
+  //   { 
+  //     wardName: "Ward 01", 
+  //     doctors: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     nurses: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     rooms: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>), 
+  //     beds: (<><Link to={"#"}>12</Link> | <Link to={"#"}>40</Link></>)
+  //   }
+  // ]
 
 
   const { patients } = useSelector((store) => store.data.patients);
@@ -83,6 +102,7 @@ const FrontPage = () => {
   useEffect(() => {
     dispatch(GetPatients());
     dispatch(GetAllData());
+    mapWards(data.wardStats)
   }, []);
 
   return (
@@ -643,7 +663,7 @@ const FrontPage = () => {
         <div className="wardDetails">
           <h1>Stats By Ward</h1>
           <div className="wardBox">
-            <Table columns={wardColumns} dataSource={wards} />
+            <Table columns={wardColumns} dataSource={mappedWardStats} />
           </div>
         </div>
         

@@ -8,6 +8,12 @@ async function findWardByName(wardNameStr) {
         return ward;
 }
 
+async function getAllWards() {
+    const wards = WardModel.find({})
+    return wards;
+}
+
 module.exports = {
-    findWardByName
+    findWardByName,
+    getAllWards
 }
