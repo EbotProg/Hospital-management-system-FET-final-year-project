@@ -365,6 +365,7 @@ export const AddRoom = (data) => async (dispatch) => {
 
 
 
+
 // GET SINGLE BED
 export const GetSingleBed = (data) => async (dispatch) => {
   try {
@@ -514,6 +515,40 @@ export const getAllAdmins = () => async (dispatch) => {
   }
 };
 
+export const getAllRooms = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_ROOMS_REQUEST });
+    const res = await axios.get(
+      `${API}/rooms`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_ROOMS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllBeds = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_BEDS_REQUEST });
+    const res = await axios.get(
+      `${API}/beds`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_BEDS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // GET ALL DATA
 export const GetAllData = () => async (dispatch) => {
   try {
@@ -577,6 +612,42 @@ export const deleteWard = (id) => async (dispatch) => {
     // return res.data;
     dispatch({
       type: types.DELETE_WARD_SUCCESS,
+      payload: id,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteRoom = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.DELETE_ROOM_REQUEST });
+    const res = await axios.delete(
+      `${API}/rooms/${id}`
+    );
+    console.log(res.data);
+    // return res.data;
+    dispatch({
+      type: types.DELETE_ROOM_SUCCESS,
+      payload: id,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteBed = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.DELETE_BED_REQUEST });
+    const res = await axios.delete(
+      `${API}/beds/${id}`
+    );
+    console.log(res.data);
+    // return res.data;
+    dispatch({
+      type: types.DELETE_BED_SUCCESS,
       payload: id,
     });
     return res.data;

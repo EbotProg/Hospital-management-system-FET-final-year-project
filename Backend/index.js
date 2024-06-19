@@ -15,6 +15,7 @@ const paymentRouter = require("./routes/Payments.route");
 const prescriptionRouter = require("./routes/Prescriptions.Route");
 const reportRouter = require("./routes/Reports.Route");
 const wardRouter = require("./routes/Ward.Route")
+const roomRouter = require("./routes/Room.Route")
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/payments", paymentRouter);
 app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 app.use("/wards", wardRouter)
+app.use("/rooms", roomRouter);
 
 app.listen(process.env.port, async () => {
   try {

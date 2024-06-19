@@ -6,18 +6,28 @@ const bedSchema = mongoose.Schema({
     required: true,
   },
 
-  roomNumber: {
-    type: Number,
-    required: true,
-  },
+  // roomNumber: {
+  //   type: Number,
+  //   required: true,
+  // },
 
-  occupied: {
-    type: String,
-  },
+  // occupied: {
+  //   type: String,
+  // },
 
-  patientID: {
+  // patientID: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "patient",
+  // },
+
+   wardID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "patient",
+    ref: "ward",
+  },
+
+   roomID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "room",
   },
 
 

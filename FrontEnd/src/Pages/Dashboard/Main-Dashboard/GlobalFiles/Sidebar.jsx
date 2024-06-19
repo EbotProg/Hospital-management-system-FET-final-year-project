@@ -20,6 +20,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { LiaHospitalAltSolid } from "react-icons/lia";
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaUserDoctor } from "react-icons/fa6";
+import { MdOutlineWorkHistory } from "react-icons/md";
+import { MdOutlineSick } from "react-icons/md";
+import { LiaUserCheckSolid } from "react-icons/lia";
+import { MdGroupRemove } from "react-icons/md";
+import { MdGroupAdd } from "react-icons/md";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,7 +90,7 @@ const Sidebar = () => {
                 to={"/addpatient"}
               >
                 <div className="icon">
-                  <FaHospitalUser className="mainIcon" />
+                  <SlUserFollow className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -103,7 +108,7 @@ const Sidebar = () => {
                 to={"/admitPatient"}
               >
                 <div className="icon">
-                  <FaHospitalUser className="mainIcon" />
+                  <MdGroupAdd  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -121,7 +126,7 @@ const Sidebar = () => {
                 to={"/dischargePatient"}
               >
                 <div className="icon">
-                  <FaHospitalUser className="mainIcon" />
+                  <MdGroupRemove  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -282,7 +287,7 @@ const Sidebar = () => {
                 to={"/doctorprofile"}
               >
                 <div className="icon">
-                  <SlUserFollow className="mainIcon" />
+                  <CgProfile  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -299,7 +304,7 @@ const Sidebar = () => {
                 to={"/consultpatient"}
               >
                 <div className="icon">
-                  <SlUserFollow className="mainIcon" />
+                  <LiaUserCheckSolid  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -317,7 +322,7 @@ const Sidebar = () => {
                 to={"/viewmedicalhistory"}
               >
                 <div className="icon">
-                  <SlUserFollow className="mainIcon" />
+                  <MdOutlineWorkHistory className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -335,7 +340,7 @@ const Sidebar = () => {
                 to={"/viewMyPatients"}
               >
                 <div className="icon">
-                  <SlUserFollow className="mainIcon" />
+                  <MdOutlineSick  className="mainIcon" />
                 </div>
                 <div
                   style={{ display: isOpen ? "block" : "none" }}
@@ -357,7 +362,7 @@ const Sidebar = () => {
                 Beds
               </div>
             </Link>
-            {user?.userType === "doctor" ? (
+            {/* {user?.userType === "doctor" ? (
               <Link className="link" activeclassname="active" to={"/reports"}>
                 <div className="icon">
                   <TbReportMedical className="mainIcon" />
@@ -369,7 +374,7 @@ const Sidebar = () => {
                   Reports
                 </div>
               </Link>
-            ) : null}
+            ) : null} */}
 
             {user?.userType === "doctor" ? (
               <Link
@@ -388,7 +393,7 @@ const Sidebar = () => {
                 </div>
               </Link>
             ) : null}
-            {user?.userType === "doctor" ? (
+            {/* {user?.userType === "doctor" ? (
               <Link
                 className="link"
                 activeclassname="active"
@@ -404,7 +409,7 @@ const Sidebar = () => {
                   Create Report
                 </div>
               </Link>
-            ) : null}
+            ) : null} */}
 
               {user?.userType === "doctor" ? (
               <Link

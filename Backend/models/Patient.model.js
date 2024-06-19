@@ -83,6 +83,15 @@ const patientSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "nurse",
   },
+
+  bedID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "bed",
+  },
+  roomID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "room",
+  },
 });
 
 const PatientModel = mongoose.model("patient", patientSchema);

@@ -5,9 +5,20 @@ const {
 } = require("../modelControllers/doctor.controller")
 
 const {
+    countAvailableRoomsInWard,
+    countAllRoomsInWard
+
+} = require("../modelControllers/room.controller")
+
+const {
     countAllNursesInWard,
     countAvailableNursesInWard
 } = require("../modelControllers/nurse.controller")
+
+const {
+    countAllBedsInWard,
+    countAvailableBedsInWard
+} = require("../modelControllers/bed.controller")
 
 const { getAllWards } = require("../modelControllers/ward.controller")
 
@@ -31,8 +42,14 @@ async function getStatisticsByWard(ward) {
                 (await countAvailableNursesInWard(ward._id)),
                 (await countAllNursesInWard(ward._id))
             ],
-            rooms: [],
-            beds: []
+            rooms: [
+                (await countAvailableRoomsInWard(ward._id)),
+                (await countAllRoomsInWard(ward._id))
+            ],
+            beds: [
+                (await countAvailableBedsInWard(ward._id)),
+                (await countAllBedsInWard(ward._id))
+            ]
         }
 
     }catch(err) {
