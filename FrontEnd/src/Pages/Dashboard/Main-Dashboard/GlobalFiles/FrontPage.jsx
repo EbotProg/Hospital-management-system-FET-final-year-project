@@ -24,14 +24,28 @@ const FrontPage = () => {
 
   const [mappedWardStats, setMappedWardStats] = useState([])
 
+  // const columns = [
+  //   { title: "Name", dataIndex: "patientName", key: "patientName" },
+  //   { title: "Age", dataIndex: "age", key: "age" },
+  //   { title: "Disease", dataIndex: "disease", key: "disease" },
+  //   { title: "Blood Group", dataIndex: "bloodGroup", key: "bloodGroup" },
+  //   { title: "Department", dataIndex: "department", key: "department" },
+  //   { title: "Email", dataIndex: "email", key: "email" },
+  // ];
+
   const columns = [
-    { title: "Name", dataIndex: "patientName", key: "patientName" },
-    { title: "Age", dataIndex: "age", key: "age" },
-    { title: "Disease", dataIndex: "disease", key: "disease" },
-    { title: "Blood Group", dataIndex: "bloodGroup", key: "bloodGroup" },
-    { title: "Department", dataIndex: "department", key: "department" },
+    { title: "ID", dataIndex: "patientID", key: "patientID" },
+    { title: "Full Name", dataIndex: "patientFullName", key: "patientFullName" },
+    { title: "Admitted", dataIndex: "admitted", key: "admitted" },
+    { title: "Address", dataIndex: "address", key: "address" },
     { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Gender", dataIndex: "gender", key: "gender" },
+    { title: "Date of Birth", dataIndex: "DOB", key: "DOB" },
+    // { title: "", dataIndex: "viewMore", key: "veiwMore" },
+    // { title: "", dataIndex: "dischargeAdmit", key: "dischargeAdmit" },
   ];
+
+
 
   const wardColumns = [
     { title: "Ward Name", dataIndex: "wardName" },
@@ -98,8 +112,66 @@ const FrontPage = () => {
 
   const dispatch = useDispatch();
 
-  
 
+  const [mappedPatients, setMappedPatients] = useState([])
+  
+  const mapPatientInfo = () => {
+    let arr = []
+    patients.forEach((patient)=>{
+      let obj = {};
+      obj.key = patient._id
+      obj.patientID = patient.patientID;
+      obj.patientFullName = `${patient.firstName} ${patient.lastName}`;
+      obj.admitted = patient.admitted === true? "Yes": "No";
+      obj.address = patient.address;
+      obj.email = patient.email;
+      obj.gender = patient.gender;
+      obj.DOB = patient.DOB;
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "blue",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMorePatientInfo(patient._id)}
+    // >
+    //   View more
+    // </button>
+    //   obj.dischargeAdmit = patient.admitted === true?  <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => dischargePatient(patient._id)}
+    // >
+    //   discharge
+    // </button> : <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => admitPatient(patient._id)}
+    // >
+    //   admit
+    // </button>
+
+    arr.push(obj);
+    
+  });
+
+  setMappedPatients([...arr])
+
+  }
+
+ 
   
 
   useEffect(() => {
@@ -107,6 +179,15 @@ const FrontPage = () => {
     dispatch(GetAllData());
     mapWards(data.wardStats)
   }, []);
+
+  useEffect(()=> {
+
+      console.log('patients', patients)
+        mapPatientInfo()
+    
+    
+
+  }, [patients])
 
   return (
     <div  className="container">
@@ -684,7 +765,7 @@ const FrontPage = () => {
         <div className="patientDetails">
           <h1>Patient Details</h1>
           <div className="patientBox">
-            <Table columns={columns} dataSource={patients} />
+            <Table columns={columns} dataSource={mappedPatients} />
           </div>
         </div>
       </div>

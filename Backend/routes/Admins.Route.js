@@ -139,6 +139,7 @@ router.delete("/:adminId", async (req, res) => {
 
 router.post("/password", (req, res) => {
   const { email, userId, password, patientId } = req.body;
+  console.log('req.body', req.body);
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -159,6 +160,7 @@ router.post("/password", (req, res) => {
     if (error) {
       return res.send(error);
     }
+    console.log("email info", info)
     return res.send("Password reset email sent");
   });
 });

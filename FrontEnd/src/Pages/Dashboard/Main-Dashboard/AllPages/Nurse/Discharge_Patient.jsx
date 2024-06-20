@@ -12,12 +12,15 @@ import {
   GetSingleBed,
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const notify = (text) => toast(text);
 
 const Discharge_Patient = () => {
  
+
+  const { patientId } = useParams();
+  console.log("patientId", patientId);
 
   const [loading, setLoading] = useState(false);
 

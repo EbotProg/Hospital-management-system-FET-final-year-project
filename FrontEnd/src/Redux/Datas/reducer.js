@@ -25,7 +25,7 @@ export default function dataReducer(state = initialState, { type, payload }) {
         loading: false,
         beds: payload,
       };
-    case types.GET_PATIENT_SUCCESS:
+    case types.GET_PATIENTS_SUCCESS:
       return {
         ...state,
         loading: false,

@@ -450,9 +450,27 @@ export const dischargePatient = (data) => async (dispatch) => {
 // GET ALL PATIENT
 export const GetPatients = () => async (dispatch) => {
   try {
-    dispatch({ type: types.GET_PATIENT_REQUEST });
+    dispatch({ type: types.GET_PATIENTS_REQUEST });
     const res = await axios.get(
       `${API}/patients`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_PATIENTS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+export const getPatient = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_PATIENT_REQUEST });
+    const res = await axios.get(
+      `${API}/patients/${id}`
     );
     console.log(res.data);
     dispatch({

@@ -52,7 +52,9 @@ const AllRoutes = () => {
         <Route path="/bookappointment" element={<Book_Appointment />} />
         <Route path="/nurseprofile" element={<Nurse_Profile />} />
         <Route path="/admitPatient" element={<Admit_Patient />} />
+        <Route path="/admitPatient/:patientId" element={<Admit_Patient />} />
         <Route path="/dischargePatient" element={<Discharge_Patient />} />
+        <Route path="/dischargePatient/:patientId" element={<Discharge_Patient />} />
         <Route path="/viewmedicalhistory" element={<ViewMedHistory />} />
         <Route path="/viewMyPatients" element={<SeeMyPatients />} />
       </Routes>

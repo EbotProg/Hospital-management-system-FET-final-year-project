@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { ReportModel } = require("../models/Report.model");
 const bcrypt = require('bcryptjs');
 const { generateUserId } = require("../controllers/generatePasswordAndID")
-
+const { findPatientByID } = require("../controllers/modelControllers/patient.controller")
 
 const router = express.Router();
 
@@ -44,6 +44,24 @@ router.post("/add", async (req, res) => {
     res.send({ error: "Internal Server Error" });
   }
 });
+
+router.get("/:id", async (req, res)=> {
+  try{
+
+    const id = req.params.id;
+console.log('id', id)
+    const patient = await findPatientByID(id);
+    console.log('patient', patient);
+    if(!patient) {
+      res.send({ error: "patient not found"});
+    }
+    res.send({ message: "patient found", patient});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 // // This register route will be used when adding a patient via patient or doctor or admin
 // router.post("/register", async (req, res) => {

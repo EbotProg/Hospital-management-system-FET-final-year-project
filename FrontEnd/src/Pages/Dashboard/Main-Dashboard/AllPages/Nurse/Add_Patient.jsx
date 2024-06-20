@@ -19,6 +19,7 @@ import {
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const notify = (text) => toast(text);
 
@@ -39,7 +40,7 @@ const Add_Patient = () => {
     { title: "Gender", dataIndex: "gender", key: "gender" },
     { title: "Date of Birth", dataIndex: "DOB", key: "DOB" },
     // { title: "", dataIndex: "viewMore", key: "veiwMore" },
-    // { title: "", dataIndex: "dischargeAdmit", key: "dischargeAdmit" },
+    { title: "", dataIndex: "dischargeAdmit", key: "dischargeAdmit" },
   ];
 
 
@@ -65,6 +66,18 @@ const Add_Patient = () => {
 
   //   return id;
   // }
+
+const navigate = useNavigate()
+  const moveToAdmitPage = (id) => {
+  //  return  <Navigate to={`/admitPatient/${id}`} />
+  return navigate(`/admitPatient/${id}`)
+  }
+  
+  const moveToDischargePage = (id) => {
+  //  return  <Navigate to={`/dischargePatient/${id}`} />
+  return navigate(`/dischargePatient/${id}`)
+  }
+  
 
 
 
@@ -92,29 +105,29 @@ const Add_Patient = () => {
     // >
     //   View more
     // </button>
-    //   obj.dischargeAdmit = patient.admitted === true?  <button
-    //   style={{
-    //     border: "none",
-    //     color: "green",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => dischargePatient(patient._id)}
-    // >
-    //   discharge
-    // </button> : <button
-    //   style={{
-    //     border: "none",
-    //     color: "green",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => admitPatient(patient._id)}
-    // >
-    //   admit
-    // </button>
+      obj.dischargeAdmit = patient.admitted === true?  <button
+      style={{
+        border: "none",
+        color: "green",
+        outline: "none",
+        background: "transparent",
+        cursor: "pointer",
+      }}
+      onClick={() => moveToDischargePage(patient._id)}
+    >
+      discharge
+    </button> : <button
+      style={{
+        border: "none",
+        color: "green",
+        outline: "none",
+        background: "transparent",
+        cursor: "pointer",
+      }}
+      onClick={() => moveToAdmitPage(patient._id)}
+    >
+      admit
+    </button>;
 
     arr.push(obj);
     
@@ -210,15 +223,16 @@ const Add_Patient = () => {
       }
 
       notify(res.message)
-      setLoading(false);
       if(res.message === "Patient Added") {
+        notify("sending email to patient...")
         setIsSubmitted(true)
         let data = {
-          email: res.data.email,
-          patientId: res.data.patientID
+          email: res.patient.email,
+          patientId: res.patient.patientID
         };
-        dispatch(SendPassword(data)).then((res) => notify("PatientId was sent to patient"));
+        dispatch(SendPassword(data)).then((res) => notify("Email sent to patient"));
         setAddPatient(InitData);
+        setLoading(false);
 
       }
     })

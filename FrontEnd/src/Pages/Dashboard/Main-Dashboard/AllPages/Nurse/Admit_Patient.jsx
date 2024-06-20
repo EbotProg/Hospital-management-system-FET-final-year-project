@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { message, Upload } from "antd";
 import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,12 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 import {
   admitPatientInfos,
+  getPatient,
   CreateBeds,
   EditSingleBed,
   GetSingleBed,
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 const notify = (text) => toast(text);
 
@@ -25,6 +26,21 @@ const Admit_Patient = () => {
 
   const { data } = useSelector((store) => store.auth);
 
+  const [patientForAdmissionInfo, setPatientForAdmissionInfo] = useState()
+
+  const { patientId } = useParams();
+  console.log("patientId", patientId);
+
+  useEffect(() => {
+    if(patientId) {
+      dispatch(getPatient(patientId)).then(res => {
+        console.log("res from get patient", res);
+        if(res.message === "patient found") {
+          setPatientForAdmissionInfo(res.patient)
+        }
+      })
+    }
+  }, [])
 
 
   const InitData = {
@@ -136,7 +152,9 @@ const Admit_Patient = () => {
                     type="text"
                     placeholder="Full Name"
                     name="patientName"
-                    value={admitPatientInfo.patientName}
+                    value={!patientId && !patientForAdmissionInfo ? admitPatientInfo.patientName : `${patientForAdmissionInfo.firstName} ${patientForAdmissionInfo.lastName}`}
+                    // value={ admitPatientInfo.patientName}
+
                     onChange={handleAdmitPatientInfoChange}
                     required
                   />
