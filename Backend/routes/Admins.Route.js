@@ -38,22 +38,22 @@ router.post("/register", async (req, res) => {
     
    
     
-    let hospitalAbbrev;
+    // let hospitalAbbrev;
 
-    if(payload.hospitalName) {
-      const hospital = await findHospitalByName(payload.hospitalName)
+    // if(payload.hospitalName) {
+    //   const hospital = await findHospitalByName(payload.hospitalName)
 
-      if(hospital) {
-        hospitalAbbrev = hospital.abbrev
-      }else {
-        hospitalAbbrev = "WASPITAL"
-      }
+    //   if(hospital) {
+    //     hospitalAbbrev = hospital.abbrev
+    //   }else {
+    //     hospitalAbbrev = "WASPITAL"
+    //   }
 
-    }else {
-      hospitalAbbrev = "WASPITAL"
-    }
+    // }else {
+    //   hospitalAbbrev = "WASPITAL"
+    // }
     
-    const userId = generateUserId(hospitalAbbrev)
+    const userId = generateUserId("Adm")
     const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {
@@ -138,7 +138,7 @@ router.delete("/:adminId", async (req, res) => {
 });
 
 router.post("/password", (req, res) => {
-  const { email, userId, password } = req.body;
+  const { email, userId, password, patientId } = req.body;
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -149,10 +149,10 @@ router.post("/password", (req, res) => {
   });
 
   const mailOptions = {
-    from: "DW<digitalwaspital@gmail.com>",
+    from: "DigitalWaspital<digitalwaspital@gmail.com>",
     to: email,
-    subject: "Account ID and Password",
-    text: `This is your User Id : ${userId} and  Password : ${password} .`,
+    subject: userId? "Account ID and Password": "Patient ID",
+    text: userId? `This is your User Id : ${userId} and  Password : ${password} .`: `Hello, we added you to our patient database\nThis is your id : ${patientId}. You can provide this to the staff in order to get your information faster. Thank you`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

@@ -11,6 +11,7 @@ async function countAllDoctorsInWard (wardID) {
     return count;
 }
 
+
 module.exports = {
     countAllDoctorsInWard,
     countAvailableDoctorsInWard

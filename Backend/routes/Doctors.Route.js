@@ -53,22 +53,22 @@ if(payload.wardName) {
 }
     /*************** */
 
-    let hospitalAbbrev;
+    // let hospitalAbbrev;
 
-    if(payload.hospitalName) {
-      const hospital = await findHospitalByName(payload.hospitalName)
+    // if(payload.hospitalName) {
+    //   const hospital = await findHospitalByName(payload.hospitalName)
 
-      if(hospital) {
-        hospitalAbbrev = hospital.abbrev
-      }else {
-        hospitalAbbrev = "WASPITAL"
-      }
+    //   if(hospital) {
+    //     hospitalAbbrev = hospital.abbrev
+    //   }else {
+    //     hospitalAbbrev = "WASPITAL"
+    //   }
 
-    }else {
-      hospitalAbbrev = "WASPITAL"
-    }
+    // }else {
+    //   hospitalAbbrev = "WASPITAL"
+    // }
     
-    const userId = generateUserId(hospitalAbbrev)
+    const userId = generateUserId("Doc")
     const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {

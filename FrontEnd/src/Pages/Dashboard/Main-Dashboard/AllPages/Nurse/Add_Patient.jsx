@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { message, Upload } from "antd";
 import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Table } from "antd";
+import Admit_Patient from "./Admit_Patient"
+import Discharge_Patient from "./Discharge_Patient"
+import { SendPassword } from "../../../../../Redux/auth/action";
+
 
 import {
   AddPatients,
+  GetPatients,
   CreateBeds,
   EditSingleBed,
   GetSingleBed,
@@ -17,56 +23,174 @@ import { Navigate } from "react-router-dom";
 const notify = (text) => toast(text);
 
 const Add_Patient = () => {
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
-  };
+  // const getBase64 = (img, callback) => {
+  //   const reader = new FileReader();
+  //   reader.addEventListener("load", () => callback(reader.result));
+  //   reader.readAsDataURL(img);
+  // };
+
+
+  const columns = [
+    { title: "ID", dataIndex: "patientID", key: "patientID" },
+    { title: "Full Name", dataIndex: "patientFullName", key: "patientFullName" },
+    { title: "Admitted", dataIndex: "admitted", key: "admitted" },
+    { title: "Address", dataIndex: "address", key: "address" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Gender", dataIndex: "gender", key: "gender" },
+    { title: "Date of Birth", dataIndex: "DOB", key: "DOB" },
+    // { title: "", dataIndex: "viewMore", key: "veiwMore" },
+    // { title: "", dataIndex: "dischargeAdmit", key: "dischargeAdmit" },
+  ];
+
+
 
   const [loading, setLoading] = useState(false);
+  const [fetchedPatients, setFetchedPatients] = useState([])
+  const [mappedPatients, setMappedPatients] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const dispatch = useDispatch();
 
   const { data } = useSelector((store) => store.auth);
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  };
+  // const handleViewMorePatientInfo = (id) => {
 
-  const initBed = {
-    bedNumber: "",
-    roomNumber: "",
-  };
-  const [bedDetails, setbedDetails] = useState(initBed);
+  //   return id;
+  // }
+  // const dischargePatient = (id) => {
 
-  const HandleBedchange = (e) => {
-    setbedDetails({ ...bedDetails, [e.target.name]: e.target.value });
-  };
+  //   return id;
+  // }
+  // const admitPatient = (id) => {
+
+  //   return id;
+  // }
+
+
+
+  const mapPatientInfo = () => {
+    let arr = []
+    fetchedPatients.forEach((patient)=>{
+      let obj = {};
+      obj.key = patient._id
+      obj.patientID = patient.patientID;
+      obj.patientFullName = `${patient.firstName} ${patient.lastName}`;
+      obj.admitted = patient.admitted === true? "Yes": "No";
+      obj.address = patient.address;
+      obj.email = patient.email;
+      obj.gender = patient.gender;
+      obj.DOB = patient.DOB;
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "blue",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMorePatientInfo(patient._id)}
+    // >
+    //   View more
+    // </button>
+    //   obj.dischargeAdmit = patient.admitted === true?  <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => dischargePatient(patient._id)}
+    // >
+    //   discharge
+    // </button> : <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => admitPatient(patient._id)}
+    // >
+    //   admit
+    // </button>
+
+    arr.push(obj);
+    
+  });
+
+  setMappedPatients([...arr])
+
+  }
+
+
+  useEffect(()=> {
+    dispatch(GetPatients()).then(res => {
+      console.log('get all patients res', res)
+      setFetchedPatients(res.patients);
+    })
+    
+  }, [])
+
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(GetPatients()).then(res => {
+        console.log('get all patients res', res)
+        setFetchedPatients(res.patients);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedPatients', fetchedPatients)
+    mapPatientInfo()
+
+  }, [fetchedPatients])
+
+
+
+  // const beforeUpload = (file) => {
+  //   const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  //   if (!isJpgOrPng) {
+  //     message.error("You can only upload JPG/PNG file!");
+  //   }
+  //   const isLt2M = file.size / 1024 / 1024 < 2;
+  //   if (!isLt2M) {
+  //     message.error("Image must smaller than 2MB!");
+  //   }
+  //   return isJpgOrPng && isLt2M;
+  // };
+
+  // const initBed = {
+  //   bedNumber: "",
+  //   roomNumber: "",
+  // };
+  // const [bedDetails, setbedDetails] = useState(initBed);
+
+  // const HandleBedchange = (e) => {
+  //   setbedDetails({ ...bedDetails, [e.target.name]: e.target.value });
+  // };
 
   const InitData = {
-    patientName: "",
-    patientID: Date.now(),
+    firstName: "",
+    lastName: "",
+    // patientID: Date.now(),
     age: "",
     email: "",
     gender: "",
     mobile: "",
-    disease: "",
+    // disease: "",
     address: "",
-    department: "",
-    date: "",
+    // department: "",
+    dateTime: "",
     bloodGroup: "",
     DOB: "",
-    password: "",
-    nurseID: data?.user._id,
-    docID: "",
+    // password: "",
+    // patientID: data?.user._id,
+    // docID: "",
     details: "",
   };
   const [AddPatient, setAddPatient] = useState(InitData);
@@ -77,60 +201,29 @@ const Add_Patient = () => {
 
   const HandleOnsubmitAppointment = (e) => {
     e.preventDefault();
+     setLoading(true);
+    dispatch(AddPatients(AddPatient)).then(res => {
+      console.log("res from handlepatientadd", res);
+      if(res.error) {
+        setLoading(false);
+        return notify(res.error)
+      }
 
-    if (
-      AddPatient.gender === "" ||
-      AddPatient.department === "" ||
-      AddPatient.docID === "" ||
-      AddPatient.bloodGroup === ""
-    ) {
-      return notify("Please Enter All the Requried Feilds");
-    }
-    try {
-      setLoading(true);
-      dispatch(GetSingleBed(bedDetails)).then((res) => {
-        if (res.message === "Bed not found") {
-          setLoading(false);
-          return notify("Bed not found");
-        }
-        if (res.message === "Occupied") {
-          setLoading(false);
-          return notify("Bed already occupied");
-        }
-        if (res.message === "No Bed") {
-          setLoading(false);
-          return notify("Bed not found");
-        }
-        if (res.message === "Available") {
-          dispatch(AddPatients(AddPatient)).then((item) => {
-            if (item.message === "Patient already exists") {
-              setLoading(false);
-              return notify("Patient already exists");
-            }
-            let data = {
-              patientID: item._id,
-              occupied: "occupied",
-            };
-            notify("Patient Added");
-
-            dispatch(EditSingleBed(data, res.id)).then((ele) =>
-              console.log(ele)
-            );
-            notify("Bed updated");
-            setLoading(false);
-            setAddPatient(InitData);
-            setbedDetails(initBed);
-          });
-        } else {
-          setLoading(false);
-          console.log("error");
-        }
-      });
-      //
-    } catch (error) {
+      notify(res.message)
       setLoading(false);
-      console.log(error);
-    }
+      if(res.message === "Patient Added") {
+        setIsSubmitted(true)
+        let data = {
+          email: res.data.email,
+          patientId: res.data.patientID
+        };
+        dispatch(SendPassword(data)).then((res) => notify("PatientId was sent to patient"));
+        setAddPatient(InitData);
+
+      }
+    })
+    
+    
   };
 
   // const handleChange = (info) => {
@@ -174,7 +267,33 @@ const Add_Patient = () => {
 
             <form onSubmit={HandleOnsubmitAppointment}>
               {/* Name PlaceHolder */}
-              <div>
+              <div className="display_row">
+                <p>Patient's Names </p>
+                <div className="inputdiv">
+                <div className="inputdiv">
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    name="firstName"
+                    value={AddPatient.firstName}
+                    onChange={HandleAppointment}
+                    required
+                  />
+                </div>
+                <div className="inputdiv">
+                  <input
+                    type="text"
+                    placeholder="last Name"
+                    name="lastName"
+                    value={AddPatient.lastName}
+                    onChange={HandleAppointment}
+                    required
+                  />
+                </div>
+                </div>
+              </div>
+
+              {/* <div>
                 <label>Patient Name</label>
                 <div className="inputdiv">
                   <input
@@ -186,14 +305,14 @@ const Add_Patient = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               {/* AGE PLACEHOLDER  */}
               <div>
                 <label>Age</label>
                 <div className="inputdiv">
                   <input
                     type="number"
-                    placeholder="Age"
+                    placeholder="e.g. 23"
                     name="age"
                     value={AddPatient.age}
                     onChange={HandleAppointment}
@@ -207,7 +326,7 @@ const Add_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type="email"
-                    placeholder="abc@abc.com"
+                    placeholder="e.g. abc@abc.com"
                     name="email"
                     value={AddPatient.email}
                     onChange={HandleAppointment}
@@ -216,13 +335,12 @@ const Add_Patient = () => {
                 </div>
               </div>
               <div>
-                <label>Date</label>
+                <label>Date and Time</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
-                    placeholder="abc@abc.com"
-                    name="date"
-                    value={AddPatient.date}
+                    type="datetime-local"
+                    name="dateTime"
+                    value={AddPatient.dateTime}
                     onChange={HandleAppointment}
                     required
                   />
@@ -251,7 +369,6 @@ const Add_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type={"date"}
-                    placeholder="Choose Date"
                     name="DOB"
                     value={AddPatient.DOB}
                     onChange={HandleAppointment}
@@ -265,7 +382,7 @@ const Add_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type="number"
-                    placeholder="Number"
+                    placeholder="e.g. 673767494"
                     name="mobile"
                     value={AddPatient.mobile}
                     onChange={HandleAppointment}
@@ -274,21 +391,9 @@ const Add_Patient = () => {
                 </div>
               </div>
 
-              <div>
-                <label>Details</label>
-                <div className="inputdiv">
-                  <input
-                    type="text"
-                    placeholder="Details"
-                    name="details"
-                    value={AddPatient.details}
-                    onChange={HandleAppointment}
-                    required
-                  />
-                </div>
-              </div>
+              
 
-              <div>
+              {/* <div>
                 <label>Disease</label>
                 <div className="inputdiv">
                   <input
@@ -300,7 +405,7 @@ const Add_Patient = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* ADDRESS SECTION  */}
               <div>
@@ -308,7 +413,7 @@ const Add_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Address line 1"
+                    placeholder="e.g. Bokwai New-layout"
                     name="address"
                     value={AddPatient.address}
                     onChange={HandleAppointment}
@@ -317,7 +422,7 @@ const Add_Patient = () => {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label>Bed Number</label>
                 <div className="inputdiv">
                   <input
@@ -329,8 +434,8 @@ const Add_Patient = () => {
                     required
                   />
                 </div>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label>Room Number</label>
                 <div className="inputdiv">
                   <input
@@ -342,9 +447,9 @@ const Add_Patient = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <label>Department</label>
                 <div className="inputdiv">
                   <select
@@ -364,8 +469,8 @@ const Add_Patient = () => {
                     <option value="Psychiatrist">Psychiatrist</option>
                   </select>
                 </div>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label>Doctor</label>
                 <div className="inputdiv">
                   <select
@@ -383,7 +488,7 @@ const Add_Patient = () => {
                     </option>
                   </select>
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <label>Patient Blood Group</label>
@@ -405,8 +510,22 @@ const Add_Patient = () => {
                   </select>
                 </div>
               </div>
+
+              <div>
+                <label>More Details</label>
+                <div className="inputdiv">
+                  <input
+                    type="text"
+                    placeholder="e.g. I am a student and live with my parents"
+                    name="details"
+                    value={AddPatient.details}
+                    onChange={HandleAppointment}
+                    
+                  />
+                </div>
+              </div>
               {/* PASSWORD*/}
-              <div className="dateofAppointment">
+              {/* <div className="dateofAppointment">
                 <p>Password</p>
                 <div className="inputdiv">
                   <input
@@ -418,7 +537,7 @@ const Add_Patient = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               {/* ADD IMAGES  */}
               {/* <div>
             <label>Image</label>
@@ -452,6 +571,14 @@ const Add_Patient = () => {
               </button>
             </form>
           </div>
+
+          <div className="patientDetails">
+          <h1>Patient Details</h1>
+          <div className="patientBox">
+            <Table columns={columns} dataSource={mappedPatients} />
+          </div>
+        </div>
+
         </div>
       </div>
     </>

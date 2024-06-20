@@ -107,7 +107,7 @@ export const AddPatients = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.ADD_PATIENT_REQUEST });
     const res = await axios.post(
-      `${API}/patients/register`,
+      `${API}/patients/add`,
       data
     );
     return res.data;
@@ -459,6 +459,7 @@ export const GetPatients = () => async (dispatch) => {
       type: types.GET_PATIENT_SUCCESS,
       payload: res.data,
     });
+    return res.data;
   } catch (error) {
     console.log(error);
   }

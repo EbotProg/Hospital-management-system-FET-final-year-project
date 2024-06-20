@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 
-function generateUserId(hospitalAbbreviation) {
+function generateUserId(idPrefix) {
   const randomString = crypto.randomUUID({ type: 'hex' }); // Generates a random hex string
-  return `${hospitalAbbreviation}-${randomString.slice(0, 8)}`; // Format with prefix and desired length
+  return `${idPrefix}-${randomString.slice(0, 8)}`; // Format with prefix and desired length
 }
 
 // const userId = generateUserId();

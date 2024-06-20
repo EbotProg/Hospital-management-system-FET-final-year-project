@@ -297,6 +297,11 @@ main {
   cursor: pointer;
 }
 
+.display_row {
+  display: flex;
+  flex: row;
+}
+
 
 
 /* ******************************************************** */

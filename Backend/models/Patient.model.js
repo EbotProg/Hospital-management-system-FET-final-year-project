@@ -7,12 +7,19 @@ const patientSchema = mongoose.Schema({
   },
 
   patientID: {
-    type: Number,
+    type: String,
     required: true,
   },
 
-  patientName: {
+
+  firstName: {
     type: String,
+    required: true
+  },
+
+  lastName: {
+    type: String,
+    required: true
   },
 
   mobile: {
@@ -24,18 +31,11 @@ const patientSchema = mongoose.Schema({
     type: String,
   },
 
-  password: {
-    type: String,
-    default: "password",
-  },
 
   age: {
     type: Number,
   },
 
-  department: {
-    type: String,
-  },
 
   gender: {
     type: String,
@@ -47,7 +47,13 @@ const patientSchema = mongoose.Schema({
 
   DOB: {
     type: String,
+    required: true
   },
+ 
+  lastVisitDate: {
+    type: String,
+  },
+
 
   address: {
     type: String,
@@ -57,7 +63,11 @@ const patientSchema = mongoose.Schema({
     type: String,
   },
 
-  disease: {
+  previousDisease: {
+    type: String,
+  },
+  
+  currentDisease: {
     type: String,
   },
 
@@ -67,11 +77,11 @@ const patientSchema = mongoose.Schema({
 
   admitted: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 
-  date: {
-    type: Date,
+  dateTime: {
+    type: String,
   },
 
   docID: {
@@ -92,6 +102,13 @@ const patientSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "room",
   },
+
+  wardID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ward",
+  },
+
+
 });
 
 const PatientModel = mongoose.model("patient", patientSchema);

@@ -30,6 +30,17 @@ async function countAllPatientsInRoom(roomID) {
     return count;
 }
 
+async function findPatientsByDocID(docID) {
+    const patients = await PatientModel.find({ docID })
+    return 
+}
+
+
+async function findPatientsByNurseID(nurseID) {
+    const patients = await PatientModel.find({ nurseID })
+    return 
+}
+
 module.exports = {
     assignPatientToWardRoomBed,
     findPatientByName,
