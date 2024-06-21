@@ -21,16 +21,18 @@ async function countAllRoomsInWard (wardID) {
 
 async function updateAvailabilityOfRoom(room) {
     try {
-
+       console.log("update availability of room: room", room)
         const patientCount = await countAllPatientsInRoom(room._id);
         const bedCount = await countAllBedsInRoom(room._id);
-
+        console.log('patientcount, bedcount', patientCount, bedCount)
         if(patientCount === bedCount) {
             room.isAvailable = false;
         }else if(patientCount < bedCount) {
             room.isAvailable = true;
         }
-        return await room.save;
+        const res =  await room.save();
+        console.log("room after save", res);
+        return res;
     }catch(err) {
         console.log(err);
     }

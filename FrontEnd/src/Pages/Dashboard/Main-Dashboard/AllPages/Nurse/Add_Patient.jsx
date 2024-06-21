@@ -230,9 +230,12 @@ const navigate = useNavigate()
           email: res.patient.email,
           patientId: res.patient.patientID
         };
-        dispatch(SendPassword(data)).then((res) => notify("Email sent to patient"));
-        setAddPatient(InitData);
-        setLoading(false);
+        dispatch(SendPassword(data)).then((res) => {
+          notify("Email sent to patient")
+          setAddPatient(InitData);
+          setLoading(false);
+        });
+        
 
       }
     })
