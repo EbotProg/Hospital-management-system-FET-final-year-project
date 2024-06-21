@@ -8,6 +8,7 @@ async function assignPatientToWardRoomBed(patient, bed, room, ward) {
         patient.bedID = bed._id;
         patient.wardID = ward._id;
         patient.roomID = room._id;
+        patient.admitted = true;
         const updatedPatient = await patient.save();
         const updatedBed = await updateBedAvailability(false, bed);
 
@@ -20,6 +21,8 @@ async function assignPatientToWardRoomBed(patient, bed, room, ward) {
     }
 }
 
+
+
 async function findPatientByName(name) {
     const patient = await PatientModel.findOne({ patientName: name})
     return patient;
@@ -27,6 +30,11 @@ async function findPatientByName(name) {
 
 async function findPatientByID(_id) {
     const patient = await PatientModel.findById(_id)
+    return patient;
+}
+
+async function findPatientByPatientID(patientID) {
+    const patient = await PatientModel.findOne({ patientID });
     return patient;
 }
 
@@ -50,5 +58,6 @@ module.exports = {
     assignPatientToWardRoomBed,
     findPatientByName,
     countAllPatientsInRoom,
-    findPatientByID
+    findPatientByID,
+    findPatientByPatientID
 }

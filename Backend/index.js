@@ -16,6 +16,7 @@ const prescriptionRouter = require("./routes/Prescriptions.Route");
 const reportRouter = require("./routes/Reports.Route");
 const wardRouter = require("./routes/Ward.Route")
 const roomRouter = require("./routes/Room.Route")
+const admissionReportRouter = require("./routes/AdmissionReport.Route")
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use("/prescriptions", prescriptionRouter);
 app.use("/reports", reportRouter);
 app.use("/wards", wardRouter)
 app.use("/rooms", roomRouter);
+app.use("/admissionReports", admissionReportRouter);
 
 app.listen(process.env.port, async () => {
   try {

@@ -586,9 +586,9 @@ const navigate = useNavigate()
             </form>
           </div>
 
-          <div className="patientDetails">
+          <div className="wardDetails">
           <h1>Patient Details</h1>
-          <div className="patientBox">
+          <div className="wardBox">
             <Table columns={columns} dataSource={mappedPatients} />
           </div>
         </div>

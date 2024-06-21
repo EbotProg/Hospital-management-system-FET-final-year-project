@@ -131,7 +131,7 @@ export const admitPatientInfos = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.ADMIT_PATIENT_REQUEST });
     const res = await axios.post(
-      `${API}/patients/admit`,
+      `${API}/admissionReports/add`,
       data
     );
     return res.data;
@@ -560,6 +560,23 @@ export const getAllBeds = () => async (dispatch) => {
     console.log(res.data);
     dispatch({
       type: types.GET_ALL_BEDS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllAdmissionReports = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_ADMISSION_REPORTS_REQUEST });
+    const res = await axios.get(
+      `${API}/admissionReports`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_ADMISSION_REPORTS_SUCCESS,
       payload: res.data,
     });
     return res.data;

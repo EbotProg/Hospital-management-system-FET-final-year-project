@@ -4,10 +4,11 @@ import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { Table} from "antd"
 import {
   admitPatientInfos,
   getPatient,
+  getAllAdmissionReports,
   CreateBeds,
   EditSingleBed,
   GetSingleBed,
@@ -19,42 +20,121 @@ const notify = (text) => toast(text);
 
 const Admit_Patient = () => {
  
+  const columns = [
+    { title: "PatientID", dataIndex: "patientID", key: "patientID" },
+    { title: "NurseID(AdmittedBy)", dataIndex: "nurseID", key: "nurseID" },
+    { title: "Ward", dataIndex: "wardName", key: "wardName" },
+    { title: "Room#", dataIndex: "roomNumber", key: "roomNumber" },
+    { title: "Bed#", dataIndex: "bedNumber", key: "bedNumber" },
+    { title: "admittedOn", dataIndex: "timeStamp", key: "timeStamp" },
+    { title: "Disease", dataIndex: "disease", key: "disease" },
+    // { title: "", dataIndex: "viewMore", key: "veiwMore" },
+  ];
 
   const [loading, setLoading] = useState(false);
+  const [fetchedadmissionReports, setFetchedadmissionReports] = useState([])
+  const [mappedadmissionReports, setMappedadmissionReports] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const dispatch = useDispatch();
 
   const { data } = useSelector((store) => store.auth);
 
-  const [patientForAdmissionInfo, setPatientForAdmissionInfo] = useState()
 
   const { patientId } = useParams();
   console.log("patientId", patientId);
 
-  useEffect(() => {
+
+  const mapAdmissionRepInfo = () => {
+    let arr = []
+    fetchedadmissionReports.forEach((info)=>{
+      let obj = {};
+      obj.key = info._id
+      obj.patientID = info.patientID.patientID;
+      obj.nurseID = info.nurseID.nurseID;
+      obj.wardName = info.wardID.wardName;
+      obj.roomNumber = info.roomID.roomNumber;
+      obj.bedNumber = info.bedID.bedNumber;
+      obj.timeStamp = info.timeStamp;
+      obj.disease = info.disease;
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "blue",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMorePatientInfo(info._id)}
+    // >
+    //   View more
+    // </button>
+  
+
+    arr.push(obj);
+    
+  });
+
+  setMappedadmissionReports([...arr])
+
+  }
+
+
+
+  useEffect(()=> {
+
     if(patientId) {
       dispatch(getPatient(patientId)).then(res => {
         console.log("res from get patient", res);
         if(res.message === "patient found") {
-          setPatientForAdmissionInfo(res.patient)
+          // setPatientForAdmissionInfo(res.patient)
+          setAdmitPatientInfo({ ...admitPatientInfo, patientID:  res.patient.patientID, nurseID: data?.user.nurseID})
         }
       })
     }
+    setAdmitPatientInfo({ ...admitPatientInfo, nurseID: data?.user.nurseID})
+
+
+    dispatch(getAllAdmissionReports()).then(res => {
+      console.log('get all admissionrep res', res)
+      setFetchedadmissionReports(res);
+    })
+    
   }, [])
 
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(getAllAdmissionReports()).then(res => {
+        console.log('get all admissionrep res', res)
+        setFetchedadmissionReports(res);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedadmissionReports', fetchedadmissionReports)
+    mapAdmissionRepInfo()
+
+  }, [fetchedadmissionReports])
+
+
+  
 
   const InitData = {
-    patientName: "",
-    docName: "",
-    nurseName: "",
+    patientID: "",
+    nurseID: "",
     wardName: "",
     roomNumber: "",
     bedNumber: "",
     disease: "",
     details: "",
-    date: "",
-    time: ""
+    timeStamp: "",
+    // time: ""
   };
+
+
   const [admitPatientInfo, setAdmitPatientInfo] = useState(InitData);
 
   const handleAdmitPatientInfoChange = (e) => {
@@ -65,43 +145,34 @@ const Admit_Patient = () => {
     e.preventDefault();
 
     if (
-      admitPatientInfo.patientName === "" ||
-      admitPatientInfo.nurseName === "" ||
+      admitPatientInfo.patientID === "" ||
+      admitPatientInfo.nurseID === "" ||
       admitPatientInfo.wardName === "" ||
       admitPatientInfo.bedNumber === "" ||
       admitPatientInfo.disease === "" ||
-      admitPatientInfo.date === "" ||
-      admitPatientInfo.time === "" ||
+      admitPatientInfo.timeStamp === "" ||
       admitPatientInfo.roomNumber === ""
     ) {
       return notify("Please Enter All the Requried Feilds");
     }
-    try {
+  
       setLoading(true);
       
-      dispatch(admitPatientInfos(admitPatientInfo)).then((item) => {
-            if (item.message === "Patient already exists") {
-              setLoading(false);
-              return notify("Patient already exists");
-            }
-            let data = {
-              patientID: item._id,
-              occupied: "occupied",
-            };
-            notify("Patient Added");
+      dispatch(admitPatientInfos(admitPatientInfo)).then((res) => {
+          console.log("res from admission info", res);
+          if(res.error) {
+            setLoading(false)
+            return notify(res.error)
+          }
 
-            
-            setLoading(false);
-            setAdmitPatientInfo(InitData);
-           
+          if(res.message === "patient admitted") {
+            setIsSubmitted(true);
+            notify(res.message);
+          }
+          setLoading(false);
+
           });
-        
     
-      //
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
   };
 
   // const handleChange = (info) => {
@@ -146,14 +217,14 @@ const Admit_Patient = () => {
             <form onSubmit={handleSubmitPatientInfo}>
               {/* Name PlaceHolder */}
               <div>
-                <label>Patient Name</label>
+                <label>Patient ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Full Name"
-                    name="patientName"
-                    value={!patientId && !patientForAdmissionInfo ? admitPatientInfo.patientName : `${patientForAdmissionInfo.firstName} ${patientForAdmissionInfo.lastName}`}
-                    // value={ admitPatientInfo.patientName}
+                    placeholder="e.g. Pt-k1k2k2gh"
+                    name="patientID"
+                    // value={!patientId || !patientForAdmissionInfo ? admitPatientInfo.patientName : `${patientForAdmissionInfo.firstName} ${patientForAdmissionInfo.lastName}`}
+                    value={ admitPatientInfo.patientID}
 
                     onChange={handleAdmitPatientInfoChange}
                     required
@@ -162,31 +233,50 @@ const Admit_Patient = () => {
               </div>
 
               <div>
-                <label>Doctor Name</label>
-                <div className="inputdiv">
-                  <input
-                    type="text"
-                    placeholder="Doctor Full Name"
-                    name="doctorName"
-                    value={admitPatientInfo.doctorName}
-                    onChange={handleAdmitPatientInfoChange}
-                  />
+                  <label>Your ID</label>
+                  <div className="inputdiv">
+                    <input
+                      type="text"
+                      placeholder="e.g. Nrs-kdj12kjd"
+                      name="nurseID"
+                      value={admitPatientInfo.nurseID}
+                      onChange={handleAdmitPatientInfoChange}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
+
+              {/* {
+                data?.user.userType === "doctor" ?
+                (<div>
+                  <label>Doctor Name</label>
+                  <div className="inputdiv">
+                    <input
+                      type="text"
+                      placeholder="Doctor Full Name"
+                      name="doctorName"
+                      value={admitPatientInfo.doctorName}
+                      onChange={handleAdmitPatientInfoChange}
+                    />
+                  </div>
+                </div>) :
+                (<div>
+                  <label>Nurse Name</label>
+                  <div className="inputdiv">
+                    <input
+                      type="text"
+                      placeholder="Nurse Full Name"
+                      name="nurseName"
+                      value={admitPatientInfo.nurseName}
+                      onChange={handleAdmitPatientInfoChange}
+                      required
+                    />
+                  </div>
+                </div>)
+              } */}
+              
               {/* AGE PLACEHOLDER  */}
-              <div>
-                <label>Nurse Name</label>
-                <div className="inputdiv">
-                  <input
-                    type="text"
-                    placeholder="Nurse Full Name"
-                    name="nurseName"
-                    value={admitPatientInfo.nurseName}
-                    onChange={handleAdmitPatientInfoChange}
-                    required
-                  />
-                </div>
-              </div>
+              
               {/* EMAIL PLACEHOLDER  */}
               <div>
                 <label>Ward Name</label>
@@ -245,20 +335,19 @@ const Admit_Patient = () => {
               </div>
 
               <div>
-                <label>Date</label>
+                <label>DateTime</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
-                    placeholder="abc@abc.com"
-                    name="date"
-                    value={admitPatientInfo.date}
+                    type="datetime-local"
+                    name="timeStamp"
+                    value={admitPatientInfo.timeStamp}
                     onChange={handleAdmitPatientInfoChange}
                     required
                   />
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label>Time</label>
                 <div className="inputdiv">
                   <input
@@ -269,7 +358,7 @@ const Admit_Patient = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
              
               <div>
                 <label>Details</label>
@@ -319,6 +408,14 @@ const Admit_Patient = () => {
               </button>
             </form>
           </div>
+
+          <div className="wardDetails">
+          <h1>Admission History</h1>
+          <div className="wardBox">
+            <Table columns={columns} dataSource={mappedadmissionReports} />
+          </div>
+        </div>
+
         </div>
       </div>
     </>

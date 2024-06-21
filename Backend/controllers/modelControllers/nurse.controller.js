@@ -11,8 +11,13 @@ async function countAllNursesInWard (wardID) {
     return count;
 }
 
+async function findNurseByNurseID(nurseID) {
+    const nurse = await NurseModel.findOne({nurseID});
+    return nurse;
+}
+
 module.exports = {
     countAvailableNursesInWard,
-    countAllNursesInWard
-
+    countAllNursesInWard,
+    findNurseByNurseID
 }
