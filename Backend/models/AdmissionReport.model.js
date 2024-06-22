@@ -42,7 +42,7 @@ const admissionReportSchema = mongoose.Schema({
     default: true
   },
 
-  dischargeID: {
+  dischargeReportID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "dischargeReport"
   },

@@ -52,32 +52,35 @@ const Add_Admin = () => {
 
   const mapAdminInfo = () => {
     let arr = []
-    fetchedAdmins.forEach((admin)=>{
-      let obj = {};
-      obj.key = admin._id
-      obj.adminID = admin.adminID;
-      obj.adminName = admin.adminName;
-      obj.isAvailable = admin.isAvailable === true? "Yes": "No";
-      obj.address = admin.address;
-      obj.email = admin.email;
-      obj.gender = admin.gender;
-      obj.DOB = admin.DOB;
-    //   obj.viewMore = <button
-    //   style={{
-    //     border: "none",
-    //     color: "green",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => handleViewMoreAdminInfo(admin._id)}
-    // >
-    //   View more
-    // </button>
-    arr.push(obj);
-    
-  });
-
+    if(fetchedAdmins?.length > 0) {
+      fetchedAdmins.forEach((admin)=>{
+        let obj = {};
+        obj.key = admin?._id
+        obj.adminID = admin?.adminID;
+        obj.adminName = admin?.adminName;
+        obj.isAvailable = admin?.isAvailable === true? "Yes": "No";
+        obj.address = admin?.address;
+        obj.email = admin?.email;
+        obj.gender = admin?.gender;
+        obj.DOB = admin?.DOB;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "green",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMoreAdminInfo(admin._id)}
+      // >
+      //   View more
+      // </button>
+      arr.push(obj);
+      
+    });
+  
+    }
+   
   setMappedAdmins([...arr])
 
   }

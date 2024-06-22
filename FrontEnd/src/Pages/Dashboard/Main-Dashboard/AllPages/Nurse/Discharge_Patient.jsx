@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { message, Upload } from "antd";
 import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Table } from "antd";
 
 import {
   dischargePatientInfos,
+  getAdmissionReport,
+  getAllDischargeReports,
   CreateBeds,
   EditSingleBed,
   GetSingleBed,
@@ -17,12 +20,26 @@ import { Navigate, useParams } from "react-router-dom";
 const notify = (text) => toast(text);
 
 const Discharge_Patient = () => {
+
+  const columns = [
+    { title: "PatientID", dataIndex: "patientID", key: "patientID" },
+    { title: "NurseID(DischargedBy)", dataIndex: "nurseID", key: "nurseID" },
+    { title: "Ward", dataIndex: "wardName", key: "wardName" },
+    { title: "Room#", dataIndex: "roomNumber", key: "roomNumber" },
+    { title: "Bed#", dataIndex: "bedNumber", key: "bedNumber" },
+    { title: "DischargedOn", dataIndex: "timeStamp", key: "timeStamp" },
+    { title: "Disease", dataIndex: "disease", key: "disease" },
+    // { title: "", dataIndex: "viewMore", key: "veiwMore" },
+  ];
  
 
-  const { patientId } = useParams();
-  console.log("patientId", patientId);
+  const { admissionReportId } = useParams();
+  console.log("admissionReportId", admissionReportId);
 
   const [loading, setLoading] = useState(false);
+  const [fetchedDischargeReports, setFetchedDischargeReports] = useState([])
+  const [mappedDischargeReports, setMappedDischargeReports] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const dispatch = useDispatch();
 
@@ -31,18 +48,103 @@ const Discharge_Patient = () => {
 
 
   const InitData = {
-    patientName: "",
-    docName: "",
-    nurseName: "",
+    patientID: "",
+    nurseID: "",
     wardName: "",
     roomNumber: "",
     bedNumber: "",
     disease: "",
     details: "",
-    date: "",
-    time: ""
+    dateTime: ""
   };
   const [dischargePatientInfo, setDischargePatientInfo] = useState(InitData);
+
+  const mapDischargeRepInfo = () => {
+    let arr = []
+    if(fetchedDischargeReports?.length > 0) {
+      fetchedDischargeReports.forEach((info)=>{
+        let obj = {};
+        obj.key = info?._id
+        obj.patientID = info?.patientID?.patientID;
+        obj.nurseID = info?.nurseID?.nurseID;
+        obj.wardName = info?.wardID?.wardName;
+        obj.roomNumber = info?.roomID?.roomNumber;
+        obj.bedNumber = info?.bedID?.bedNumber;
+        obj.timeStamp = info?.timeStamp;
+        obj.disease = info?.disease;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "blue",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMorePatientInfo(info._id)}
+      // >
+      //   View more
+      // </button>
+    
+  
+      arr.push(obj);
+      
+    });
+    }
+    
+
+  setMappedDischargeReports([...arr])
+
+  }
+
+  useEffect(()=> {
+
+    if(admissionReportId) {
+      dispatch(getAdmissionReport(admissionReportId)).then(res => {
+        console.log("res from get admissionreport", res);
+        if(res.message === "admissionReport found") {
+          // setPatientForAdmissionInfo(res.patient)
+          setDischargePatientInfo({ 
+            ...dischargePatientInfo, 
+            patientID:  res.admissionReport.patientID.patientID, 
+            nurseID: res.admissionReport.nurseID.nurseID,
+            wardName: res.admissionReport.wardID.wardName,
+            roomNumber: res.admissionReport.roomID.roomNumber,
+            bedNumber: res.admissionReport.bedID.bedNumber,
+            disease: res.admissionReport.disease,
+            details: res.admissionReport.details,
+          })
+        }
+      })
+    }
+    setDischargePatientInfo({ ...dischargePatientInfo, nurseID: data?.user.nurseID})
+
+
+    dispatch(getAllDischargeReports()).then(res => {
+      console.log('get all discharge reports res', res)
+      setFetchedDischargeReports(res);
+    })
+    
+  }, [])
+
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(getAllDischargeReports()).then(res => {
+        console.log('get all dischargereports res', res)
+        setFetchedDischargeReports(res);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedDischargeReports', fetchedDischargeReports)
+    mapDischargeRepInfo()
+
+  }, [fetchedDischargeReports])
+
+
+
 
   const handledischargePatientInfoChange = (e) => {
     setDischargePatientInfo({ ...dischargePatientInfo, [e.target.name]: e.target.value });
@@ -50,45 +152,25 @@ const Discharge_Patient = () => {
 
   const handleSubmitDischargePatientInfo = (e) => {
     e.preventDefault();
-
-    if (
-      dischargePatientInfo.patientName === "" ||
-      dischargePatientInfo.nurseName === "" ||
-      dischargePatientInfo.wardName === "" ||
-      dischargePatientInfo.bedNumber === "" ||
-      dischargePatientInfo.disease === "" ||
-      dischargePatientInfo.date === "" ||
-      dischargePatientInfo.time === "" ||
-      dischargePatientInfo.roomNumber === ""
-    ) {
-      return notify("Please Enter All the Requried Feilds");
-    }
-    try {
+    
       setLoading(true);
       
-      dispatch(dischargePatientInfos(dischargePatientInfo)).then((item) => {
-            if (item.message === "Patient already exists") {
-              setLoading(false);
-              return notify("Patient already exists");
-            }
-            let data = {
-              patientID: item._id,
-              occupied: "occupied",
-            };
-            notify("Patient Added");
-
+      dispatch(dischargePatientInfos(dischargePatientInfo)).then((res) => {
             
-            setLoading(false);
-            setDischargePatientInfo(InitData);
-           
+        console.log("res from discharge info", res);
+        if(res.error) {
+          setLoading(false)
+          return notify(res.error)
+        }
+
+        if(res.message === "patient discharged") {
+          setIsSubmitted(true);
+          notify(res.message);
+        }
+        setLoading(false);
+        setDischargePatientInfo(InitData)
           });
-        
-    
-      //
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+   
   };
 
   // const handleChange = (info) => {
@@ -132,46 +214,40 @@ const Discharge_Patient = () => {
 
             <form onSubmit={handleSubmitDischargePatientInfo}>
               {/* Name PlaceHolder */}
+
               <div>
-                <label>Patient Name</label>
+                <label>Patient ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Full Name"
-                    name="patientName"
-                    value={dischargePatientInfo.patientName}
+                    placeholder="e.g. Pt-k1k2k2gh"
+                    name="patientID"
+                    // value={!admissionReportId || !patientForAdmissionInfo ? dischargePatientInfo.patientName : `${patientForAdmissionInfo.firstName} ${patientForAdmissionInfo.lastName}`}
+                    value={ dischargePatientInfo.patientID}
+
                     onChange={handledischargePatientInfoChange}
                     required
                   />
                 </div>
               </div>
 
-              <div>
-                <label>Doctor Name</label>
-                <div className="inputdiv">
-                  <input
-                    type="text"
-                    placeholder="Doctor Full Name"
-                    name="doctorName"
-                    value={dischargePatientInfo.doctorName}
-                    onChange={handledischargePatientInfoChange}
-                  />
-                </div>
-              </div>
+            
               {/* AGE PLACEHOLDER  */}
+
               <div>
-                <label>Nurse Name</label>
-                <div className="inputdiv">
-                  <input
-                    type="text"
-                    placeholder="Nurse Full Name"
-                    name="nurseName"
-                    value={dischargePatientInfo.nurseName}
-                    onChange={handledischargePatientInfoChange}
-                    required
-                  />
+                  <label>Your ID</label>
+                  <div className="inputdiv">
+                    <input
+                      type="text"
+                      placeholder="e.g. Nrs-kdj12kjd"
+                      name="nurseID"
+                      value={dischargePatientInfo.nurseID}
+                      onChange={handledischargePatientInfoChange}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
+
               {/* EMAIL PLACEHOLDER  */}
               <div>
                 <label>Ward Name</label>
@@ -229,31 +305,19 @@ const Discharge_Patient = () => {
               </div>
 
               <div>
-                <label>Date</label>
+                <label>DateTime</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
-                    placeholder="abc@abc.com"
-                    name="date"
-                    value={dischargePatientInfo.date}
+                    type="datetime-local"
+                    name="timeStamp"
+                    value={dischargePatientInfo.timeStamp}
                     onChange={handledischargePatientInfoChange}
                     required
                   />
                 </div>
               </div>
 
-              <div>
-                <label>Time</label>
-                <div className="inputdiv">
-                  <input
-                    type="time"
-                    name="time"
-                    value={dischargePatientInfo.time}
-                    onChange={handledischargePatientInfoChange}
-                    required
-                  />
-                </div>
-              </div>
+          
              
               <div>
                 <label>Details</label>
@@ -303,6 +367,15 @@ const Discharge_Patient = () => {
               </button>
             </form>
           </div>
+
+          <div className="wardDetails">
+          <h1>Discharge History</h1>
+          <div className="wardBox">
+            <Table columns={columns} dataSource={mappedDischargeReports} />
+          </div>
+        </div>
+
+
         </div>
       </div>
     </>

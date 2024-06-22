@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { dischargePatient, GetBeds } from "../../../../../Redux/Datas/action";
+import { 
+  // dischargePatient,
+   GetBeds } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 
 const Beds_Rooms = () => {
@@ -17,7 +19,7 @@ const Beds_Rooms = () => {
       occupied: "available",
       _id,
     };
-    dispatch(dischargePatient(data));
+    // dispatch(dischargePatient(data));
   };
 
   useEffect(() => {

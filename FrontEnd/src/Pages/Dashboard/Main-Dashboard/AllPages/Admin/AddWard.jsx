@@ -138,25 +138,28 @@ const AddWards = () => {
 
   const mapWards = () => {
     let arr = []
-    fetchedWards.forEach((ward)=>{
-      let obj = {};
-      obj.key = ward._id
-      obj.wardName = ward.wardName;
-      obj.deleteWard = <button
-      style={{
-        border: "none",
-        color: "red",
-        outline: "none",
-        background: "transparent",
-        cursor: "pointer",
-      }}
-      onClick={() => handleWardDelete(ward._id)}
-    >
-      Remove
-    </button>
-    arr.push(obj);
+    if(fetchedWards?.length > 0) {
+      fetchedWards.forEach((ward)=>{
+        let obj = {};
+        obj.key = ward?._id
+        obj.wardName = ward?.wardName;
+        obj.deleteWard = <button
+        style={{
+          border: "none",
+          color: "red",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => handleWardDelete(ward._id)}
+      >
+        Remove
+      </button>
+      arr.push(obj);
+      
+    });
+    }
     
-  });
 
   setMappedWards([...arr])
 

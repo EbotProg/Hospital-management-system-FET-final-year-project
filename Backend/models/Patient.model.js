@@ -108,6 +108,15 @@ const patientSchema = mongoose.Schema({
     ref: "ward",
   },
 
+  currentAdmissionReportID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "admissionReport",
+  },
+
+  currentDischargeReportID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "admissionReport",
+  }
 
 });
 

@@ -83,55 +83,58 @@ const navigate = useNavigate()
 
   const mapPatientInfo = () => {
     let arr = []
-    fetchedPatients.forEach((patient)=>{
-      let obj = {};
-      obj.key = patient._id
-      obj.patientID = patient.patientID;
-      obj.patientFullName = `${patient.firstName} ${patient.lastName}`;
-      obj.admitted = patient.admitted === true? "Yes": "No";
-      obj.address = patient.address;
-      obj.email = patient.email;
-      obj.gender = patient.gender;
-      obj.DOB = patient.DOB;
-    //   obj.viewMore = <button
-    //   style={{
-    //     border: "none",
-    //     color: "blue",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => handleViewMorePatientInfo(patient._id)}
-    // >
-    //   View more
-    // </button>
-      obj.dischargeAdmit = patient.admitted === true?  <button
-      style={{
-        border: "none",
-        color: "green",
-        outline: "none",
-        background: "transparent",
-        cursor: "pointer",
-      }}
-      onClick={() => moveToDischargePage(patient._id)}
-    >
-      discharge
-    </button> : <button
-      style={{
-        border: "none",
-        color: "green",
-        outline: "none",
-        background: "transparent",
-        cursor: "pointer",
-      }}
-      onClick={() => moveToAdmitPage(patient._id)}
-    >
-      admit
-    </button>;
-
-    arr.push(obj);
+    if(fetchedPatients?.length > 0) {
+      fetchedPatients.forEach((patient)=>{
+        let obj = {};
+        obj.key = patient?._id
+        obj.patientID = patient?.patientID;
+        obj.patientFullName = `${patient?.firstName} ${patient?.lastName}`;
+        obj.admitted = patient?.admitted === true? "Yes": "No";
+        obj.address = patient?.address;
+        obj.email = patient?.email;
+        obj.gender = patient?.gender;
+        obj.DOB = patient?.DOB;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "blue",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMorePatientInfo(patient._id)}
+      // >
+      //   View more
+      // </button>
+        obj.dischargeAdmit = patient?.admitted === true?  <button
+        style={{
+          border: "none",
+          color: "green",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => moveToDischargePage(patient.currentAdmissionReportID)}
+      >
+        discharge
+      </button> : <button
+        style={{
+          border: "none",
+          color: "green",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => moveToAdmitPage(patient._id)}
+      >
+        admit
+      </button>;
+  
+      arr.push(obj);
+      
+    });
+    }
     
-  });
 
   setMappedPatients([...arr])
 

@@ -58,32 +58,35 @@ const AddDoctor = () => {
 
   const mapDoctorInfo = () => {
     let arr = []
-    fetchedDoctors.forEach((doctor)=>{
-      let obj = {};
-      obj.key = doctor._id
-      obj.docID = doctor.docID;
-      obj.docName = doctor.docName;
-      obj.wardName = doctor.wardID.wardName;
-      obj.isAvailable = doctor.isAvailable === true? "Yes": "No";
-      obj.address = doctor.address;
-      obj.email = doctor.email;
-      obj.gender = doctor.gender;
-      obj.DOB = doctor.DOB;
-    //   obj.viewMore = <button
-    //   style={{
-    //     border: "none",
-    //     color: "green",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => handleViewMoreDoctorInfo(doctor._id)}
-    // >
-    //   View more
-    // </button>
-    arr.push(obj);
-    
-  });
+    if(fetchedDoctors?.length > 0) {
+      fetchedDoctors.forEach((doctor)=>{
+        let obj = {};
+        obj.key = doctor?._id
+        obj.docID = doctor?.docID;
+        obj.docName = doctor?.docName;
+        obj.wardName = doctor?.wardID?.wardName;
+        obj.isAvailable = doctor?.isAvailable === true? "Yes": "No";
+        obj.address = doctor?.address;
+        obj.email = doctor?.email;
+        obj.gender = doctor?.gender;
+        obj.DOB = doctor?.DOB;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "green",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMoreDoctorInfo(doctor._id)}
+      // >
+      //   View more
+      // </button>
+      arr.push(obj);
+      
+    });
+    }
+
 
   setMappedDoctors([...arr])
 

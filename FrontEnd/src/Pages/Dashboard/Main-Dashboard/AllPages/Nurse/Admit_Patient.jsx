@@ -47,33 +47,36 @@ const Admit_Patient = () => {
 
   const mapAdmissionRepInfo = () => {
     let arr = []
-    fetchedadmissionReports.forEach((info)=>{
-      let obj = {};
-      obj.key = info._id
-      obj.patientID = info.patientID.patientID;
-      obj.nurseID = info.nurseID.nurseID;
-      obj.wardName = info.wardID.wardName;
-      obj.roomNumber = info.roomID.roomNumber;
-      obj.bedNumber = info.bedID.bedNumber;
-      obj.timeStamp = info.timeStamp;
-      obj.disease = info.disease;
-    //   obj.viewMore = <button
-    //   style={{
-    //     border: "none",
-    //     color: "blue",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => handleViewMorePatientInfo(info._id)}
-    // >
-    //   View more
-    // </button>
-  
-
-    arr.push(obj);
+    if(fetchedadmissionReports?.length > 0) {
+      fetchedadmissionReports.forEach((info)=>{
+        let obj = {};
+        obj.key = info?._id
+        obj.patientID = info?.patientID?.patientID;
+        obj.nurseID = info?.nurseID?.nurseID;
+        obj.wardName = info?.wardID?.wardName;
+        obj.roomNumber = info?.roomID?.roomNumber;
+        obj.bedNumber = info?.bedID?.bedNumber;
+        obj.timeStamp = info?.timeStamp;
+        obj.disease = info?.disease;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "blue",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMorePatientInfo(info._id)}
+      // >
+      //   View more
+      // </button>
     
-  });
+  
+      arr.push(obj);
+      
+    });
+    }
+    
 
   setMappedadmissionReports([...arr])
 
@@ -170,7 +173,7 @@ const Admit_Patient = () => {
             notify(res.message);
           }
           setLoading(false);
-
+          setAdmitPatientInfo(InitData)
           });
     
   };

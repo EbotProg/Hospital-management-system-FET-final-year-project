@@ -62,32 +62,35 @@ const Add_Nurse = () => {
 
   const mapNurseInfo = () => {
     let arr = []
-    fetchedNurses.forEach((nurse)=>{
-      let obj = {};
-      obj.key = nurse._id
-      obj.nurseID = nurse.nurseID;
-      obj.nurseName = nurse.nurseName;
-      obj.wardName = nurse.wardID.wardName;
-      obj.isAvailable = nurse.isAvailable === true? "Yes": "No";
-      obj.address = nurse.address;
-      obj.email = nurse.email;
-      obj.gender = nurse.gender;
-      obj.DOB = nurse.DOB;
-    //   obj.viewMore = <button
-    //   style={{
-    //     border: "none",
-    //     color: "green",
-    //     outline: "none",
-    //     background: "transparent",
-    //     cursor: "pointer",
-    //   }}
-    //   onClick={() => handleViewMoreNurseInfo(nurse._id)}
-    // >
-    //   View more
-    // </button>
-    arr.push(obj);
-    
-  });
+    if(fetchedNurses?.length > 0) {
+      fetchedNurses.forEach((nurse)=>{
+        let obj = {};
+        obj.key = nurse?._id
+        obj.nurseID = nurse?.nurseID;
+        obj.nurseName = nurse?.nurseName;
+        obj.wardName = nurse?.wardID?.wardName;
+        obj.isAvailable = nurse?.isAvailable === true? "Yes": "No";
+        obj.address = nurse?.address;
+        obj.email = nurse?.email;
+        obj.gender = nurse?.gender;
+        obj.DOB = nurse?.DOB;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "green",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMoreNurseInfo(nurse._id)}
+      // >
+      //   View more
+      // </button>
+      arr.push(obj);
+      
+    });
+    }
+   
 
   setMappedNurses([...arr])
 

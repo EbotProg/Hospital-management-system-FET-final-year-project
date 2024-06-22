@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 
 const dischargeReportSchema = mongoose.Schema({
-  docID: {
-    type: Number
-  },
   patientID: {
-    type: Number
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'patient'
   },
   nurseID: {
-    type: Number
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'nurse'
   },
   wardID: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,6 +20,12 @@ const dischargeReportSchema = mongoose.Schema({
     ref: "room",
     required: true,
   },
+
+  disease: String,
+
+  details: String,
+
+
 
   bedID: {
     type: mongoose.Schema.Types.ObjectId,
@@ -35,4 +40,4 @@ const dischargeReportSchema = mongoose.Schema({
 
 const DischargeReportModel = mongoose.model("dischargeReport", dischargeReportSchema);
 
-module.exports = { AdmissionReportModel };
+module.exports = { DischargeReportModel };

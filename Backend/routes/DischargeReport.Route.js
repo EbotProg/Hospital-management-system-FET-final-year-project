@@ -1,7 +1,14 @@
 const express = require("express");
-const { AdmissionReportModel } = require("../models/AdmissionReport.model");
-const { updatePayload, findAdmissionReportById, findAndUpdatePreviousAdmissionRepByPatientId } = require("../controllers/modelControllers/admissionReport.controller")
-const { findPatientByPatientID, assignPatientToWardRoomBed } = require("../controllers/modelControllers/patient.controller")
+const { DischargeReportModel } = require("../models/DischargeReport.model");
+const { updatePayload, addDischargeReportIdToAdmissionReport } = require("../controllers/modelControllers/admissionReport.controller")
+const { 
+  findPatientByPatientID, 
+  assignPatientToWardRoomBed, 
+  checkIfPatientIsFoundInWard,
+  checkIfPatientIsFoundOnBed,
+  checkIfPatientIsFoundInRoom,
+  removePatientFromWardRoomBed
+ } = require("../controllers/modelControllers/patient.controller")
 const { findNurseByNurseID } = require("../controllers/modelControllers/nurse.controller")
 const { findWardByName } = require("../controllers/modelControllers/ward.controller")
 const { findRoomByRoomNumberAndWardID, updateAvailabilityOfRoom } = require("../controllers/modelControllers/room.controller")
@@ -11,7 +18,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     try {
-      const admissionReports = await AdmissionReportModel.find().populate([
+      const dischargeReports = await DischargeReportModel.find().populate([
         {
           path: "wardID",
         },
@@ -28,7 +35,7 @@ router.get("/", async (req, res) => {
           path: "nurseID",
         },
       ]);
-      res.status(200).send(admissionReports);
+      res.status(200).send(dischargeReports);
     } catch (error) {
       console.log(error);
       res.status(400).send({ error: "Internal Server Error" });
@@ -44,8 +51,8 @@ router.get("/", async (req, res) => {
         const patient = await findPatientByPatientID(payload.patientID);
         if(!patient) {
             return res.send({ error: "patient not found"})
-        }else if(patient && patient.admitted) {
-            return res.send({ error: "patient already admitted"})
+        }else if(patient && !patient.admitted) {
+            return res.send({ error: "patient already discharged"})
         }
 
         const nurse = await findNurseByNurseID(payload.nurseID);
@@ -56,51 +63,48 @@ router.get("/", async (req, res) => {
         const ward = await findWardByName(payload.wardName)
         if(!ward){
             return res.send({ error: "ward not found"})
+        }else if(ward) {
+            const patientIsFoundInWard = checkIfPatientIsFoundInWard(patient, ward._id)
+             console.log("patient, wardId", patient, ward._id)
+            if(!patientIsFoundInWard) {
+              return res.send({error: "patient not found in ward"})
+            }
         }
 
         const room = await findRoomByRoomNumberAndWardID(payload.roomNumber, ward._id)
         if(!room) {
             return res.send({error: "room not found"})
-        }else if(room && !room.isAvailable) {
-            return res.send({error: "room not available"})
+        }else if(room) {
+            const patientIsFoundInRoom = checkIfPatientIsFoundInRoom(patient, room._id)
+            if(!patientIsFoundInRoom) {
+              return res.send({error: "patient not found in room"})
+
+            }
         }
 
         const bed = await findBedByBedNumberRoomIDAndWardID(payload.bedNumber, room._id, ward._id);
         if(!bed) {
             return res.send({error: "bed not found"})
-        }else if(bed && !bed.isAvailable) {
-            return res.send({error: "bed not available"})
+        }else if(bed) {
+          const patientIsFoundOnBed = checkIfPatientIsFoundOnBed(patient, bed._id)
+          if(!patientIsFoundOnBed) {
+            return res.send({error: "patient not found on bed"})
+
+          }
 
         }
 
-        await findAndUpdatePreviousAdmissionRepByPatientId(patient._id)
+        
         updatePayload(payload, bed, room, ward, patient, nurse);
-        const admissionRep = new AdmissionReportModel(payload)
-        await admissionRep.save()
-        await assignPatientToWardRoomBed(patient, bed, room, ward, admissionRep)
+        const dischargeRep = new DischargeReportModel(payload)
+        await dischargeRep.save()
+        await addDischargeReportIdToAdmissionReport(dischargeRep._id)
+        await removePatientFromWardRoomBed(patient, bed, dischargeRep)
         await updateAvailabilityOfRoom(room)
-        return res.status(200).send({message: "patient admitted"})
+        return res.status(200).send({message: "patient discharged"})
     }catch(err) {
         console.log(err);
         res.send({ error: "Internal Server Error"})
-    }
-  })
-
-  router.get("/:id", async (req, res)=> {
-    try{
-  
-      const id = req.params.id;
-  console.log('id', id)
-      const admissionReport = await findAdmissionReportById(id);
-      console.log('admissionReport', admissionReport);
-      if(!admissionReport) {
-        res.send({ error: "admissionReport not found"});
-      }
-      res.send({ message: "admissionReport found", admissionReport});
-  
-    }catch(err) {
-      console.log(err);
-      res.send({ error: "Internal Server Error"})
     }
   })
 

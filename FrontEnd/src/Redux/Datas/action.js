@@ -155,7 +155,7 @@ export const dischargePatientInfos = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.DISCHARGE_PATIENT_REQUEST });
     const res = await axios.post(
-      `${API}/patients/discharge`,
+      `${API}/dischargeReports/add`,
       data
     );
     return res.data;
@@ -421,31 +421,31 @@ export const EditSingleBed = (data, id) => async (dispatch) => {
 };
 
 // DISCHARGE PATIENT
-export const dischargePatient = (data) => async (dispatch) => {
-  try {
-    dispatch({ type: types.DISCHARGE_PATIENT_REQUEST });
-    const res = await axios.put(
-      `${API}/beds/discharge`,
-      data
-    );
-    console.log(res);
-    // return res.data;
-    dispatch({
-      type: types.DISCHARGE_PATIENT_SUCCESS,
-      payload: {
-        bed: res.data.bed,
-      },
-    });
-  } catch (error) {
-    // dispatch({
-    // type: types.DISCHARGE_PATIENT_ERROR,
-    //   payload: {
-    //     message: error,
-    //   },
-    // });
-    console.log(error);
-  }
-};
+// export const dischargePatient = (data) => async (dispatch) => {
+//   try {
+//     dispatch({ type: types.DISCHARGE_PATIENT_REQUEST });
+//     const res = await axios.put(
+//       `${API}/beds/discharge`,
+//       data
+//     );
+//     console.log(res);
+//     // return res.data;
+//     dispatch({
+//       type: types.DISCHARGE_PATIENT_SUCCESS,
+//       payload: {
+//         bed: res.data.bed,
+//       },
+//     });
+//   } catch (error) {
+//     // dispatch({
+//     // type: types.DISCHARGE_PATIENT_ERROR,
+//     //   payload: {
+//     //     message: error,
+//     //   },
+//     // });
+//     console.log(error);
+//   }
+// };
 
 // GET ALL PATIENT
 export const GetPatients = () => async (dispatch) => {
@@ -475,6 +475,23 @@ export const getPatient = (id) => async (dispatch) => {
     console.log(res.data);
     dispatch({
       type: types.GET_PATIENT_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAdmissionReport = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ADMISSION_REPORT_REQUEST });
+    const res = await axios.get(
+      `${API}/admissionReports/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ADMISSION_REPORT_SUCCESS,
       payload: res.data,
     });
     return res.data;
@@ -577,6 +594,24 @@ export const getAllAdmissionReports = () => async (dispatch) => {
     console.log(res.data);
     dispatch({
       type: types.GET_ALL_ADMISSION_REPORTS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+export const getAllDischargeReports = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DISCHARGE_REPORTS_REQUEST });
+    const res = await axios.get(
+      `${API}/dischargeReports`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DISCHARGE_REPORTS_SUCCESS,
       payload: res.data,
     });
     return res.data;

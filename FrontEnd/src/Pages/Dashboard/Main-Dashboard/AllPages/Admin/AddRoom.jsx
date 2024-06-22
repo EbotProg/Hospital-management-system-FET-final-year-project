@@ -52,26 +52,29 @@ const AddRooms = () => {
 
   const mapRooms = () => {
     let arr = []
-    fetchedRooms.forEach((room)=>{
-      let obj = {};
-      obj.key = room._id
-      obj.roomNumber = room.roomNumber;
-      obj.wardName = room.wardID.wardName;
-      obj.deleteRoom = <button
-      style={{
-        border: "none",
-        color: "red",
-        outline: "none",
-        background: "transparent",
-        cursor: "pointer",
-      }}
-      onClick={() => handleRoomDelete(room._id)}
-    >
-      Remove
-    </button>
-    arr.push(obj);
+    if(fetchedRooms?.length > 0) {
+      fetchedRooms.forEach((room)=>{
+        let obj = {};
+        obj.key = room?._id
+        obj.roomNumber = room?.roomNumber;
+        obj.wardName = room?.wardID.wardName;
+        obj.deleteRoom = <button
+        style={{
+          border: "none",
+          color: "red",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => handleRoomDelete(room._id)}
+      >
+        Remove
+      </button>
+      arr.push(obj);
+      
+    });
+    }
     
-  });
 
   setMappedRooms([...arr])
 

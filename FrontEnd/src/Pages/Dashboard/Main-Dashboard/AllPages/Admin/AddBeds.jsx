@@ -55,28 +55,31 @@ const AddBeds = () => {
 
   const mapBeds = () => {
     let arr = []
-    fetchedBeds.forEach((bed)=>{
-      let obj = {};
-      obj.key = bed._id
-      obj.bedNumber = bed.bedNumber;
-      obj.wardName = bed.wardID.wardName;
-      obj.roomNumber = bed.roomID.roomNumber;
-      obj.isAvailable = bed.isAvailable === true ? "Yes": "No"
-      obj.deleteBed = <button
-      style={{
-        border: "none",
-        color: "red",
-        outline: "none",
-        background: "transparent",
-        cursor: "pointer",
-      }}
-      onClick={() => handleBedDelete(bed._id)}
-    >
-      Remove
-    </button>
-    arr.push(obj);
+    if(fetchedBeds?.length > 0) {
+      fetchedBeds.forEach((bed)=>{
+        let obj = {};
+        obj.key = bed?._id
+        obj.bedNumber = bed?.bedNumber;
+        obj.wardName = bed?.wardID?.wardName;
+        obj.roomNumber = bed?.roomID?.roomNumber;
+        obj.isAvailable = bed?.isAvailable === true ? "Yes": "No"
+        obj.deleteBed = <button
+        style={{
+          border: "none",
+          color: "red",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => handleBedDelete(bed?._id)}
+      >
+        Remove
+      </button>
+      arr.push(obj);
+      
+    });
+    }
     
-  });
 
   setMappedBeds([...arr])
 
