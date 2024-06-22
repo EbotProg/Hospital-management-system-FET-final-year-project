@@ -11,8 +11,14 @@ async function countAllDoctorsInWard (wardID) {
     return count;
 }
 
+async function findDoctorByDocID(docID) {
+    const doctor = await DoctorModel.findOne({ docID })
+    return doctor;
+}
+
 
 module.exports = {
     countAllDoctorsInWard,
-    countAvailableDoctorsInWard
+    countAvailableDoctorsInWard,
+    findDoctorByDocID
 }

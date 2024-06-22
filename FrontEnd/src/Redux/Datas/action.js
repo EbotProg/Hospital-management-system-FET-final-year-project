@@ -255,6 +255,7 @@ export const CreateBooking = (data) => async (dispatch) => {
     );
     console.log(res);
     // dispatch({ type: types.CREATE_BOOKING_SUCCESS, payload: res.data.postData });
+    return res.data;
   } catch (error) {
     console.log(error);
   }
@@ -650,6 +651,7 @@ export const GetAllAppointment = () => async (dispatch) => {
       type: types.GET_APPOINTMENT_DETAILS_SUCCESS,
       payload: res.data,
     });
+    return res.data;
   } catch (error) {
     console.log(error);
   }
