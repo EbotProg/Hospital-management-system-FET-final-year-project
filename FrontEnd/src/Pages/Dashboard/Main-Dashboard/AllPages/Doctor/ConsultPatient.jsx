@@ -16,11 +16,11 @@ const AddConsultations = () => {
   const [inputs, setInputs] = useState([]);
 
   const handleAdd = () => {
-    setInputs([...inputs, { id: Math.random().toString(36).substring(2), medName: '', duration: 'Duration', dosage: 'Dosage' }])
+    setInputs([...inputs, { id: Math.random().toString(36).substring(2), medicineName: '', duration: 'Duration', dosage: 'Dosage' }])
   }
 
   const handleMedInputChange = (id, event) => {
-    setInputs(inputs.map(input => (input.id === id ? { ...input, medName: event.target.value } : input)))
+    setInputs(inputs.map(input => (input.id === id ? { ...input, medicineName: event.target.value } : input)))
   }
   const handleMedFirstSelectChange = (id, event) => {
     setInputs(inputs.map(input => (input.id === id ? { ...input, duration: event.target.value } : input)))
@@ -51,7 +51,7 @@ const AddConsultations = () => {
     let array = []
     for( let input of inputs) {
       let obj = {}
-      obj.medName = input.medName
+      obj.medicineName = input.medicineName
       obj.duration = input.duration
       obj.dosage = input.dosage
       array.push(obj)
@@ -347,7 +347,7 @@ const AddConsultations = () => {
                     type="text"
                     placeholder="PCM"
                     name="medName"
-                    value={input.medName}
+                    value={input.medicineName}
                     onChange={e => handleMedInputChange(input.id, e)}
                   />
                   <select name="duration" onChange={e => handleMedFirstSelectChange(input.id, e)}>
