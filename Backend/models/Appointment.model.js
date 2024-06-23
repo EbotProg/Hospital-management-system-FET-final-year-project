@@ -50,7 +50,6 @@ const appointmentSchema = mongoose.Schema({
 
   timeStamp: {
     type: String,
-    required: true,
     default: new Date()
   }
 

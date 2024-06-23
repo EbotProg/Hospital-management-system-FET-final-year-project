@@ -118,6 +118,13 @@ const patientSchema = mongoose.Schema({
     ref: "admissionReport",
   }
 
+  ,
+
+  timeStamp: {
+    type: String,
+    default: new Date()
+  }
+
 });
 
 const PatientModel = mongoose.model("patient", patientSchema);

@@ -328,7 +328,7 @@ const Sidebar = () => {
                   style={{ display: isOpen ? "block" : "none" }}
                   className="link_text"
                 >
-                  View Medical History
+                  Med History
                 </div>
               </Link>
             ) : null}

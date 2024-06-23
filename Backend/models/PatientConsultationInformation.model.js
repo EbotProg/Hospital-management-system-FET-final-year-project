@@ -1,19 +1,22 @@
 const mongoose = require("mongoose");
 
 const patientConsultationInformationSchema = mongoose.Schema({
-  patientID: {
-    type: Number
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "patient"
   },
 
-  docID: {
-    type: Number
+  doc_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "doctor"
   },
 
-  nurseID: {
-    type: Number
+  nurse_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "nurse"
   },
 
-  prescriptionID: {
+  prescription_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "prescription"
   },
@@ -42,11 +45,17 @@ const patientConsultationInformationSchema = mongoose.Schema({
     type: Number,
   },
 
-  date: String,
-  time: String
+  dateTime: {
+    type: String
+  },
+
+  timeStamp: {
+    type: String,
+    default: new Date()
+  }
 
 });
 
-const patientConsultationInformationModel = mongoose.model("patientConsultationInformation", patientConsultationInformationSchema);
+const PatientConsultationInformationModel = mongoose.model("patientConsultationInformation", patientConsultationInformationSchema);
 
-module.exports = { patientConsultationInformationModel };
+module.exports = { PatientConsultationInformationModel };

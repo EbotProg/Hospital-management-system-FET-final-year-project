@@ -52,6 +52,12 @@ const hospitalSchema = mongoose.Schema({
 
   abbrev: {
     type: String
+  },
+
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
 
 });

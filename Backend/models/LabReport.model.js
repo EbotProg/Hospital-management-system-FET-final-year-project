@@ -36,8 +36,11 @@ const labReportSchema = mongoose.Schema({
     type: Number,
   },
 
+
+
   timeStamp: {
     type: String,
+    default: new Date()
   }
 });
 

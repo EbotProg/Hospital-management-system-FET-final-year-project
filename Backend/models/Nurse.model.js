@@ -77,6 +77,12 @@ const nurseSchema = mongoose.Schema({
     type: Boolean,
     default: false,
     required: true,
+  },
+
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
 
 });

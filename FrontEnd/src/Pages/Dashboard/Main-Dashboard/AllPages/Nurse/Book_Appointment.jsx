@@ -344,7 +344,7 @@ const Book_Appointment = () => {
               </div> */}
 
               <div>
-                <label>Start On</label>
+                <label>From</label>
                 <div className="inputdiv">
                 <input
                     type={"datetime-local"}
@@ -357,7 +357,7 @@ const Book_Appointment = () => {
               </div>
 
               <div>
-                <label>End On</label>
+                <label>To</label>
                 <div className="inputdiv">
                 <input
                     type={"datetime-local"}

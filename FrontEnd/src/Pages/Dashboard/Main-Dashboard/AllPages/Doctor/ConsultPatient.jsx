@@ -60,6 +60,12 @@ const AddConsultations = () => {
     setMedicines([...array])
   }, [inputs])
 
+  useEffect(()=> {
+    const obj = data?.user.userType === "doctor" ? { docID: data?.user.docID} : { nurseID: data?.user.nurseID};
+    setConsultationInfo({ ...consultationInfo, ...obj });
+
+  }, [data])
+
   // const HandleMedChange = (e) => {
   //   setmed({ ...med, [e.target.name]: e.target.value });
   // };
@@ -74,8 +80,7 @@ const AddConsultations = () => {
     bloodPressure: "",
     glocuse: "",
     extrainfo: "",
-    date: "",
-    time: "",
+    dateTime: "",
     medicines: [],
   };
 
@@ -102,13 +107,17 @@ const AddConsultations = () => {
     try {
       setLoading(true);
       dispatch(AddConsulationInfo(info)).then((res) => {
-        if (res.message === "ConsulationInfo successfully created") {
-          notify("Patient Consulted Successfully");
+        console.log("res from consultation", res)
+        if (res.error) {
           setLoading(false);
-          setConsultationInfo(InitData);
+          return notify(res.error);
+
         } else {
           setLoading(false);
-          notify("Something went Wrong");
+          setConsultationInfo(InitData);
+          if(res.message === "patient consulted successfully")
+          return notify(res.message);
+
         }
       });
     } catch (error) {
@@ -133,7 +142,7 @@ const AddConsultations = () => {
         <div className="AfterSideBar">
           <div className="Main_Add_Doctor_div">
             <h1>Consult Patient</h1>
-            <form>
+            <form onSubmit={handleConsultationInfoSubmit}>
               <div>
                 <label>Your ID</label>
                 <div className="inputdiv">
@@ -276,18 +285,18 @@ const AddConsultations = () => {
 
               {/* *********************************** */}
               <div>
-                <label>Date</label>
+                <label>Date and Time</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
+                    type="datetime-local"
                     placeholder="dd-mm-yyyy"
-                    name="date"
-                    value={consultationInfo.date}
+                    name="dateTime"
+                    value={consultationInfo.dateTime}
                     onChange={handleConsultationInfoChange}
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label>Time</label>
                 <div className="inputdiv">
                   <input
@@ -297,7 +306,7 @@ const AddConsultations = () => {
                     onChange={handleConsultationInfoChange}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* ******************************************** */}
               <h1 style={{ marginTop: "2rem" }}>Prescriptions</h1>
@@ -325,6 +334,7 @@ const AddConsultations = () => {
                   <input type="submit" value={"Add"} onClick={HandleMedAdd} />
                 </div>
               </div> */}
+                <p style={{ textAlign: "center", marginBottom: "1rem" }}>*BID=twice a day*  *QD=once a day*  *PRN=as needed* *HS=Bed time*</p>
 
                 <div >
                 <label>Medicines</label>
@@ -342,14 +352,17 @@ const AddConsultations = () => {
                   />
                   <select name="duration" onChange={e => handleMedFirstSelectChange(input.id, e)}>
                     <option value="Dosage">Duration</option>
-                    <option value="After Meal">After Meal</option>
-                    <option value="Before Meal">Before Meal</option>
+                    <option value="7 days">7 days</option>
+                    <option value="1 month">1 month</option>
+                    <option value="2 weeks">2 weeks</option>
+                    <option value="Long-term">Long-term</option>
                   </select>
                   <select name="dosage" onChange={e => handleMedSecondSelectChange(input.id, e)} >
                     <option value="Dosage">Dosage</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    <option value="500mg BID">500mg BID</option> {/* BID = twice daily */}
+                    <option value="10mg QD">10mg QD</option> {/* QD = once daily */}
+                    <option value="200mg PRN">200mg PRN</option> {/* PRN = as needed */}
+                    <option value="20mg HS">20mg HS</option> {/* HS = Bedtime */}
                   </select>
                    <button type="button" onClick={e => handleRemove(input.id)}>Remove</button>
                 </div>
@@ -368,8 +381,9 @@ const AddConsultations = () => {
               
 
               <button
+                type="submit"
                 className="formsubmitbutton bookingbutton"
-                onClick={handleConsultationInfoSubmit}
+                style={{ width: "20%" }}
               >
                 {loading ? "Loading..." : "Submit"}
               </button>

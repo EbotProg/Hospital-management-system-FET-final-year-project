@@ -30,9 +30,10 @@ export const CreateReport = (data) => async (dispatch) => {
 
 export const AddConsulationInfo = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.CREATE_CONSULATION_INFO_REQUEST });
+    dispatch({ type: types.CREATE_CONSULTATION_INFO_REQUEST });
+    console.log("data from addconsultation action", data)
     const res = await axios.post(
-      `${API}/patientConsultationInformation/create`,
+      `${API}/consultations/add`,
       data
     );
     console.log(res);
@@ -45,7 +46,7 @@ export const AddConsulationInfo = (data) => async (dispatch) => {
     // });
   } catch (error) {
     dispatch({
-      type: types.CREATE_CONSULATION_INFO_ERROR,
+      type: types.CREATE_CONSULTATION_INFO_ERROR,
       payload: {
         message: error,
       },

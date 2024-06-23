@@ -34,7 +34,14 @@ const bedSchema = mongoose.Schema({
   isAvailable: {
     type: Boolean,
     default: true,
+  },
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
+
+
 });
 
 const BedModel = mongoose.model("bed", bedSchema);

@@ -177,8 +177,12 @@ const FrontPage = () => {
   useEffect(() => {
     dispatch(GetPatients());
     dispatch(GetAllData());
-    mapWards(data.wardStats)
   }, []);
+
+  useEffect(() => {
+    mapWards(data.wardStats)
+
+  }, [data])
 
   useEffect(()=> {
 

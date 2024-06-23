@@ -1,29 +1,34 @@
 const mongoose = require("mongoose");
 
 const patientMedicalHistorySchema = mongoose.Schema({
-  patientID: {
-    type: Number,
-    required: true,
+  patient_id: {
+     type: mongoose.Schema.Types.ObjectId,
+    ref: "patient",
+    required: true
   },
 
-  prescriptionID: {
+  prescription_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "prescription"
   },
 
-  docID: {
-    type: Number,
+  doc_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "doctor",
   },
 
-  nurseID: {
-    type: Number,
+  nurse_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "nurse",
   },
+
 
   timeStamp: {
-    type: String
+    type: String,
+    default: new Date()
   },
 
-  consultationID: {
+  consultation_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "patientConsultationInformation"
   }
