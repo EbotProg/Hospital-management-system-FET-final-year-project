@@ -282,6 +282,15 @@ main {
   flex-direction: column;
 }
 
+.medicine_inputs_div{
+  gap: 0.1rem !important;
+}
+
+.med_input_div {
+  gap: 0.8rem !important;
+  width: 100%;
+}
+
 .add_prescription_btn {
   text-align: center;
   width: 15%;

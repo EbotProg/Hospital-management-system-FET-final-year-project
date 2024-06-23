@@ -150,6 +150,11 @@ const Book_Appointment = () => {
 
   const HandleOnsubmitAppointment = (e) => {
     e.preventDefault();
+    const startTimeStamp = new Date(BookAppoint.startDateTime).getTime();
+    const endTimeStamp = new Date(BookAppoint.endDateTime).getTime();
+    if(endTimeStamp <= startTimeStamp) {
+      return notify("Your end date must be after your start date")
+    }
 
     setLoading(true);
     

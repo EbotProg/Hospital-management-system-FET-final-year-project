@@ -65,9 +65,9 @@ const AddConsultations = () => {
   // };
 
   const InitData = {
-    docName: "",
-    nurseName: "",
-    patientName: "",
+    docID: "",
+    nurseID: "",
+    patientID: "",
     disease: "",
     temperature: "",
     weight: "",
@@ -94,14 +94,14 @@ const AddConsultations = () => {
   const handleConsultationInfoSubmit = (e) => {
     e.preventDefault();
     
-    let data = {
+    let info = {
       ...consultationInfo,
       medicines,
     };
-    console.log('data', data)
+    console.log('data', info)
     try {
       setLoading(true);
-      dispatch(AddConsulationInfo(data)).then((res) => {
+      dispatch(AddConsulationInfo(info)).then((res) => {
         if (res.message === "ConsulationInfo successfully created") {
           notify("Patient Consulted Successfully");
           setLoading(false);
@@ -135,19 +135,19 @@ const AddConsultations = () => {
             <h1>Consult Patient</h1>
             <form>
               <div>
-                <label>Doctor Name</label>
+                <label>Your ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Full Name"
-                    name="docName"
-                    value={consultationInfo.docName}
+                    placeholder={data?.user.userType === "doctor" ? "e.g. Doc-dkw12kl2": "e.g. Nrs-dkw12kl2"}
+                    name={data?.user.userType === "doctor" ? "docID": "nurseID"}
+                    value={data?.user.userType === "doctor"? consultationInfo.docID: consultationInfo.nurseID}
                     onChange={handleConsultationInfoChange}
                     required
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label>Nurse Name</label>
                 <div className="inputdiv">
                   <input
@@ -159,15 +159,15 @@ const AddConsultations = () => {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               <div>
-                <label>Patient Name</label>
+                <label>Patient ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Name"
-                    name="patientName"
-                    value={consultationInfo.patientName}
+                    placeholder="e.g. Pt-dkw12kl2"
+                    name="patientID"
+                    value={consultationInfo.patientID}
                     onChange={handleConsultationInfoChange}
                     required
                   />
@@ -332,7 +332,7 @@ const AddConsultations = () => {
                 <div className="medicine_inputs_div">
                 {
                   inputs.map((input, index) => (
-                  <div className="inputdiv" key={input.id}>
+                  <div className="inputdiv med_input_div" key={input.id}>
                   <input
                     type="text"
                     placeholder="PCM"
