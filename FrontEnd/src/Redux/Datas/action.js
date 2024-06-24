@@ -765,11 +765,12 @@ export const GetLabReports = () => async (dispatch) => {
   }
 };
 
-export const SearchMedHistory = () => async (dispatch) => {
+export const SearchMedHistory = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
-    const res = await axios.get(
-      `${API}/medicalHistory`
+    const res = await axios.post(
+      `${API}/medicalHistory/search`,
+      data
     );
     // console.log(res.data);
     return res.data;
@@ -786,7 +787,7 @@ export const SearchMyPatient = () => async (dispatch) => {
   try {
     dispatch({ type: types.GET_MY_PATIENTS_REQUEST });
     const res = await axios.get(
-      `${API}/medicalHistory`
+      `${API}/patients/myPatients`
     );
     // console.log(res.data);
     return res.data;

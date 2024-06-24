@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,42 +9,128 @@ import {
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
+import { MdKeyboardArrowUp } from "react-icons/md";
 const notify = (text) => toast(text);
 
 
 const ViewMedHistory = () => {
   const { data } = useSelector((store) => store.auth);
 
-  const disptach = useDispatch();
 
   const columns = [
-    { title: "Patient Name", dataIndex: "patientName"},
-    { title: "Doctor", dataIndex: "doctorName"},
-    { title: "Disease", dataIndex: "disease"},
-    { title: "Ward", dataIndex: "ward"},
-    { title: "Date", dataIndex: "date"}
+    { title: "Patient Name", dataIndex: "patientName", key: "patientName"},
+    { title: "Doctor", dataIndex: "doctorName", key: "doctorName"},
+    { title: "Nurse", dataIndex: "nurseName", key: "nurseName"},
+    { title: "disease", dataIndex: "disease", key: "disease"},
+    { title: "medicines", dataIndex: "meds", key: "meds" ,render: (_, { meds }) => (
+      <>
+        {meds.map((med) => {
+          let color = med.length > 5 ? 'geekblue' : 'green';
+          // if (med === 'loser') {
+          //   color = 'volcano';
+          // }
+          return (
+            <div style={ { display: "flex", flexDirection: "column", gap: "0.3rem"} }>
+            <Tag color={color} key={med}>
+              {med.toUpperCase()}
+            </Tag>
+            
+            </div>
+            
+          );
+        })}
+      </>
+    )},
+    // { title: "medicine 2", dataIndex: "medTwo", key: "medTwo"},
+    { title: "Weight(Kg)", dataIndex: "weight", key: "weight"},
+    { title: "Glucose level", dataIndex: "glucose", key: "glucose"},
+    { title: "Date", dataIndex: "date", key: "date"},
   ];
 
-  const PatientMedicalHistory = [
-      { 
-        patientName: "Achale Ebot",
-        doctor: "John Doe",
-        disease: "Cough",
-        ward: "maternity",
-        date: "2022-01-01"
-      }
-  ]
+  // const PatientMedicalHistory = [
+  //     { 
+  //       patientName: "Achale Ebot",
+  //       doctor: "John Doe",
+  //       disease: "Cough",
+  //       ward: "maternity",
+  //       date: "2022-01-01"
+  //     }
+  // ]
+
+  const mapMedHistory = () => {
+    let arr = []
+    if(fetchedMedHistory?.length > 0) {
+      fetchedMedHistory.forEach((info)=>{
+        let obj = {};
+        obj.key = info?._id
+        obj.patientName = info?.patient_id?.patientID ? `${info?.patient_id?.firstName} ${info?.patient_id?.lastName}`: '';
+        obj.doctorName = info?.doc_id?.docName;
+        obj.nurseName = info?.nurse_id?.nurseName;
+        obj.disease = info?.consultation_id?.disease;
+        const medicines = info?.prescription_id?.medicines
+        console.log("medicines", medicines)
+        // let med = '';
+        // for(let medicine of medicines) {
+          
+        //   med = med + `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+        //   if(medicines[medicines.length - 1] !== medicine) {
+        //     med = med + "\n"
+        //   }
+        // }
+        let medArr = []
+        for(let medicine of medicines) {
+          
+          const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+          medArr.push(med);
+        }
+        console.log('medArr', medArr)
+        obj.meds = medArr;
+        obj.weight = info?.consultation_id?.weight;
+        obj.glucose = info?.consultation_id?.glucose;
+        obj.date = info?.timeStamp;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "blue",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMorePatientInfo(info._id)}
+      // >
+      //   View more
+      // </button>
+    
+  
+      arr.push(obj);
+      
+    });
+    }
+    
+
+  setMappedMedHistory([...arr])
+
+  }
+
+ 
 
   const InitData = {
-    patientName: "",
-    date: "",
-    time: ""
+    patientID: "",
+    startDate: "",
+    endDate: ""
   };
   const [medSearchInputs, setMedSearchInputs] = useState(InitData);
+  const [fetchedMedHistory, setFetchedMedHistory] = useState([])
+  const [mappedMedHistory, setMappedMedHistory] = useState([])
 
   const [loading, setloading] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(()=> {
+
+    mapMedHistory();
+  }, [fetchedMedHistory])
 
   const handleSearchInputsChange = (e) => {
     setMedSearchInputs({
@@ -55,12 +141,26 @@ const ViewMedHistory = () => {
   };
 
   const handleMedSearchInputsSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     setloading(true);
-    dispatch(SearchMedHistory(medSearchInputs));
-    setloading(false);
-    setMedSearchInputs(InitData);
-    notify("Got Medical History");
+    dispatch(SearchMedHistory(medSearchInputs)).then(res=>{
+      console.log("res from search med history", res);
+      if(res?.error) {
+        setloading(false);
+        return notify(res.error);
+      }
+        if(res.message === "Fetched data") {
+          setFetchedMedHistory(res.medHistory);
+        }
+          
+          console.log('res message', res.message)
+          setloading(false);
+          return notify(res.message);
+      
+    })
+    // setloading(false);
+    // setMedSearchInputs(InitData);
+    // notify("Got Medical History");
   };
 
   // const MedHistory = useSelector((state) => state.data.PatientMedicalHistory);
@@ -80,6 +180,7 @@ const ViewMedHistory = () => {
 
   return (
     <>
+    <ToastContainer />
       <div className="container">
         <Sidebar />
         <div className="AfterSideBar">
@@ -90,44 +191,43 @@ const ViewMedHistory = () => {
             {/* ******************************************************** */}
             <form onSubmit={handleMedSearchInputsSubmit}>
               <div>
-                <label>Patient Name</label>
+                <label>Patient ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="name"
-                    name="patientName"
-                    value={medSearchInputs.patientName}
+                    placeholder="e.g. Pt-1kdd2l2d"
+                    name="patientID"
+                    value={medSearchInputs.patientID}
                     onChange={handleSearchInputsChange}
                     required
                   />
                 </div>
               </div>
               <div>
-                <label>Date</label>
+                <label>From</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
-                    placeholder="dd-mm-yyyy"
-                    name="date"
-                    value={medSearchInputs.date}
+                    type="datetime-local"
+                    name="startDate"
+                    value={medSearchInputs.startDate}
                     onChange={handleSearchInputsChange}
                   />
                 </div>
               </div>
               <div>
-                <label>Time</label>
+                <label>To</label>
                 <div className="inputdiv">
                   <input
-                    type="time"
-                    name="time"
-                    value={medSearchInputs.time}
+                    type="datetime-local"
+                    name="endDate"
+                    value={medSearchInputs.endDate}
                     onChange={handleSearchInputsChange}
                   />
                 </div>
               </div>
 
               <button type="submit" className="formsubmitbutton">
-                {loading ? "Loading..." : "Submit"}
+                {loading ? "Loading..." : "Search"}
               </button>
               <button type="button" className="formsubmitbutton">
                 Download PDF
@@ -137,7 +237,7 @@ const ViewMedHistory = () => {
         <div className="Payment_Page">
           <h1 style={{ marginTop: "2rem", marginBottom: "2rem" }}>Medical History</h1>
           <div className="wardBox">
-            <Table columns={columns} dataSource={PatientMedicalHistory} />
+            <Table columns={columns} dataSource={mappedMedHistory} />
           </div>
         </div>
 
