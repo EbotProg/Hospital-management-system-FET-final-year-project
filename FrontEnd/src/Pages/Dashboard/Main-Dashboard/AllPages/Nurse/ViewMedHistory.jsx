@@ -1,5 +1,5 @@
 import { Table, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
@@ -11,12 +11,20 @@ import {
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import { MdKeyboardArrowUp } from "react-icons/md";
+import { jsPDF } from 'jspdf';
 const notify = (text) => toast(text);
 
 
 const ViewMedHistory = () => {
   const { data } = useSelector((store) => store.auth);
 
+  // const downloadPdf = () => {
+  //   const pdf = new jsPDF('p', 'pt', 'a4')
+
+
+
+  // }
+  
 
   const columns = [
     { title: "Patient Name", dataIndex: "patientName", key: "patientName"},
@@ -88,7 +96,7 @@ const ViewMedHistory = () => {
         obj.meds = medArr;
         obj.weight = info?.consultation_id?.weight;
         obj.glucose = info?.consultation_id?.glucose;
-        obj.date = info?.timeStamp;
+        obj.date = info?.timeStamp ? new Date(info.timeStamp).toLocaleDateString() : "";
       //   obj.viewMore = <button
       //   style={{
       //     border: "none",
