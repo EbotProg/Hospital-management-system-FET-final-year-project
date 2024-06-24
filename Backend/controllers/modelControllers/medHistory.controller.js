@@ -73,13 +73,14 @@ function getRows (infos) {
         for(let medicine of medicines) {
           
           const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+          // const med = `${medicine?.medicineName}`
           medArr.push(med);
         }
         console.log('medArr', medArr)
-        obj.meds = medArr;
+        obj.meds = medArr.join("___");
         obj.weight = info?.consultation_id?.weight;
         obj.glucose = info?.consultation_id?.glucose;
-        obj.date = info?.timeStamp;
+        obj.date = info?.timeStamp ? new Date(info.timeStamp).toLocaleDateString() : "";
         rows.push([...Object.values(obj)])
 
       }

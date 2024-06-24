@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
       res.status(200).send(consultations);
     } catch (error) {
       console.log(error);
-      res.status(400).send({ error: "Internal Server Error" });
+      res.send({ error: "Internal Server Error" });
     }
   });
 
@@ -30,21 +30,21 @@ router.get("/", async (req, res) => {
 
             doctor = await findDoctorByDocID(payload.docID);
             if(!doctor) {
-                return res.status(404).send({error: "doctor not found"})
+                return res.send({error: "doctor not found"})
             }
 
         }else{//check if nurse exist
 
             nurse = await findNurseByNurseID(payload.nurseID);
             if(!nurse) {
-                return res.status(404).send({error: "nurse not found"})
+                return res.send({error: "nurse not found"})
             }
 
         }
 
         const patient = await findPatientByPatientID(payload.patientID);
         if(!patient) {
-           return res.status(404).send({error: "patient not found"})
+           return res.send({error: "patient not found"})
         }
 
        console.log("doctor, nurse, patient", doctor, nurse, patient)
@@ -57,7 +57,7 @@ router.get("/", async (req, res) => {
         
         payload.patient_id = patient._id || null;
         payload.doc_id = doctor?._id || null;
-        payload.nurse_id = nurse._id || null;
+        payload.nurse_id = nurse?._id || null;
         payload.prescription_id = prescription?.id
 
         const consultation = await PatientConsultationInformationModel.create(payload)
@@ -78,7 +78,7 @@ router.get("/", async (req, res) => {
         res.status(200).send({ message: "patient consulted successfully", consultation})
     }catch(err) {
         console.log(err);
-        res.status(400).send({error: "Internal Server Error"})
+        res.send({error: "Internal Server Error"})
     }
   })
 
