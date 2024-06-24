@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import {
   SearchMedHistory,
+  downloadMedHistory,
   GetMedHistory,
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
@@ -112,6 +113,7 @@ const ViewMedHistory = () => {
 
   }
 
+
  
 
   const InitData = {
@@ -124,6 +126,7 @@ const ViewMedHistory = () => {
   const [mappedMedHistory, setMappedMedHistory] = useState([])
 
   const [loading, setloading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -139,6 +142,35 @@ const ViewMedHistory = () => {
     });
     console.log('medSearchInputs', medSearchInputs);
   };
+
+  const handleDownload = () => {
+    setDownloading(true);
+    dispatch(downloadMedHistory(medSearchInputs))
+    .then(res => {
+      console.log("res from download med history", res);
+      if(res?.error) {
+        setDownloading(false);
+        return notify(res.error)
+      }
+      const file = new Blob(
+        [res], 
+        {type: "application/pdf"}
+      )
+
+      const fileURL = URL.createObjectURL(file);
+      setDownloading(false)
+      window.open(fileURL)
+      // if(res?.error) {
+      //   setDownloading(false);
+      //   return notify(res.error);
+      // }
+        
+          
+      //     console.log('res message', res.message)
+      //     setDownloading(false);
+      //     return notify(res.message);
+    })
+  }
 
   const handleMedSearchInputsSubmit = (e) => {
     e.preventDefault(); 
@@ -229,8 +261,8 @@ const ViewMedHistory = () => {
               <button type="submit" className="formsubmitbutton">
                 {loading ? "Loading..." : "Search"}
               </button>
-              <button type="button" className="formsubmitbutton">
-                Download PDF
+              <button type="button" className="formsubmitbutton" onClick={handleDownload}>
+                {downloading ? "Generating...": "Generate Pdf"}
               </button>
             </form>
           </div>

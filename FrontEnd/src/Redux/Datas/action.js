@@ -783,6 +783,30 @@ export const SearchMedHistory = (data) => async (dispatch) => {
   }
 };
 
+export const downloadMedHistory = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.DOWNLOAD_MEDICAL_HISTORY_REQUEST });
+    // const res = await axios.post(
+    //   `${API}/medicalHistory/downloadRep`,
+    //   data
+    // );
+    const res = await axios.post(
+      `${API}/medicalHistory/downloadRep`,
+      data, {
+        responseType: 'blob'
+      }
+    );
+    // console.log(res.data);
+    return res.data;
+    // dispatch({
+    //   type: types.DELETE_APPOINTMENT_SUCCESS,
+    //   payload: id,
+    // });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const SearchMyPatient = () => async (dispatch) => {
   try {
     dispatch({ type: types.GET_MY_PATIENTS_REQUEST });

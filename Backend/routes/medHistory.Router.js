@@ -2,6 +2,9 @@ const express = require("express");
 const { PatientMedicalHistoryModel } = require("../models/PatientMedicalHistory.model")
 const { findPatientByPatientID } = require("../controllers/modelControllers/patient.controller")
 const { findHistoryWithinGivenDates } = require("../controllers/modelControllers/medHistory.controller")
+const { getHeaders, getRows } = require("../controllers/modelControllers/medHistory.controller")
+const { generateReportPdf } = require("../controllers/generateReport")
+const path = require("path")
 
 const router = express.Router();
 
@@ -50,6 +53,56 @@ router.post("/search", async (req, res) => {
       res.send({ error: "Internal Server Error" });
     }
   });
+
+
+  router.post("/downloadRep", async (req, res)=> {
+    try{
+
+        const payload = { ...req.body }
+        console.log("payload", payload);
+        const patient = await findPatientByPatientID(payload.patientID)
+        if(!patient) {
+            return res.send({ error: "patient not found"})
+        }
+
+        const hospital = {
+            name: "Buea General Hospital",
+            address: "Buea"
+          }
+        const headers = getHeaders();
+        const medHistory = await findHistoryWithinGivenDates(patient._id, payload.startDate, payload.endDate)
+
+        const rows = getRows(medHistory);
+
+        const pdfName = generateReportPdf(headers, rows, patient, hospital, payload.startDate, payload.endDate)
+
+        // const filePath = `${__dirname}/../pdfs/${pdfName}.pdf`;
+const filePath = `${path.join(__dirname, `/../pdfs/${pdfName}.pdf`)}`       
+ console.log("filepath", filePath);
+ setTimeout(()=> {
+res.download(filePath, (err) => {
+            if (err) {
+              console.error(err);
+              return res.send({ error: 'Error downloading file' });
+            } else {
+                // return res.send({ message: "Pdf Downloaded"});
+                console.log("pdf downloaded")
+                
+            }
+          });
+ }, 5000)
+        
+
+
+
+// res.end();
+    }catch(err){
+        console.log(err);
+        res.send({
+            error: "Internal Server Error"
+        })
+    }
+  })
 
 
   module.exports = router;

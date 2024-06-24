@@ -12,13 +12,13 @@ const path = require('path')
 
     let date = new Date();
     let val = moment(date).format("DD-MM-YYYY____HH:mm:ss")
-    const pdfName = `Medical_Report_${patient.name}_${val}`;
+    const pdfName = `Medical_Report_${patient.firstName}_${patient.lastName}_${val}`;
 
-    doc.pipe(fs.createWriteStream(`${path.join(__dirname, `${pdfName}.pdf`)}`));
-
+    doc.pipe(fs.createWriteStream(`${path.join(__dirname, `/../pdfs/${pdfName}.pdf`)}`));
+console.log("pdf will be saved at", `${path.join(__dirname, `/../pdfs/${pdfName}.pdf`)}`)
     const table = {
         title: { label: `${hospital.name}`, fontSize: 30, color: '#292929', fontFamily: 'Helvetica'},
-        subtitle: { label: `Patient Name: ${patient.name}\nPatient Address: ${patient.address}\nStart Date: ${moment(startDate).format("DD-MM-YYYY____HH:mm:ss")}\nEnd Date: ${moment(endDate).format("DD-MM-YYYY____HH:mm:ss")}`},
+        subtitle: { label: `Patient Name: ${patient.firstName} ${patient.lastName}\nPatient Address: ${patient.address}\nStart Date: ${moment(startDate).format("DD-MM-YYYY____HH:mm:ss")}\nEnd Date: ${moment(endDate).format("DD-MM-YYYY____HH:mm:ss")}`},
         headers: headers,
         rows: rows
     }
@@ -59,6 +59,8 @@ const path = require('path')
     })
 
     doc.end();
+
+    return pdfName;
 
     }catch(err) {
         console.log(err);

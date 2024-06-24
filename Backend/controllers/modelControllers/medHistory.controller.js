@@ -50,6 +50,49 @@ async function findHistoryWithinGivenDates(patient_id, start, end) {
     }
 }
 
+function getHeaders() {
+  const headers = ["Patient Name", "Doctor", "Nurse", "Disease", "Medicines", "Weight(kg)", "Glucose level", "Date"];
+  return headers;
+}
+
+function getRows (infos) {
+    try{
+
+      const rows = [];
+
+      for(const info of infos) {
+        
+        const obj = {};
+        obj.patientName = info?.patient_id?.patientID ? `${info?.patient_id?.firstName} ${info?.patient_id?.lastName}`: '';
+        obj.doctorName = info?.doc_id?.docName;
+        obj.nurseName = info?.nurse_id?.nurseName;
+        obj.disease = info?.consultation_id?.disease;
+        const medicines = info?.prescription_id?.medicines
+      
+        let medArr = []
+        for(let medicine of medicines) {
+          
+          const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+          medArr.push(med);
+        }
+        console.log('medArr', medArr)
+        obj.meds = medArr;
+        obj.weight = info?.consultation_id?.weight;
+        obj.glucose = info?.consultation_id?.glucose;
+        obj.date = info?.timeStamp;
+        rows.push([...Object.values(obj)])
+
+      }
+
+      return rows;
+    }catch(err){
+      console.log(err);
+    }
+}
+
+
 module.exports = {
-    findHistoryWithinGivenDates
+    findHistoryWithinGivenDates,
+    getHeaders,
+    getRows
 }
