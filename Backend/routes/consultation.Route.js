@@ -5,6 +5,7 @@ const { findNurseByNurseID } = require("../controllers/modelControllers/nurse.co
 const { findPatientByPatientID } = require("../controllers/modelControllers/patient.controller")
 const { createPrescription } = require("../controllers/modelControllers/prescription.controller")
 const { PatientMedicalHistoryModel } = require("../models/PatientMedicalHistory.model")
+const { findSingleHistoryWithinGivenDates } = require("../controllers/modelControllers/medHistory.controller")
 
 const router = express.Router();
 
@@ -63,18 +64,46 @@ router.get("/", async (req, res) => {
         const consultation = await PatientConsultationInformationModel.create(payload)
         console.log("consultation ==== ", consultation);
 
-        delete payload.extrainfo;
-        delete payload.disease;
-        delete payload.temperature;
-        delete payload.weight;
-        delete payload.bloodPressure;
-        delete payload.glucose;
-        delete payload.dateTime;
+        // delete payload.extrainfo;
+        // delete payload.disease;
+        // delete payload.temperature;
+        // delete payload.weight;
+        // delete payload.bloodPressure;
+        // delete payload.glucose;
+        // delete payload.dateTime;
         
 
-        payload.consultation_id = consultation._id;
-        const medHistory = await PatientMedicalHistoryModel.create(payload)
-        console.log("medHistory", medHistory);
+        // payload.consultation_id = consultation._id;
+
+
+
+        ///////////
+
+        const date = new Date(payload.dateTime);
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        console.log("startDate", startDate)
+
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999)
+        console.log("endDate", endDate);
+
+         let history = await findSingleHistoryWithinGivenDates(patient._id, startDate, endDate)
+        if(!history) {
+            console.log("no history")
+            history = new PatientMedicalHistoryModel();
+            history.patient_id = patient._id;
+            history.dateTime = payload.dateTime
+        }
+        
+        history.consultation_id = consultation?._id;
+        history.prescription_id = prescription?._id;
+        await history.save();
+        console.log("updated history", history)
+        ////////////////
+
+        // const medHistory = await PatientMedicalHistoryModel.create(payload)
+        // console.log("medHistory", medHistory);
         res.status(200).send({ message: "patient consulted successfully", consultation})
     }catch(err) {
         console.log(err);

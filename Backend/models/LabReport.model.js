@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 
 const labReportSchema = mongoose.Schema({
-  docID: {
-    type: Number
+  doc_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "doctor"
   },
-  patientID: {
-    type: Number
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "patient"
   },
   haemoglobin: {
     type: Number
@@ -37,6 +39,9 @@ const labReportSchema = mongoose.Schema({
   },
 
 
+  dateTime: {
+    type: String
+  },
 
   timeStamp: {
     type: String,

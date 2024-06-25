@@ -12,16 +12,20 @@ const patientMedicalHistorySchema = mongoose.Schema({
     ref: "prescription"
   },
 
-  doc_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "doctor",
-  },
+  // doc_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "doctor",
+  // },
 
-  nurse_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "nurse",
-  },
+  // nurse_id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "nurse",
+  // },
 
+  dateTime: {
+    type: String,
+    default: new Date()
+  },
 
   timeStamp: {
     type: String,
@@ -32,6 +36,19 @@ const patientMedicalHistorySchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "patientConsultationInformation"
   }
+  ,
+  admissionRep_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "admissionReport"
+  },
+  dischargeRep_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "dischargeReport"
+  },
+  labReport_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "labReport"
+  },
 
   
 });

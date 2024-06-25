@@ -33,6 +33,11 @@ const admissionReportSchema = mongoose.Schema({
     required: true,
   },
 
+  dateTime: {
+    type: String,
+    default: new Date()
+  },
+
   timeStamp: {
     type: String,
     default: new Date()

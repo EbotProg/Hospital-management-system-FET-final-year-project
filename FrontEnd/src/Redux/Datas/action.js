@@ -58,7 +58,7 @@ export const CreateLabReport = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.CREATE_LAB_REPORT_REQUEST });
     const res = await axios.post(
-      `${API}/labReports/create`,
+      `${API}/labReports/add`,
       data
     );
     console.log(res);

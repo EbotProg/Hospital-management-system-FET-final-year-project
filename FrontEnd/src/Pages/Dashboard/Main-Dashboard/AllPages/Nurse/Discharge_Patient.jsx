@@ -27,7 +27,7 @@ const Discharge_Patient = () => {
     { title: "Ward", dataIndex: "wardName", key: "wardName" },
     { title: "Room#", dataIndex: "roomNumber", key: "roomNumber" },
     { title: "Bed#", dataIndex: "bedNumber", key: "bedNumber" },
-    { title: "DischargedOn", dataIndex: "timeStamp", key: "timeStamp" },
+    { title: "DischargedOn", dataIndex: "dateTime", key: "dateTime" },
     { title: "Disease", dataIndex: "disease", key: "disease" },
     // { title: "", dataIndex: "viewMore", key: "veiwMore" },
   ];
@@ -70,7 +70,7 @@ const Discharge_Patient = () => {
         obj.wardName = info?.wardID?.wardName;
         obj.roomNumber = info?.roomID?.roomNumber;
         obj.bedNumber = info?.bedID?.bedNumber;
-        obj.timeStamp = info?.timeStamp;
+        obj.dateTime = info?.dateTime;
         obj.disease = info?.disease;
       //   obj.viewMore = <button
       //   style={{
@@ -309,8 +309,8 @@ const Discharge_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type="datetime-local"
-                    name="timeStamp"
-                    value={dischargePatientInfo.timeStamp}
+                    name="dateTime"
+                    value={dischargePatientInfo.dateTime}
                     onChange={handledischargePatientInfoChange}
                     required
                   />

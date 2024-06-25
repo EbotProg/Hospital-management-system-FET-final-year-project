@@ -26,7 +26,7 @@ const Admit_Patient = () => {
     { title: "Ward", dataIndex: "wardName", key: "wardName" },
     { title: "Room#", dataIndex: "roomNumber", key: "roomNumber" },
     { title: "Bed#", dataIndex: "bedNumber", key: "bedNumber" },
-    { title: "admittedOn", dataIndex: "timeStamp", key: "timeStamp" },
+    { title: "admittedOn", dataIndex: "dateTime", key: "dateTime" },
     { title: "Disease", dataIndex: "disease", key: "disease" },
     // { title: "", dataIndex: "viewMore", key: "veiwMore" },
   ];
@@ -56,7 +56,7 @@ const Admit_Patient = () => {
         obj.wardName = info?.wardID?.wardName;
         obj.roomNumber = info?.roomID?.roomNumber;
         obj.bedNumber = info?.bedID?.bedNumber;
-        obj.timeStamp = info?.timeStamp;
+        obj.dateTime = info?.dateTime;
         obj.disease = info?.disease;
       //   obj.viewMore = <button
       //   style={{
@@ -133,7 +133,7 @@ const Admit_Patient = () => {
     bedNumber: "",
     disease: "",
     details: "",
-    timeStamp: "",
+    dateTime: "",
     // time: ""
   };
 
@@ -153,7 +153,7 @@ const Admit_Patient = () => {
       admitPatientInfo.wardName === "" ||
       admitPatientInfo.bedNumber === "" ||
       admitPatientInfo.disease === "" ||
-      admitPatientInfo.timeStamp === "" ||
+      admitPatientInfo.dateTime === "" ||
       admitPatientInfo.roomNumber === ""
     ) {
       return notify("Please Enter All the Requried Feilds");
@@ -342,8 +342,8 @@ const Admit_Patient = () => {
                 <div className="inputdiv">
                   <input
                     type="datetime-local"
-                    name="timeStamp"
-                    value={admitPatientInfo.timeStamp}
+                    name="dateTime"
+                    value={admitPatientInfo.dateTime}
                     onChange={handleAdmitPatientInfoChange}
                     required
                   />

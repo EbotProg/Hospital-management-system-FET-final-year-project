@@ -36,6 +36,11 @@ const dischargeReportSchema = mongoose.Schema({
   timeStamp: {
     type: String,
     default: new Date()
+  },
+
+  dateTime: {
+    type: String,
+    default: new Date()
   }
 });
 
