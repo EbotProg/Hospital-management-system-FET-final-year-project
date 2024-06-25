@@ -519,6 +519,23 @@ export const getAllNurses = () => async (dispatch) => {
   }
 };
 
+export const getAllDoctorAppointments = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DOCTOR_APPOINTMENTS_REQUEST });
+    const res = await axios.get(
+      `${API}/appointments/getAllDoctorAppointments/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DOCTOR_APPOINTMENTS_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllDoctors = () => async (dispatch) => {
   try {
     dispatch({ type: types.GET_ALL_DOCTORS_REQUEST });
@@ -671,6 +688,24 @@ export const DeleteAppointment = (id) => async (dispatch) => {
       type: types.DELETE_APPOINTMENT_SUCCESS,
       payload: id,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const cancleAppointment = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.CANCEL_APPOINTMENT_REQUEST });
+    const res = await axios.patch(
+      `${API}/appointments/cancelAppointment/${id}`
+    );
+    console.log(res.data);
+    // return res.data;
+    dispatch({
+      type: types.CANCEL_APPOINTMENT_SUCCESS,
+      payload: id,
+    });
+    return res.data;
   } catch (error) {
     console.log(error);
   }

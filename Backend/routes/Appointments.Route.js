@@ -2,7 +2,7 @@ const express = require("express");
 const { AppointmentModel } = require("../models/Appointment.model");
 const { findPatientByPatientID } = require("../controllers/modelControllers/patient.controller")
 const { findNurseByNurseID } = require("../controllers/modelControllers/nurse.controller")
-const { findDoctorByDocID } = require("../controllers/modelControllers/doctor.controller")
+const { findDoctorByDocID, findDoctorByDoc_Id } = require("../controllers/modelControllers/doctor.controller")
 const { checkIfDoctorWillBeAvailableDuringPeriod } = require("../controllers/modelControllers/appointment.controller")
 
 
@@ -98,5 +98,45 @@ router.delete("/:appointmentId", async (req, res) => {
     res.status(400).send({ error: "Something went wrong, unable to Delete." });
   }
 });
+
+router.patch("/cancelAppointment/:id", async (req, res)=>{
+  try{
+
+    const _id = req.params.id;
+
+    const appointment = await AppointmentModel.findOne({_id});
+    if(!appointment) {
+     return res.send({ error: "appointment not found"});
+    }
+
+    appointment.appointmentStatus = "Cancelled";
+    await appointment.save();
+    res.send({ message: "appointment cancelled"})
+
+
+  }catch(err) {
+    console.log(err);
+    res.send({error: "Internal Server Error"})
+  }
+})
+
+
+router.get("/getAllDoctorAppointments/:doc_id", async (req, res)=>{
+  try{
+
+    const { doc_id } = req.params;
+
+    const doctor = await findDoctorByDoc_Id(doc_id)
+     if(!doctor) {
+      return res.send({ error: "doctor not found"});
+     }
+
+     const appointments = await AppointmentModel.find({ appointmentWith: doc_id  })
+     res.send({ message: "fetched your appointments", appointments})
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 module.exports = router;
