@@ -1,7 +1,8 @@
 const express = require("express");
 const { BedModel } = require("../models/Bed.model");
 const {
-  findBedByBedNumberRoomIDAndWardID
+  findBedByBedNumberRoomIDAndWardID,
+  getAllBedsInParticularOrder
  } = require("../controllers/modelControllers/bed.controller")
 
  const {
@@ -70,6 +71,19 @@ router.get("/", async (req, res) => {
 //     res.send({ message: "No Bed", error });
 //   }
 // });
+
+router.get('/findBedsInWard/:wardId', async (req, res)=> {
+  try{
+
+    const { wardId } = req.params
+    const beds = await getAllBedsInParticularOrder(wardId);
+    res.send({ message: "fetched ward beds", beds});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 router.post("/add", async (req, res) => {
   const { bedNumber, roomNumber, wardName } = req.body;

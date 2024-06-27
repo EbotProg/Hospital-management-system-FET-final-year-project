@@ -502,6 +502,74 @@ export const getAdmissionReport = (id) => async (dispatch) => {
   }
 };
 
+export const getAllDoctorsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DOCTORS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/doctors/findDoctorsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DOCTORS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllRoomsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_ROOMS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/rooms/findRoomsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_ROOMS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllBedsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_BEDS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/beds/findBedsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_BEDS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllNursesInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_NURSES_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/nurses/findNursesInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_NURSES_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllNurses = () => async (dispatch) => {
   try {
     dispatch({ type: types.GET_ALL_NURSES_REQUEST });

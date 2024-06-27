@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { generateReportPdf } = require("../controllers/generateReport")
 const { findWardByName } = require("../controllers/modelControllers/ward.controller")
+const { getAllNursesInParticularOrder } = require("../controllers/modelControllers/nurse.controller")
 const {generateUserId, generatePassword } = require("../controllers/generatePasswordAndID")
 const nodemailer = require("nodemailer");
 
@@ -20,6 +21,20 @@ router.get("/", async (req, res) => {
     res.status(400).send({ error: "Something went wrong" });
   }
 });
+
+
+router.get('/findNursesInWard/:wardId', async (req, res)=> {
+  try{
+
+    const { wardId } = req.params
+    const nurses = await getAllNursesInParticularOrder(wardId);
+    res.send({ message: "fetched ward nurses", nurses});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 
 router.post("/register", async (req, res) => {

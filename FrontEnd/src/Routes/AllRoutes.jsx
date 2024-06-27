@@ -19,6 +19,10 @@ import Book_Appointment from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/B
 import Nurse_Profile from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Nurse_Profile";
 import FrontPage from "../Pages/Dashboard/Main-Dashboard/GlobalFiles/FrontPage";
 import AddRooms from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/AddRoom";
+import SeeAllDoctorsInWard from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/SeeAllDoctorsInWard";
+import SeeAllNursesInWard from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/SeeAllNursesInWard";
+import SeeAllRoomsInWard from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/SeeAllRoomsInWard";
+import SeeAllBedsInWard from "../Pages/Dashboard/Main-Dashboard/AllPages/Admin/SeeAllBedsInWard";
 import CreateLabReports from "../Pages/Dashboard/Main-Dashboard/AllPages/Doctor/CreateLabReport";
 import ConsultPatient from "../Pages/Dashboard/Main-Dashboard/AllPages/Doctor/ConsultPatient";
 import Admit_Patient from "../Pages/Dashboard/Main-Dashboard/AllPages/Nurse/Admit_Patient";
@@ -39,6 +43,10 @@ const AllRoutes = () => {
         <Route path="/addbeds" element={<AddBeds />} />
         <Route path="/ward" element={<AddWard />} />
         <Route path="/room" element={<AddRooms />} />
+        <Route path="/seeDoctors/:wardName/:wardId" element={<SeeAllDoctorsInWard />} />
+        <Route path="/seeNurses/:wardName/:wardId" element={<SeeAllNursesInWard />} />
+        <Route path="/seeRooms/:wardName/:wardId" element={<SeeAllRoomsInWard />} />
+        <Route path="/seeBeds/:wardName/:wardId" element={<SeeAllBedsInWard />} />
         ******************** Doctor Part *************************
         <Route path="/reports" element={<AllReport />} />
         <Route path="/checkappointment" element={<Check_Appointment />} />

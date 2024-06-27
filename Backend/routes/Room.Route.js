@@ -1,6 +1,7 @@
 const express = require("express");
 const { RoomModel } = require("../models/Room.model");
 const { checkIfWardExistAndUpdatePayload } = require("../controllers/modelControllers/ward.controller")
+const { getAllRoomsInParticularOrder } = require("../controllers/modelControllers/room.controller")
 
 const router = express.Router();
 
@@ -13,6 +14,19 @@ router.get("/", async (req, res) => {
     res.status(400).send({ error: "Internal Server Error" });
   }
 });
+
+router.get('/findRoomsInWard/:wardId', async (req, res)=> {
+  try{
+
+    const { wardId } = req.params
+    const rooms = await getAllRoomsInParticularOrder(wardId);
+    res.send({ message: "fetched ward rooms", rooms});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 router.post("/add", async (req, res)=> {
     try{

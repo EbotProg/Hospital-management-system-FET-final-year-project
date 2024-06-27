@@ -34,6 +34,7 @@ async function getStatisticsByWard(ward) {
 
         return {
             wardName: ward.wardName,
+            _id: ward._id,
             doctors: [
                 (await countAvailableDoctorsInWard(ward._id)),
                 (await countAllDoctorsInWard(ward._id))

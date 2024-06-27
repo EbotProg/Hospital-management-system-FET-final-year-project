@@ -16,8 +16,15 @@ async function findNurseByNurseID(nurseID) {
     return nurse;
 }
 
+async function getAllNursesInParticularOrder(wardID) {
+    const nurses = await NurseModel.find({ wardID, isAvailable: { $exists: true } }).populate("wardID")
+    .sort({ isAvailable: 'desc' }) 
+    return nurses;
+}
+
 module.exports = {
     countAvailableNursesInWard,
     countAllNursesInWard,
-    findNurseByNurseID
+    findNurseByNurseID,
+    getAllNursesInParticularOrder
 }
