@@ -38,9 +38,15 @@ async function updateAvailabilityOfRoom(room) {
     }
 }
 
+async function findRoomByRoomNumber(roomNumber) {
+    const room = await RoomModel.findOne({ roomNumber});
+    return room;
+}
+
 module.exports = {
     countAvailableRoomsInWard,
     countAllRoomsInWard,
     updateAvailabilityOfRoom,
-    findRoomByRoomNumberAndWardID
+    findRoomByRoomNumberAndWardID,
+    findRoomByRoomNumber
 }

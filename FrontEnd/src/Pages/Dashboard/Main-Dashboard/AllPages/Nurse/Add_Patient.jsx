@@ -592,7 +592,7 @@ const navigate = useNavigate()
             </form>
           </div>
 
-          <div className="wardDetails">
+          <div className="wardDetails" style={{ maxWidth: "80vw" }}>
           <h1>Patient Details</h1>
           <div className="wardBox">
             <Table columns={columns} dataSource={mappedPatients} />

@@ -21,6 +21,10 @@ const patientSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  
+  fullName: {
+    type: String,
+  },
 
   mobile: {
     type: Number,

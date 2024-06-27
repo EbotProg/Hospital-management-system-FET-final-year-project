@@ -4,7 +4,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import {
-  SearchMyPatient,
+  SearchPatients,
+  GetPatients,
   GetMedHistory,
 } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
@@ -19,35 +20,159 @@ const SeeMyPatients = () => {
   //   data: { user },
   // } = useSelector((state) => state.auth);
 
-  const disptach = useDispatch();
+  const dispatch = useDispatch();
+
 
   const columns = [
-    { title: "Patient Name", dataIndex: "patientName"},
-    { title: "Doctor", dataIndex: "doctorName"},
-    { title: "Disease", dataIndex: "disease"},
-    { title: "Ward", dataIndex: "ward"},
-    { title: "Date", dataIndex: "date"}
+    { title: "ID", dataIndex: "patientID", key: "patientID"},
+    { title: "Full names", dataIndex: "fullNames", key: "fullNames"},
+    { title: "Ward", dataIndex: "wardName", key: "wardName"},
+    { title: "Room#", dataIndex: "roomNumber", key: "roomNumber"},
+    { title: "Bed#", dataIndex: "bedNumber", key: "bedNumber"},
+    { title: "Added on", dataIndex: "date", key: "date"}
   ];
 
-  const PatientMedicalHistory = [
-      { 
-        patientName: "Achale Ebot",
-        doctor: "John Doe",
-        disease: "Cough",
-        ward: "maternity",
-        date: "2022-01-01"
-      }
-  ]
+  // const PatientMedicalHistory = [
+  //     { 
+  //       patientName: "Achale Ebot",
+  //       doctor: "John Doe",
+  //       disease: "Cough",
+  //       ward: "maternity",
+  //       date: "2022-01-01"
+  //     }
+  // ]
 
   const InitData = {
-    patientName: "",
-    id: data.user._id 
+    searchBy: "",
+    // id: data.user._id 
   };
+
+  const fieldNames = {
+    searchBy: {
+      type: "text",
+      placeholder: "",
+      name: "searchBy",
+    },
+    patientID: {
+      type: "text",
+      name: "patientID",
+      placeholder: "e.g. Pt-1k3l2l37",
+    },
+    wardName: {
+      type: "text",
+      name: "wardName",
+      placeholder: "e.g. surgical ward",
+    },
+    roomNumber: {
+      type: "number",
+      name: "roomNumber",
+      placeholder: "e.g. 1",
+    },
+    bedNumber: {
+      type: "number",
+      name: "bedNumber",
+      placeholder: "e.g. 1",
+    },
+    patientName: {
+      type: "text",
+      name: "patientName",
+      placeholder: "e.g. Ayuk Bessem"
+    }
+  }
+
   const [patientSearchInput, setPatientSearchInput] = useState(InitData);
+  const [fieldName, setFieldName] = useState("searchBy")
+  const [fetchedPatients, setFetchedPatients] = useState([])
+  const [mappedPatients, setMappedPatients] = useState([])
+
+  const [input, setInput] = useState({...fieldNames["searchBy"]})
 
   const [loading, setloading] = useState(false);
 
-  const dispatch = useDispatch();
+
+  const mapPatientInfo = () => {
+    let arr = []
+    fetchedPatients.forEach((patient)=>{
+      let obj = {};
+      obj.key = patient._id
+      obj.patientID = patient.patientID;
+      obj.fullNames = `${patient.firstName} ${patient.lastName}`;
+      obj.wardName = patient?.wardID?.wardName || "";
+      obj.roomNumber = patient?.roomID?.roomNumber || "";
+      obj.bedNumber = patient?.bedID?.bedNumber;
+      obj.date = patient?.timeStamp ? new Date(patient.timeStamp).toLocaleDateString() : "";
+    //   obj.viewMore = <button
+    //   style={{
+    //     border: "none",
+    //     color: "blue",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => handleViewMorePatientInfo(patient._id)}
+    // >
+    //   View more
+    // </button>
+    //   obj.dischargeAdmit = patient.admitted === true?  <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => dischargePatient(patient._id)}
+    // >
+    //   discharge
+    // </button> : <button
+    //   style={{
+    //     border: "none",
+    //     color: "green",
+    //     outline: "none",
+    //     background: "transparent",
+    //     cursor: "pointer",
+    //   }}
+    //   onClick={() => admitPatient(patient._id)}
+    // >
+    //   admit
+    // </button>
+
+    arr.push(obj);
+    
+  });
+
+  setMappedPatients([...arr])
+
+  }
+  
+
+  useEffect(() => {
+    dispatch(GetPatients()).then(res => {
+      console.log("res from getall fetchedPatients", res);
+      setFetchedPatients(res.patients)
+    });
+  }, []);
+
+
+  useEffect(()=> {
+
+      console.log('fetchedPatients', fetchedPatients)
+   mapPatientInfo()
+
+  }, [fetchedPatients])
+
+  const handleFieldNameChange = (e) => {
+    setFieldName(e.target.value)
+    const data = {};
+    data[e.target.value] = "";
+    setPatientSearchInput(data)
+    setInput(fieldNames[e.target.value])
+  }
+
+  useEffect(()=>{
+    console.log('fieldName', fieldName)
+    console.log('patientSearchInput', patientSearchInput)
+  }, [fieldName, patientSearchInput])
 
   const handleSearchInputsChange = (e) => {
     setPatientSearchInput({
@@ -59,11 +184,31 @@ const SeeMyPatients = () => {
 
   const handlePatientSearchSubmit = (e) => {
     e.preventDefault();
+    const obj = { ...patientSearchInput };
+    if(obj.hasOwnProperty("searchBy")) {
+      return notify("You must select one of the options")
+    }
     setloading(true);
-    dispatch(SearchMyPatient(patientSearchInput));
-    setloading(false);
-    setPatientSearchInput(InitData);
-    notify("Got Your Patient(s)");
+    console.log("patientSearchInput", patientSearchInput);
+    dispatch(SearchPatients(patientSearchInput)).then(res => {
+     console.log("res from search fetchedPatients", res);
+
+     if(res.error) {
+      setloading(false);
+      return notify(res.error)
+     }else {
+
+      if(res.message === "fetched patient(s)") {
+        setFetchedPatients(res.patients)
+        notify(res.message); 
+        setPatientSearchInput(InitData);
+        setFieldName("searchBy")
+        setInput({...fieldNames["searchBy"]})
+      }
+      setloading(false);
+     }
+    });
+    
   };
 
   // const MedHistory = useSelector((state) => state.data.PatientMedicalHistory);
@@ -83,26 +228,36 @@ const SeeMyPatients = () => {
 
   return (
     <>
+    <ToastContainer />
       <div className="container">
         <Sidebar />
         <div className="AfterSideBar">
 
         <div className="mainAmbupance">
-            <h1>Search My Patients</h1>
+            <h1>Search Patients</h1>
 
             {/* ******************************************************** */}
             <form onSubmit={handlePatientSearchSubmit}>
               <div>
-                <label>Patient Name</label>
+                <label>Search By</label>
                 <div className="inputdiv">
+                <select name={fieldName} value={fieldName} onChange={e => handleFieldNameChange(e)}>
+                    <option value="searchBy">Search By</option>
+                    <option value="patientID">patient ID</option>
+                    <option value="wardName">Ward</option>
+                    <option value="roomNumber">Room</option>
+                    <option value="bedNumber">Bed</option>
+                    <option value="patientName">Patient Name</option>
+                  </select>
                   <input
-                    type="text"
-                    placeholder="name"
-                    name="patientName"
-                    value={patientSearchInput.patientName}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                    name={input.name}
+                    value={patientSearchInput[fieldName]}
                     onChange={handleSearchInputsChange}
                     required
                   />
+                  
                 </div>
               </div>
               
@@ -114,9 +269,9 @@ const SeeMyPatients = () => {
             </form>
           </div>
         <div className="Payment_Page">
-          <h1 style={{ marginTop: "2rem", marginBottom: "2rem" }}>My Patient(s)</h1>
+          <h1 style={{ marginTop: "2rem", marginBottom: "2rem" }}>Patient(s)</h1>
           <div className="wardBox">
-            <Table columns={columns} dataSource={PatientMedicalHistory} />
+            <Table columns={columns} dataSource={mappedPatients} />
           </div>
         </div>
 

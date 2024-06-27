@@ -32,10 +32,16 @@ async function countAllBedsInRoom(roomID) {
     return count;
 }
 
+async function findBedByBedNumber(bedNumber) {
+    const bed = await BedModel.findOne({ bedNumber});
+    return bed;
+}
+
 module.exports = {
     countAllBedsInWard,
     countAvailableBedsInWard,
     updateBedAvailability,
     countAllBedsInRoom,
-    findBedByBedNumberRoomIDAndWardID
+    findBedByBedNumberRoomIDAndWardID,
+    findBedByBedNumber
 }

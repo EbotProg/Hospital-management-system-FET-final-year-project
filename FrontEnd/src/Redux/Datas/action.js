@@ -842,11 +842,12 @@ export const downloadMedHistory = (data) => async (dispatch) => {
   }
 };
 
-export const SearchMyPatient = () => async (dispatch) => {
+export const SearchPatients = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.GET_MY_PATIENTS_REQUEST });
-    const res = await axios.get(
-      `${API}/patients/myPatients`
+    dispatch({ type: types.SEARCH_PATIENTS_REQUEST });
+    const res = await axios.post(
+      `${API}/patients/search`,
+      data
     );
     // console.log(res.data);
     return res.data;

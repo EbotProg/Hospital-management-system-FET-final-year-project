@@ -5,13 +5,25 @@ const jwt = require("jsonwebtoken");
 const { ReportModel } = require("../models/Report.model");
 const bcrypt = require('bcryptjs');
 const { generateUserId } = require("../controllers/generatePasswordAndID")
-const { findPatientByID } = require("../controllers/modelControllers/patient.controller")
+const { findPatientByID, findPatientsByRoom_Id,
+  findPatientsByWard_Id,
+  findPatientsByBed_Id,
+  findPatientByPatientID,
+  findPatientsByPatientName,
+  findPatientsByPatient_Id } = require("../controllers/modelControllers/patient.controller")
+const { findWardByName } = require("../controllers/modelControllers/ward.controller")
+const { findRoomByRoomNumber } = require("../controllers/modelControllers/room.controller")
+const { findBedByBedNumber } = require("../controllers/modelControllers/bed.controller")
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const patients = await PatientModel.find();
+    const patients = await PatientModel.find()
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
     res.status(200).send({ patients });
   } catch (error) {
     console.log(error);
@@ -33,6 +45,7 @@ router.post("/add", async (req, res) => {
     const patientId = generateUserId("Pt")
     const payload = { ...req.body }
     payload.patientID = patientId;
+    payload.fullName = `${payload.firstName} ${payload.lastName}` 
     patient = new PatientModel(payload)
     await patient.save();
     res.status(200).send({ message: "Patient Added", patient})
@@ -44,6 +57,68 @@ router.post("/add", async (req, res) => {
     res.send({ error: "Internal Server Error" });
   }
 });
+
+router.post("/search", async (req, res)=>{
+  try{
+
+    const { patientID, wardName, roomNumber, bedNumber, patientName } = req.body;
+    console.log("req.body", req.body)
+    let patients;
+    if(patientID) {
+
+      const patient = await findPatientByPatientID(patientID);
+    if(!patient) {
+      return res.send({error: "patient not found"})
+    }else if(patient) {
+       patients = await findPatientsByPatient_Id(patient._id);
+      return res.send({ message: "fetched patient(s)", patients})
+    }
+
+    }if(patientName) {
+
+     
+       patients = await findPatientsByPatientName(patientName);
+      return res.send({ message: "fetched patient(s)", patients})
+   
+
+    }else if(wardName) {
+      const ward = await findWardByName(wardName);
+      if(!ward) {
+        return res.send({error: "ward not found"})
+      }else if(ward) {
+         patients = await findPatientsByWard_Id(ward._id);
+        return res.send({ message: "fetched patient(s)", patients})
+      }
+    }else if(roomNumber) {
+      const room = await findRoomByRoomNumber(roomNumber);
+      if(!room) {
+        return res.send({error: "room not found"})
+      }else if(room) {
+         patients = await findPatientsByRoom_Id(room._id);
+        return res.send({ message: "fetched patient(s)", patients})
+      }
+
+
+    }else if(bedNumber) {
+      const bed = await findBedByBedNumber(bedNumber)
+      if(!bed) {
+        return res.send({error: "bed not found"})
+      }else if(bed) {
+         patients = await findPatientsByBed_Id(bed._id);
+        return res.send({ message: "fetched patient(s)", patients})
+      }
+
+    }else {
+      return res.send({ message: "Empty Response"})
+    }
+    
+
+    
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 router.get("/:id", async (req, res)=> {
   try{
@@ -62,6 +137,8 @@ console.log('id', id)
     res.send({ error: "Internal Server Error"})
   }
 })
+
+
 
 // // This register route will be used when adding a patient via patient or doctor or admin
 // router.post("/register", async (req, res) => {

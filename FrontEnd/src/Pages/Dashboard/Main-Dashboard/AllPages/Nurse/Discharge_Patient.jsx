@@ -368,7 +368,7 @@ const Discharge_Patient = () => {
             </form>
           </div>
 
-          <div className="wardDetails">
+          <div className="wardDetails" style={{ maxWidth: "80vw" }}>
           <h1>Discharge History</h1>
           <div className="wardBox">
             <Table columns={columns} dataSource={mappedDischargeReports} />

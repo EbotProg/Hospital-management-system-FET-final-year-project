@@ -167,6 +167,7 @@ const Book_Appointment = () => {
 
       if(res.message === 'Appointment Booked') {
         setLoading(false);
+        setIsSubmitted(true)
       notify(res.message);
       }
       setBookAppoint(InitValue);
@@ -375,7 +376,7 @@ const Book_Appointment = () => {
             </form>
           </div>
 
-          <div className="wardDetails">
+          <div className="wardDetails" style={{ maxWidth: "80vw" }}>
           <h1>All Appointments</h1>
           <div className="wardBox">
             <Table columns={columns} dataSource={mappedAppointments} />

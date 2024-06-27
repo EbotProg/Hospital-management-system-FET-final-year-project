@@ -351,7 +351,7 @@ const AddConsultations = () => {
                     onChange={e => handleMedInputChange(input.id, e)}
                   />
                   <select name="duration" onChange={e => handleMedFirstSelectChange(input.id, e)}>
-                    <option value="Dosage">Duration</option>
+                    <option value="Duration">Duration</option>
                     <option value="7 days">7 days</option>
                     <option value="1 month">1 month</option>
                     <option value="2 weeks">2 weeks</option>
