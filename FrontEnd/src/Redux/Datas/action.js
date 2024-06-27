@@ -553,6 +553,40 @@ export const getAllBedsInWard = (id) => async (dispatch) => {
   }
 };
 
+export const updateDoctorAvailability = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.UPDATE_DOCTOR_AVAILABILITY_REQUEST });
+    const res = await axios.post(
+      `${API}/doctors/toggleAvailability/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.UPDATE_DOCTOR_AVAILABILITY_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateNurseAvailability = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.UPDATE_NURSE_AVAILABILITY_REQUEST });
+    const res = await axios.post(
+      `${API}/nurses/toggleAvailability/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.UPDATE_NURSE_AVAILABILITY_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllNursesInWard = (id) => async (dispatch) => {
   try {
     dispatch({ type: types.GET_ALL_NURSES_IN_WARD_REQUEST });
