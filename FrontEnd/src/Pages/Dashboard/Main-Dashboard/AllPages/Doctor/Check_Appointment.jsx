@@ -33,7 +33,8 @@ const Check_Appointment = () => {
     { title: "Mobile", dataIndex: "phoneNumber"},
     { title: "Reason", dataIndex: "reason"},
     { title: "Location", dataIndex: "location"},
-    { title: "fromTo", dataIndex: "fromTo"},
+    { title: "Date", dataIndex: "date"},
+    { title: "Period", dataIndex: "period"},
     { title: "Created By", dataIndex: "createdBy"},
     { title: "Status", dataIndex: "status"},
     { title: "", dataIndex: "cancel"},
@@ -55,18 +56,36 @@ const Check_Appointment = () => {
     }
   }
 
+  const getFormattedTime = (dateObj) => {
+    // Get hours, minutes, and adjust for 12-hour format
+    const hours = dateObj.getHours() % 12 || 12; // Ensures 12 for noon
+    const minutes = dateObj.getMinutes().toString().padStart(2, '0'); // Pad minutes with leading zero
+  
+    // Get AM/PM indicator
+    const amPm = dateObj.getHours() < 12 ? 'AM' : 'PM';
+  
+    // Format the time string
+    return `${hours}:${minutes}${amPm}`;
+  }
+
   const mapAppointmentInfo = () => {
     let arr = []
     if(fetchedAppointments?.length > 0) {
       fetchedAppointments.forEach((info)=>{
+        // const from = new Date(info.startDateTime).toISOString().split("T")[1].split("Z")[0]
+        // const to = new Date(info.endDateTime).toISOString().split("T")[1].split("Z")[0]
+        const from = getFormattedTime(new Date(info.startDateTime))
+        const to = getFormattedTime(new Date(info.endDateTime))
         let obj = {};
         obj.key = info?._id
-        obj.patientID = info?.patientID?.patientID ? `${info?.patientID.firstName} ${info?.patientID.lastName}` : "";
-        obj.patientID = info?.patientID?.mobile;
+        obj.patientName = info?.patientID?.patientID ? `${info?.patientID.firstName} ${info?.patientID.lastName}` : "";
+        obj.phoneNumber = info?.patientID?.mobile;
         obj.reason = info?.reason;
         obj.location = info?.location;
-        obj.fromTo = info ? `${new Date(info.startDateTime).toLocaleDateString()} - ${new Date(info.endDateTime).toLocaleDateString()}` : "";
-        obj.createdBy = info?.createdBy;
+        // obj.date = info ? `${new Date(info.startDateTime).toLocaleDateString()} - ${new Date(info.endDateTime).toLocaleDateString()}` : "";
+        obj.date = info ? `${new Date(info.startDateTime).toLocaleDateString()}` : "";
+        obj.period = `${from} - ${to}`
+        obj.createdBy = info?.createdBy?.nurseID;
         obj.status = info?.appointmentStatus;
         obj.cancel =  info?.appointmentStatus === "Scheduled" ? <button
         style={{

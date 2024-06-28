@@ -12,17 +12,11 @@ router.get("/", async (req, res) => {
   // let query = req.query;
   try {
     // const appointments = await AppointmentModel.find(query);
-    const appointments = await AppointmentModel.find().populate([
-            {
-              path: "patientID",
-            },
-            {
-              path: "appointmentWith",
-            },
-            {
-              path: "createdBy",
-            },
-          ]);
+    const appointments = await AppointmentModel.find()
+    .populate("patientID")
+    .populate("appointmentWith")
+    .populate("createdBy")
+    
     res.status(200).send(appointments);
   } catch (error) {
     console.log(error);
@@ -132,6 +126,10 @@ router.get("/getAllDoctorAppointments/:doc_id", async (req, res)=>{
      }
 
      const appointments = await AppointmentModel.find({ appointmentWith: doc_id  })
+     .populate("patientID")
+    .populate("appointmentWith")
+    .populate("createdBy")
+    
      res.send({ message: "fetched your appointments", appointments})
   }catch(err) {
     console.log(err);

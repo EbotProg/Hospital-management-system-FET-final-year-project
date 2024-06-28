@@ -87,11 +87,14 @@ const ViewMedHistory = () => {
         //   }
         // }
         let medArr = []
-        for(let medicine of medicines) {
+        if(medicines) {
+          for(let medicine of medicines) {
           
-          const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
-          medArr.push(med);
+            const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+            medArr.push(med);
+          }
         }
+        
         console.log('medArr', medArr)
         obj.meds = medArr;
         obj.weight = info?.consultation_id?.weight;

@@ -7,32 +7,39 @@ async function findPatientHistoryByPatientId(patient_id) {
 
         const medHistory = await PatientMedicalHistoryModel.find({
             patient_id,
-        }).populate([
-                  {
-                    path: "patient_id",
-                  },
-                  {
-                    path: "prescription_id",
-                  },
-                  // {
-                  //   path: "doc_id",
-                  // },
-                  // {
-                  //   path: "nurse_id",
-                  // },
-                  {
-                    path: "consultation_id",
-                  },
-                  {
-                    path: "admissionRep_id",
-                  },
-                  {
-                    path: "dischargeRep_id",
-                  },
-                  {
-                    path: "labReport_id",
-                  },
-                ]);
+        })
+        .populate("patient_id")
+        .populate("prescription_id")
+        .populate("consultation_id")
+        .populate("admissionRep_id")
+        .populate("dischargeRep_id")
+        .populate("labReport_id")
+        // .populate([
+        //           {
+        //             path: "patient_id",
+        //           },
+        //           {
+        //             path: "prescription_id",
+        //           },
+        //           // {
+        //           //   path: "doc_id",
+        //           // },
+        //           // {
+        //           //   path: "nurse_id",
+        //           // },
+        //           {
+        //             path: "consultation_id",
+        //           },
+        //           {
+        //             path: "admissionRep_id",
+        //           },
+        //           {
+        //             path: "dischargeRep_id",
+        //           },
+        //           {
+        //             path: "labReport_id",
+        //           },
+        //         ]);
                 return medHistory;
     }catch(err) {
         console.log(err)
@@ -99,12 +106,15 @@ function getRows (infos) {
         const medicines = info?.prescription_id?.medicines
       
         let medArr = []
-        for(let medicine of medicines) {
+        if(medicines) {
+          for(let medicine of medicines) {
           
-          const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
-          // const med = `${medicine?.medicineName}`
-          medArr.push(med);
+            const med = `${medicine?.medicineName} ${medicine?.dosage} ${medicine?.duration}`
+            // const med = `${medicine?.medicineName}`
+            medArr.push(med);
+          }
         }
+        
         console.log('medArr', medArr)
         obj.meds = medArr.join("___");
         obj.weight = info?.consultation_id?.weight;
