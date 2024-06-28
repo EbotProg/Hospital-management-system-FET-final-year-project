@@ -9,6 +9,28 @@ const path = require("path")
 const router = express.Router();
 
 
+router.get("/", async (req, res) => {
+  try{
+
+    const medicalHistory = await PatientMedicalHistoryModel.find()
+    .populate("patient_id")
+    .populate("prescription_id")
+    .populate("consultation_id")
+    .populate("admissionRep_id")
+    .populate("dischargeRep_id")
+    .populate("labReport_id")
+
+    res.send({
+      message: "fetched medical history",
+      medicalHistory
+    })
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
+
 router.post("/search", async (req, res) => {
     try {
         const payload = { ...req.body }

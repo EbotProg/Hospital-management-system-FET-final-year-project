@@ -103,6 +103,30 @@ export const GetDoctorDetails = () => async (dispatch) => {
   }
 };
 
+export const GetMedHistory = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
+    const res = await axios.get(
+      `${API}/medicalHistory`
+    );
+    console.log(res);
+    // dispatch({
+    //   type: types.GET_DOCTOR_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+    return res.data;
+  } catch (error) {
+    dispatch({
+      type: types.GET_MEDICAL_HISTORY_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
 //ADD PATIENTS
 export const AddPatients = (data) => async (dispatch) => {
   try {
@@ -904,7 +928,7 @@ export const GetLabReports = () => async (dispatch) => {
 
 export const SearchMedHistory = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
+    dispatch({ type: types.SEARCH_MEDICAL_HISTORY_REQUEST });
     const res = await axios.post(
       `${API}/medicalHistory/search`,
       data

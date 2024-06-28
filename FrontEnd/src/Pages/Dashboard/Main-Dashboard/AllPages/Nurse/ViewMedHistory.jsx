@@ -142,6 +142,20 @@ const ViewMedHistory = () => {
   const dispatch = useDispatch();
 
   useEffect(()=> {
+    dispatch(GetMedHistory()).then(res => {
+      console.log("res from get med history", res);
+
+      if(res.error) {
+
+        return notify(res.error)
+      }else {
+
+        setFetchedMedHistory(res.medicalHistory);
+      }
+    })
+  }, [])
+
+  useEffect(()=> {
 
     mapMedHistory();
   }, [fetchedMedHistory])
