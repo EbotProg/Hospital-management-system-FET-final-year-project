@@ -96,12 +96,12 @@ router.post("/search", async (req, res) => {
 
         const rows = getRows(medHistory);
 
-        const pdfName = generateReportPdf(headers, rows, patient, hospital, payload.startDate, payload.endDate)
+        const pdfName = await generateReportPdf(headers, rows, patient, hospital, payload.startDate, payload.endDate)
 
         // const filePath = `${__dirname}/../pdfs/${pdfName}.pdf`;
 const filePath = `${path.join(__dirname, `/../pdfs/${pdfName}.pdf`)}`       
  console.log("filepath", filePath);
- setTimeout(()=> {
+//  setTimeout(()=> {
 res.download(filePath, (err) => {
             if (err) {
               console.error(err);
@@ -112,7 +112,7 @@ res.download(filePath, (err) => {
                 
             }
           });
- }, 5000)
+//  }, 5000)
         
 
 
