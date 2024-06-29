@@ -11,8 +11,8 @@ services:
     container_name: backend
     ports: 
       - 8000:8000
-    volumes:
-      - ./Backend:/app
+    # volumes:
+    #   - ./Backend:/app
       # - ./app/node_modules
     environment:
       port: 8000
@@ -26,8 +26,8 @@ services:
     container_name: frontend
     ports: 
       - 3000:3000
-    volumes:
-      - ./FrontEnd:/app
+    # volumes:
+    #   - ./FrontEnd:/app
       # - ./app/node_modules
     stdin_open: true
     tty: true

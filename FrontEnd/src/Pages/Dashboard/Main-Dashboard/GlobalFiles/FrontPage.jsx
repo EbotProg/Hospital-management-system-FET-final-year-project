@@ -175,10 +175,16 @@ const FrontPage = () => {
   
 
   useEffect(() => {
+    // console.log("new change")
     dispatch(GetPatients());
     dispatch(GetAllData());
     mapWards(data.wardStats)
   }, []);
+
+  // useEffect(()=> {
+  //   console.log("new change")
+  //   mapWards(data.wardStats);
+  // }, [data])
 
   useEffect(()=> {
 
