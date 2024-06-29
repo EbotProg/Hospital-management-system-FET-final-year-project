@@ -291,7 +291,7 @@ const ViewMedHistory = () => {
               </button>
             </form>
           </div>
-        <div className="Payment_Page">
+        <div className="wardDetails">
           <h1 style={{ marginTop: "2rem", marginBottom: "2rem", maxWidth: "80vw" }}>Medical History</h1>
           <div className="wardBox">
             <Table columns={columns} dataSource={mappedMedHistory} />
