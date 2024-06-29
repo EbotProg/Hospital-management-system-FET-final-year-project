@@ -387,7 +387,7 @@ const Add_Nurse = () => {
               </button>
             </form>
           </div>
-          <div className="wardDetails">
+          <div className="wardDetails" style={{maxWidth: "80vw" }}>
           <h1>Nurses</h1>
           <div className="wardBox">
             <Table columns={nurseColumns} dataSource={mappedNurses} />
