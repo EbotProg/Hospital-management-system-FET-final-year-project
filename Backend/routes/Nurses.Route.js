@@ -102,8 +102,43 @@ if(payload.wardName) {
     //   hospitalAbbrev = "WASPITAL"
     // }
     
-    const userId = generateUserId("Nrs")
-    const password = generatePassword(12)
+    let userId;
+    let idIsFound = true;
+    let i = 1;
+    while(idIsFound === true) {
+      console.log("idcheck ==== Running id check number", i)
+      userId = generateUserId("Nrs")
+      const value = await NurseModel.findOne({ nurseID: userId })
+      if(!value) {
+        console.log("No nurse found with id: ", userId)
+        idIsFound = false;
+      }else{
+        console.log("Nurse found with id: ", userId);
+      }
+      i++;
+    }
+
+    let password;
+    let passwordIsFound = true;
+    let j = 1;
+    while(passwordIsFound === true) {
+      console.log("passwordcheck ==== Running id check number", j)
+      password = generatePassword(12)
+      const value = await NurseModel.findOne({ password });
+      if(!value) {
+        console.log("No nurse found with : password", password)
+
+        passwordIsFound = false;
+      }else{
+        console.log("Nurse found with : password", password);
+      }
+      j++;
+    }
+
+
+
+    // const userId = generateUserId("Nrs")
+    // const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(password, salt, async function(err, hash) {

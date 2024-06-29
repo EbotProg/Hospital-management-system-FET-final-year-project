@@ -42,7 +42,23 @@ router.post("/add", async (req, res) => {
       });
     }
 
-    const patientId = generateUserId("Pt")
+    let userId;
+    let idIsFound = true;
+    let i = 1;
+    while(idIsFound === true) {
+      console.log("idcheck ==== Running id check number", i)
+      userId = generateUserId("Pt")
+      const value = await PatientModel.findOne({ patientID: userId })
+      if(!value) {
+        console.log("No patient found with id: ", userId)
+        idIsFound = false;
+      }else{
+        console.log("patient found with id: ", userId);
+      }
+      i++;
+    }
+
+    // const patientId = generateUserId("Pt")
     const payload = { ...req.body }
     payload.patientID = patientId;
     payload.fullName = `${payload.firstName} ${payload.lastName}` 

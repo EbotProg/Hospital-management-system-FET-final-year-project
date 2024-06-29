@@ -53,8 +53,41 @@ router.post("/register", async (req, res) => {
     //   hospitalAbbrev = "WASPITAL"
     // }
     
-    const userId = generateUserId("Adm")
-    const password = generatePassword(12)
+    let userId;
+    let idIsFound = true;
+    let i = 1;
+    while(idIsFound === true) {
+      console.log("idcheck ==== Running id check number", i)
+      userId = generateUserId("Adm")
+      const value = await AdminModel.findOne({ adminID: userId })
+      if(!value) {
+        console.log("No admin found with id: ", userId)
+        idIsFound = false;
+      }else{
+        console.log("admin found with id: ", userId);
+      }
+      i++;
+    }
+
+    let password;
+    let passwordIsFound = true;
+    let j = 1;
+    while(passwordIsFound === true) {
+      console.log("passwordcheck ==== Running id check number", j)
+      password = generatePassword(12)
+      const value = await AdminModel.findOne({ password });
+      if(!value) {
+        console.log("No admin found with : password", password)
+
+        passwordIsFound = false;
+      }else{
+        console.log("admin found with : password", password);
+      }
+      j++;
+    }
+
+    // const userId = generateUserId("Adm")
+    // const password = generatePassword(12)
 
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(password, salt, async function(err, hash) {
@@ -171,54 +204,232 @@ router.post("/forgot", async (req, res) => {
   let userId;
   let password;
 
-  if (type == "nurse") {
-    user = await NurseModel.find({ email });
-    userId = user[0]?.nurseID;
-    password = user[0]?.password;
-  }
-  if (type == "patient") {
-    user = await PatientModel.find({ email });
-    userId = user[0]?.nurseID;
-    password = user[0]?.password;
-  }
+  try{
 
-  if (type == "admin") {
-    user = await AdminModel.find({ email });
-    userId = user[0]?.adminID;
-    password = user[0]?.password;
-  }
-
-  if (type == "doctor") {
-    user = await DoctorModel.find({ email });
-    userId = user[0]?.docID;
-    password = user[0]?.password;
-  }
-
-  if (!user) {
-    return res.send({ message: "User not found" });
-  }
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: 'digitalwaspital@gmail.com',
-      pass: 'pnkbfjddzymtzfev'
-    },
-  });
-
-  const mailOptions = {
-    from: "DW<digitalwaspital@gmail.com>",
-    to: email,
-    subject: "Account ID and Password",
-    text: `This is your User Id : ${userId} and  Password : ${password} .`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.send(error);
+    if (type == "nurse") {
+      user = await NurseModel.findOne({ email });
+  
+      if(!user) {
+        return res.send({ error: "nurse not found"});
+      }
+     password = await generateAndCheckNursePass(user);
+     
+  
+      userId = user?.nurseID;
+      
     }
-    return res.send("Password reset email sent");
-  });
+    else if (type == "patient") {
+      user = await PatientModel.find({ email });
+      userId = user[0]?.nurseID;
+      password = user[0]?.password;
+    }
+  
+    else if (type == "admin") {
+      user = await AdminModel.findOne({ email });
+  
+      if(!user) {
+        return res.send({ error: "nurse not found"});
+      }
+     password = await generateAndCheckAdminPass(user);
+      userId = user?.adminID;
+   
+    }
+  
+    else if (type == "doctor") {
+      user = await DoctorModel.findOne({ email });
+  
+      if(!user) {
+        return res.send({ error: "nurse not found"});
+      }
+     password = await generateAndCheckDocPass(user);
+      userId = user?.docID;
+    }
+  
+    else if (!user) {
+      return res.send({ message: "User not found" });
+    }
+
+    
+    
+      console.log("password before send", password)
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: 'digitalwaspital@gmail.com',
+          pass: 'pnkbfjddzymtzfev'
+        },
+      });
+    
+      const mailOptions = {
+        from: "DigitalWaspital<digitalwaspital@gmail.com>",
+        to: email,
+        subject: "Account ID and Password",
+        text: `Hello user ${userId}, this is your new Password : ${password} .`,
+      };
+    
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.send(error);
+        }
+        return res.send("Password reset email sent");
+      });
+    
+  
+  
+
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+
+
 });
+
+
+async function generateAndCheckDocPass(doctor) {
+  try{
+
+    let password;
+    let passwordIsFound = true;
+    let j = 1;
+    while(passwordIsFound === true) {
+      console.log("passwordcheck ==== Running check number", j)
+      password = generatePassword(12)
+      const value = await DoctorModel.findOne({ password });
+      if(!value) {
+        console.log("No doctor found with : password", password)
+
+        passwordIsFound = false;
+      }else{
+        console.log("nurse doctor with : password", password);
+      }
+      j++;
+    }
+
+    return new Promise((resolve, reject)=>{
+
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt,function(err, hash) {
+            // Store hash in your password DB.
+            console.log("passwordhash", hash)
+            
+            doctor.password = hash
+            console.log("password after hash", password)
+            doctor.save().then(()=>{
+              resolve(password)
+            }).catch(err => {
+              console.log(err);
+              reject(err)
+            });
+            
+            
+            // data.docID = userId;
+            
+        });
+    });
+    })
+
+
+  }catch(err) {
+    console.log(err);
+  }
+}
+async function generateAndCheckNursePass(nurse) {
+  try{
+
+    let password;
+    let passwordIsFound = true;
+    let j = 1;
+    while(passwordIsFound === true) {
+      console.log("passwordcheck ==== Running check number", j)
+      password = generatePassword(12)
+      const value = await NurseModel.findOne({ password });
+      if(!value) {
+        console.log("No nurse found with : password", password)
+
+        passwordIsFound = false;
+      }else{
+        console.log("nurse found with : password", password);
+      }
+      j++;
+    }
+
+    return new Promise((resolve, reject)=>{
+
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(password, salt,function(err, hash) {
+            // Store hash in your password DB.
+            console.log("passwordhash", hash)
+            
+            nurse.password = hash
+            console.log("password after hash", password)
+            nurse.save().then(()=>{
+              resolve(password)
+            }).catch(err => {
+              console.log(err);
+              reject(err)
+            });
+            
+            
+            // data.docID = userId;
+            
+        });
+    });
+    })
+
+  }catch(err) {
+    console.log(err);
+  }
+}
+async function generateAndCheckAdminPass(admin) {
+  try{
+
+    let password;
+    let passwordIsFound = true;
+    let j = 1;
+    while(passwordIsFound === true) {
+      console.log("passwordcheck ==== Running check number", j)
+      password = generatePassword(12)
+      const value = await AdminModel.findOne({ password });
+      if(!value) {
+        console.log("No admin found with : password", password)
+
+        passwordIsFound = false;
+      }else{
+        console.log("admin found with : password", password);
+      }
+      j++;
+    }
+
+   
+return new Promise((resolve, reject)=>{
+
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(password, salt,function(err, hash) {
+        // Store hash in your password DB.
+        console.log("passwordhash", hash)
+        
+        admin.password = hash
+        console.log("password after hash", password)
+        admin.save().then(()=>{
+          resolve(password)
+        }).catch(err => {
+          console.log(err);
+          reject(err)
+        });
+        
+        
+        // data.docID = userId;
+        
+    });
+});
+})
+   
+
+  }catch(err) {
+    console.log(err);
+  }
+}
 
 module.exports = router;
