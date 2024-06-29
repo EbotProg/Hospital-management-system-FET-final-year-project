@@ -10,7 +10,8 @@ const { ReportModel } = require("../models/Report.model");
 const { WardModel } = require("../models/Ward.model");
 const { RoomModel } = require("../models/Room.model");
 const { LabReportModel } = require("../models/LabReport.model");
-const { getAllWardStats } = require("../controllers/modelControllers/hospital.controller")
+const { getAllWardStats } = require("../controllers/modelControllers/hospital.controller");
+const { HospitalModel } = require("../models/Hospital.model");
 
 const router = express.Router();
 
@@ -68,5 +69,30 @@ router.get("/", async (req, res) => {
     res.status(400).send({ error: "Something went wrong" });
   }
 });
+
+router.post("/add", async (req, res)=> {
+  try{
+
+    const payload = { ...req.body };
+
+    const hospital = await HospitalModel.create({...payload})
+    res.send({ message: "Hospital created", hospital})
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
+
+router.get("/getHospital", async (req, res)=>{
+  try{
+
+    const hospital = await HospitalModel.findOne({});
+    res.send({ message: "fetched hospital", hospital})
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error : "Internal Server Error"})
+  }
+})
 
 module.exports = router;

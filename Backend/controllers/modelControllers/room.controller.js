@@ -17,6 +17,12 @@ async function countAllRoomsInWard (wardID) {
     return count;
 }
 
+async function getAllRoomsInParticularOrder(wardID) {
+    const rooms = await RoomModel.find({ wardID, isAvailable: { $exists: true } }).populate("wardID")
+    .sort({ isAvailable: 'desc' }) 
+    return rooms;
+}
+
 
 
 async function updateAvailabilityOfRoom(room) {
@@ -38,9 +44,16 @@ async function updateAvailabilityOfRoom(room) {
     }
 }
 
+async function findRoomByRoomNumber(roomNumber) {
+    const room = await RoomModel.findOne({ roomNumber});
+    return room;
+}
+
 module.exports = {
     countAvailableRoomsInWard,
     countAllRoomsInWard,
     updateAvailabilityOfRoom,
-    findRoomByRoomNumberAndWardID
+    findRoomByRoomNumberAndWardID,
+    findRoomByRoomNumber,
+    getAllRoomsInParticularOrder
 }

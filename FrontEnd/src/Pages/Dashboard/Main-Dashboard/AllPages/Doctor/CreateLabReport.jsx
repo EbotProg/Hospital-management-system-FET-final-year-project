@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { CreatePayment, CreateLabReport } from "../../../../../Redux/Datas/action";
-import { GetLabReports } from "../../../../../Redux/Datas/action";
+import { CreatePayment, CreateLabReport, GetLabReports } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
@@ -12,22 +11,18 @@ const notify = (text) => toast(text);
 const CreateLabReports = () => {
   const { data } = useSelector((store) => store.auth);
 
- 
+
 
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   
-  const [Report, setReport] = useState();
-  useEffect(() => {
-    dispatch(GetLabReports()).then((res) => {
-      setReport(res);
-    });
-  }, []);
+  // const [Report, setReport] = useState();
+
 
   const InitData = {
-    docName: "",
-    patientName: "",
+    docID: "",
+    patientID: "",
     haemoglobin: "",
     redBloodCellCount: "",
     whiteBloodCellCount: "",
@@ -35,24 +30,101 @@ const CreateLabReports = () => {
     glucose: "",
     sodium: "",
     potassium: "",
-    date: "",
-    time: ""
+    dateTime: ""
   };
 
   const columns = [
-    { title: "Doctor Name", dataIndex: "docName"},
-    { title: "Patient Name", dataIndex: "patientName"},
-    { title: "Haemoglobin", dataIndex: "haemoglobin"},
-    { title: "RBCs", dataIndex: "redBloodCellCount" },
-    { title: "WBCs", dataIndex: "whiteBloodCellCount"},
-    { title: "Thrombocytes", dataIndex: "thrombocytes" },
-    { title: "Glucose", dataIndex: "glucose" },
-    { title: "Sodium", dataIndex: "sodium" },
-    { title: "Date", dataIndex: "date" },
-    { title: "Time", dataIndex: "time" },
+    { title: "Doctor Name", dataIndex: "docName", key: "docName"},
+    { title: "Patient Name", dataIndex: "patientName", key: "patientName"},
+    { title: "Haemoglobin", dataIndex: "haemoglobin", key: "haemoglobin"},
+    { title: "RBCs", dataIndex: "rbc", key: "rbc"},
+    { title: "WBCs", dataIndex: "wbc", key: "wbc"},
+    { title: "Thrombocytes", dataIndex: "thrombocytes", key: "thrombocytes"},
+    { title: "Glucose", dataIndex: "glucose", key: "glucose" },
+    { title: "Sodium", dataIndex: "sodium", key: "sodium" },
+    { title: "Date", dataIndex: "dateTime", key: "dateTime"},
   ];
 
   const [labReportValue, setLabReportValue] = useState(InitData);
+  const [fetchedLabReports, setFetchedLabReports] = useState([])
+  const [mappedLabReports, setMappedLabReports] = useState([])
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+
+  const mapAdmissionRepInfo = () => {
+    let arr = []
+    if(fetchedLabReports?.length > 0) {
+      fetchedLabReports.forEach((info)=>{
+        let obj = {};
+        obj.key = info?._id
+        obj.docName = info?.doc_id?.docName;
+        obj.patientName = info?.patient_id?.patientID ? `${info?.patient_id?.firstName} ${info?.patient_id?.lastName}`: "";
+        obj.haemoglobin = info?.haemoglobin;
+        obj.rbc = info?.redBloodCellCount;
+        obj.wbc = info?.whiteBloodCellCount;
+        obj.thrombocytes = info?.thrombocytes;
+        obj.glucose = info?.glucose;
+        obj.sodium = info?.sodium;
+        obj.dateTime = info?.dateTime;
+      //   obj.viewMore = <button
+      //   style={{
+      //     border: "none",
+      //     color: "blue",
+      //     outline: "none",
+      //     background: "transparent",
+      //     cursor: "pointer",
+      //   }}
+      //   onClick={() => handleViewMorePatientInfo(info._id)}
+      // >
+      //   View more
+      // </button>
+    
+  
+      arr.push(obj);
+      
+    });
+    }
+    
+
+  setMappedLabReports([...arr])
+
+  }
+
+
+
+
+  useEffect(()=> {
+
+    
+    setLabReportValue({ ...labReportValue, docID: data?.user.docID})
+
+
+    dispatch(GetLabReports()).then(res => {
+      console.log('get all labrep res', res)
+      setFetchedLabReports(res.labReports);
+    })
+    
+  }, [])
+
+  useEffect(()=> {
+    if(isSubmitted === true) {
+      dispatch(GetLabReports()).then(res => {
+        console.log('get all labrep res', res)
+        setFetchedLabReports(res.labReports);
+      })
+    }
+    setIsSubmitted(false)
+    
+  }, [isSubmitted])
+
+  useEffect(()=> {
+    console.log('fetchedLabReports', fetchedLabReports)
+    mapAdmissionRepInfo()
+
+  }, [fetchedLabReports])
+
+
+
 
   const handleLabReportChange = (e) => {
     setLabReportValue({ ...labReportValue, [e.target.name]: e.target.value });
@@ -67,13 +139,18 @@ const CreateLabReports = () => {
     try {
       setLoading(true);
       dispatch(CreateLabReport(data)).then((res) => {
-        if (res.message === "LabReport successfully created") {
-          notify("LabReport Created Sucessfully");
+        console.log("res from createlabrep", res)
+        if (res.error) {
           setLoading(false);
-          setLabReportValue(InitData);
+          notify(res.error);
+
         } else {
+          if(res.message === "Lab Report Created") {
+            notify(res.message)
+            setIsSubmitted(true)
+            setLabReportValue(InitData)
+          }
           setLoading(false);
-          notify("Something went Wrong");
         }
       });
     } catch (error) {
@@ -98,26 +175,26 @@ const CreateLabReports = () => {
             <h1>Create Lab Report</h1>
             <form>
               <div>
-                <label>Doctor Name</label>
+                <label>Your ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Full Name"
-                    name="docName"
-                    value={labReportValue.docName}
+                    placeholder="e.g. Doc-kf3l2ks7"
+                    name="docID"
+                    value={labReportValue.docID}
                     onChange={handleLabReportChange}
                     required
                   />
                 </div>
               </div>
               <div>
-                <label>Patient Name</label>
+                <label>Patient ID</label>
                 <div className="inputdiv">
                   <input
                     type="text"
-                    placeholder="Full Name"
-                    name="patientName"
-                    value={labReportValue.patientName}
+                    placeholder="e.g. Pt-kf3l2ks7"
+                    name="patientID"
+                    value={labReportValue.patientID}
                     onChange={handleLabReportChange}
                     required
                   />
@@ -142,7 +219,7 @@ const CreateLabReports = () => {
                   <input
                     type="number"
                     placeholder="No"
-                    name="redBLoodCellCount"
+                    name="redBloodCellCount"
                     value={labReportValue.redBloodCellCount}
                     onChange={handleLabReportChange}
                   />
@@ -218,31 +295,21 @@ const CreateLabReports = () => {
                 <label>Date</label>
                 <div className="inputdiv">
                   <input
-                    type="date"
+                    type="datetime-local"
                     placeholder="dd-mm-yyyy"
-                    name="date"
-                    value={labReportValue.date}
+                    name="dateTime"
+                    value={labReportValue.dateTime}
                     onChange={handleLabReportChange}
                   />
                 </div>
               </div>
-              <div>
-                <label>Time</label>
-                <div className="inputdiv">
-                  <input
-                    type="time"
-                    name="time"
-                    value={labReportValue.time}
-                    onChange={handleLabReportChange}
-                  />
-                </div>
-              </div>
+              
 
               <button
                 className="formsubmitbutton bookingbutton"
                 onClick={handleLabReportSubmit}
               >
-                {loading ? "Loading..." : "Generate Report"}
+                {loading ? "Loading..." : "Submit"}
               </button>
             </form>
           </div>
@@ -250,7 +317,7 @@ const CreateLabReports = () => {
           <div className="view_lab_report_div">
           <h1 style={{ marginBottom: "2rem" }}>View Lab Reports</h1>
           <div className="wardBox">
-            <Table columns={columns} dataSource={Report} />
+            <Table columns={columns} dataSource={mappedLabReports} />
           </div>
         </div>
 
@@ -277,7 +344,7 @@ const CreateLabReports = () => {
                         <td>{ele.docName}</td>
                         <td>{ele.patientMobile}</td>
                         <td>{ele.patientAge}</td>
-                        <td>{ele.date}</td>
+                        <td>{ele.dateTime}</td>
                       </tr>
                     );
                   })}

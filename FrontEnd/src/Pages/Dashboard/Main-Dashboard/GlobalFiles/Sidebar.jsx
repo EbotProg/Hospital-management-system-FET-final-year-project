@@ -328,7 +328,7 @@ const Sidebar = () => {
                   style={{ display: isOpen ? "block" : "none" }}
                   className="link_text"
                 >
-                  View Medical History
+                  Med History
                 </div>
               </Link>
             ) : null}
@@ -351,7 +351,7 @@ const Sidebar = () => {
               </Link>
             ) : null}
 
-            <Link className="link" activeclassname="active" to={"/rooms"}>
+            {/* <Link className="link" activeclassname="active" to={"/rooms"}>
               <div className="icon">
                 <MdBedroomChild className="mainIcon" />
               </div>
@@ -361,7 +361,7 @@ const Sidebar = () => {
               >
                 Beds
               </div>
-            </Link>
+            </Link> */}
             {/* {user?.userType === "doctor" ? (
               <Link className="link" activeclassname="active" to={"/reports"}>
                 <div className="icon">

@@ -80,7 +80,13 @@ const doctorSchema = mongoose.Schema({
     type: Boolean,
     default: false,
     required: true,
+  },
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
+
 });
 
 const DoctorModel = mongoose.model("doctor", doctorSchema);

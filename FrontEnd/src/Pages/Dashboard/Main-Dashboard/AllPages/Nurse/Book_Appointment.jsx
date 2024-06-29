@@ -150,6 +150,11 @@ const Book_Appointment = () => {
 
   const HandleOnsubmitAppointment = (e) => {
     e.preventDefault();
+    const startTimeStamp = new Date(BookAppoint.startDateTime).getTime();
+    const endTimeStamp = new Date(BookAppoint.endDateTime).getTime();
+    if(endTimeStamp <= startTimeStamp) {
+      return notify("Your end date must be after your start date")
+    }
 
     setLoading(true);
     
@@ -162,6 +167,7 @@ const Book_Appointment = () => {
 
       if(res.message === 'Appointment Booked') {
         setLoading(false);
+        setIsSubmitted(true)
       notify(res.message);
       }
       setBookAppoint(InitValue);
@@ -339,7 +345,7 @@ const Book_Appointment = () => {
               </div> */}
 
               <div>
-                <label>Start On</label>
+                <label>From</label>
                 <div className="inputdiv">
                 <input
                     type={"datetime-local"}
@@ -352,7 +358,7 @@ const Book_Appointment = () => {
               </div>
 
               <div>
-                <label>End On</label>
+                <label>To</label>
                 <div className="inputdiv">
                 <input
                     type={"datetime-local"}
@@ -370,7 +376,7 @@ const Book_Appointment = () => {
             </form>
           </div>
 
-          <div className="wardDetails">
+          <div className="wardDetails" style={{ maxWidth: "80vw" }}>
           <h1>All Appointments</h1>
           <div className="wardBox">
             <Table columns={columns} dataSource={mappedAppointments} />

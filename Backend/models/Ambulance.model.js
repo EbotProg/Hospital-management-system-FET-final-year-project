@@ -25,6 +25,13 @@ const ambulanceSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  timeStamp: {
+    type: String,
+    default: new Date()
+  }
+
+
 });
 
 const AmbulanceModel = mongoose.model("ambulance", ambulanceSchema);

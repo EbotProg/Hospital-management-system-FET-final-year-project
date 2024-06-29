@@ -32,9 +32,15 @@ const dischargeReportSchema = mongoose.Schema({
     ref: "bed",
     required: true,
   },
- 
+
   timeStamp: {
     type: String,
+    default: new Date()
+  },
+
+  dateTime: {
+    type: String,
+    default: new Date()
   }
 });
 

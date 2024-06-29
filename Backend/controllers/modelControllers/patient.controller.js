@@ -88,7 +88,68 @@ function checkIfPatientIsFoundOnBed(patient, bedID) {
     return value;
 }
 
+function findPatientsByRoom_Id(roomID) {
+    const patients = PatientModel.find({ roomID })
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
+    return patients;
+}
+function findPatientsByWard_Id(wardID) {
+    const patients = PatientModel.find({ wardID })
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
+    return patients;
+}
+function findPatientsByBed_Id(bedID) {
+    const patients = PatientModel.find({ bedID })
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
+    // .populate(
+    //     {
+    //         path: "patientID"
+    //     },
+    //     {
+    //         path: "wardID",
+    //     },
+    //     {
+    //         path: "roomID"
+    //     },
+    //     {
+    //         path: "bedID"
+    //     }
+    // );
+    return patients;
+}
+function findPatientsByPatient_Id(_id) {
+    const patients = PatientModel.find({ _id })
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
+    return patients;
+}
+
+function findPatientsByPatientName(patientName) {
+    const patients = PatientModel.find({ "fullName": { "$regex": patientName, "$options": "i" } })
+    .populate("patientID")
+    .populate("wardID")
+    .populate("roomID")
+    .populate("bedID");
+    return patients;
+}
+
+
 module.exports = {
+    findPatientsByRoom_Id,
+    findPatientsByWard_Id,
+    findPatientsByBed_Id,
+    findPatientsByPatient_Id,
     assignPatientToWardRoomBed,
     findPatientByName,
     countAllPatientsInRoom,
@@ -97,5 +158,6 @@ module.exports = {
     checkIfPatientIsFoundInWard,
     checkIfPatientIsFoundInRoom,
     checkIfPatientIsFoundOnBed,
-    removePatientFromWardRoomBed
+    removePatientFromWardRoomBed,
+    findPatientsByPatientName
 }

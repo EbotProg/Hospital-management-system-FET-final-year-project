@@ -1,80 +1,103 @@
 const mongoose = require("mongoose");
 
 const prescriptionSchema = mongoose.Schema({
-  docName: {
-    type: String,
-    required: true,
+  doc_id: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: "doctor"
   },
 
-  nurseName: {
-    type: String,
-    required: true,
+  nurse_id: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: "nurse"
   },
 
-  hospital: {
-    name: {
-      type: String,
-      required: true,
-    },
-    address: {
-      street: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      state: {
-        type: String,
-        required: true,
-      },
-      pincode: {
-        type: Number,
-        required: true,
-      },
-    },
-    phone: {
-      type: Number,
-      required: true,
-      minlength: 11,
-    },
+  patient_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "patient",
+    required: true
   },
 
-  medicines: {
-    diagnosis: {
-      type: String,
-    },
-    medicineName: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    dosage: {
-      quantity: {
-        type: Number,
+  // hospital: {
+  //   name: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   address: {
+  //     street: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     city: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     state: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     pincode: {
+  //       type: Number,
+  //       required: true,
+  //     },
+  //   },
+  //   phone: {
+  //     type: Number,
+  //     required: true,
+  //     minlength: 11,
+  //   },
+  // },
+
+  medicines: [
+    {
+      medicineName: {
+        type: String,
         required: true,
+      },
+      dosage: {
+        type: String,
+        required: true
       },
       duration: {
-        type: Number,
-        required: true,
-      },
-    },
-  },
+        type: String,
+        required: true
+      }
+    }
+    
+    // diagnosis: {
+    //   type: String,
+    // },
+    
+    // type: {
+    //   type: String,
+    //   required: true,
+    // },
+    // dosage: {
+    //   quantity: {
+    //     type: Number,
+    //     required: true,
+    //   },
+    //   duration: {
+    //     type: Number,
+    //     required: true,
+    //   },
+    // },
+  ],
 
-  advice: {
+  // advice: {
+  //   type: String,
+  // },
+
+  // total: {
+  //   type: Number,
+  //   required: true,
+  // },
+
+  
+
+  timeStamp: {
     type: String,
-  },
-
-  total: {
-    type: Number,
-    required: true,
-  },
+    default: new Date()
+  }
 });
 
 const PrescriptionModel = mongoose.model("prescription", prescriptionSchema);

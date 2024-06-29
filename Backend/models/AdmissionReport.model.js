@@ -32,9 +32,15 @@ const admissionReportSchema = mongoose.Schema({
     ref: "bed",
     required: true,
   },
- 
+
+  dateTime: {
+    type: String,
+    default: new Date()
+  },
+
   timeStamp: {
     type: String,
+    default: new Date()
   },
 
   isCurrent: {

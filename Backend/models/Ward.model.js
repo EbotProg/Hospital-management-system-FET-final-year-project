@@ -11,6 +11,11 @@ const wardSchema = mongoose.Schema({
     ref: "hospital"
   },
 
+  timeStamp: {
+    type: String,
+    default: new Date()
+  }
+
   
 });
 

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { generateReportPdf } = require("../controllers/generateReport")
 const { findWardByName } = require("../controllers/modelControllers/ward.controller")
+const { getAllNursesInParticularOrder, findNurseByNurseId, updateNurseAvailability } = require("../controllers/modelControllers/nurse.controller")
 const {generateUserId, generatePassword } = require("../controllers/generatePasswordAndID")
 const nodemailer = require("nodemailer");
 
@@ -20,6 +21,37 @@ router.get("/", async (req, res) => {
     res.status(400).send({ error: "Something went wrong" });
   }
 });
+
+router.post("/toggleAvailability/:id", async (req, res) => {
+  try{
+
+    const { id } = req.params;
+    const nurse = await findNurseByNurseId(id)
+    if(!nurse) {
+      res.send({ error: "nurse not found"})
+    }
+
+    await updateNurseAvailability(nurse);
+    res.send({ message: "nurse availability updated", nurse})
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
+
+router.get('/findNursesInWard/:wardId', async (req, res)=> {
+  try{
+
+    const { wardId } = req.params
+    const nurses = await getAllNursesInParticularOrder(wardId);
+    res.send({ message: "fetched ward nurses", nurses});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 
 router.post("/register", async (req, res) => {
@@ -204,35 +236,35 @@ router.delete("/:nurseId", async (req, res) => {
 });
 
 
-router.post("/generatePdf", async (req, res) => {
+// router.post("/generatePdf", async (req, res) => {
 
-  try{
-    const headers = ["Field1", "Field2", "Field3", "Field4", "Field5", "Field6", "Field7", "Field8", "Field9", "Field10"]
-    const rows = [
-      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
-      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
-      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
-      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
-      ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"]
-    ]
-    const patient = {
-      name: "Achale Ebot",
-      address: "Bokwai"
-    }
+//   try{
+//     const headers = ["Field1", "Field2", "Field3", "Field4", "Field5", "Field6", "Field7", "Field8", "Field9", "Field10"]
+//     const rows = [
+//       ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+//       ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+//       ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+//       ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"],
+//       ["value1", "value2", "Field3", "value4", "value5", "value6", "value7", "value8", "value9", "value10"]
+//     ]
+//     const patient = {
+//       name: "Achale Ebot",
+//       address: "Bokwai"
+//     }
 
-    const hospital = {
-      name: "Buea General Hospital",
-      address: "Buea"
-    }
+//     const hospital = {
+//       name: "Buea General Hospital",
+//       address: "Buea"
+//     }
 
-    const startDate = new Date("2024-01-01");
-    const endDate = new Date();
-    generateReportPdf(headers, rows, patient, hospital, startDate, endDate)
-    res.end();
-  }catch(err) {
-    console.log(err)
-    res.status(400).send({ error: "Something went wrong, unable to generatePdf"})
-  }
-})
+//     const startDate = new Date("2024-01-01");
+//     const endDate = new Date();
+//     generateReportPdf(headers, rows, patient, hospital, startDate, endDate)
+//     res.end();
+//   }catch(err) {
+//     console.log(err)
+//     res.status(400).send({ error: "Something went wrong, unable to generatePdf"})
+//   }
+// })
 
 module.exports = router;

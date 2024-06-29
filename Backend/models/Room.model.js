@@ -15,6 +15,11 @@ const roomSchema = mongoose.Schema({
   isAvailable: {
     type: Boolean,
     default: true,
+  },
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
 
   

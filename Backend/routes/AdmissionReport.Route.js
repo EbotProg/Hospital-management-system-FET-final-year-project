@@ -6,6 +6,9 @@ const { findNurseByNurseID } = require("../controllers/modelControllers/nurse.co
 const { findWardByName } = require("../controllers/modelControllers/ward.controller")
 const { findRoomByRoomNumberAndWardID, updateAvailabilityOfRoom } = require("../controllers/modelControllers/room.controller")
 const { findBedByBedNumberRoomIDAndWardID } = require("../controllers/modelControllers/bed.controller")
+const { findSingleHistoryWithinGivenDates } = require("../controllers/modelControllers/medHistory.controller")
+const { PatientMedicalHistoryModel } = require("../models/PatientMedicalHistory.model")
+
 const router = express.Router();
 
 
@@ -79,6 +82,30 @@ router.get("/", async (req, res) => {
         await admissionRep.save()
         await assignPatientToWardRoomBed(patient, bed, room, ward, admissionRep)
         await updateAvailabilityOfRoom(room)
+  
+        ///////////
+        const date = new Date(payload.dateTime);
+        const startDate = new Date(date);
+        startDate.setHours(0, 0, 0, 0);
+        console.log("startDate", startDate)
+
+        const endDate = new Date(date);
+        endDate.setHours(23, 59, 59, 999)
+        console.log("endDate", endDate);
+
+         let history = await findSingleHistoryWithinGivenDates(patient._id, startDate, endDate)
+        if(!history) {
+            console.log("no history")
+            history = new PatientMedicalHistoryModel();
+            history.patient_id = patient._id;
+            history.dateTime = payload.dateTime
+        }
+        
+        history.admissionRep_id = admissionRep?._id;
+        await history.save();
+        console.log("updated history", history)
+        ////////////////
+
         return res.status(200).send({message: "patient admitted"})
     }catch(err) {
         console.log(err);

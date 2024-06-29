@@ -30,9 +30,10 @@ export const CreateReport = (data) => async (dispatch) => {
 
 export const AddConsulationInfo = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.CREATE_CONSULATION_INFO_REQUEST });
+    dispatch({ type: types.CREATE_CONSULTATION_INFO_REQUEST });
+    console.log("data from addconsultation action", data)
     const res = await axios.post(
-      `${API}/patientConsultationInformation/create`,
+      `${API}/consultations/add`,
       data
     );
     console.log(res);
@@ -45,7 +46,7 @@ export const AddConsulationInfo = (data) => async (dispatch) => {
     // });
   } catch (error) {
     dispatch({
-      type: types.CREATE_CONSULATION_INFO_ERROR,
+      type: types.CREATE_CONSULTATION_INFO_ERROR,
       payload: {
         message: error,
       },
@@ -57,7 +58,7 @@ export const CreateLabReport = (data) => async (dispatch) => {
   try {
     dispatch({ type: types.CREATE_LAB_REPORT_REQUEST });
     const res = await axios.post(
-      `${API}/labReports/create`,
+      `${API}/labReports/add`,
       data
     );
     console.log(res);
@@ -95,6 +96,30 @@ export const GetDoctorDetails = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: types.GET_DOCTOR_ERROR,
+      payload: {
+        message: error,
+      },
+    });
+  }
+};
+
+export const GetMedHistory = () => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
+    const res = await axios.get(
+      `${API}/medicalHistory`
+    );
+    console.log(res);
+    // dispatch({
+    //   type: types.GET_DOCTOR_SUCCESS,
+    //   payload: {
+    //
+    //   },
+    // });
+    return res.data;
+  } catch (error) {
+    dispatch({
+      type: types.GET_MEDICAL_HISTORY_ERROR,
       payload: {
         message: error,
       },
@@ -501,6 +526,108 @@ export const getAdmissionReport = (id) => async (dispatch) => {
   }
 };
 
+export const getAllDoctorsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DOCTORS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/doctors/findDoctorsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DOCTORS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllRoomsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_ROOMS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/rooms/findRoomsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_ROOMS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllBedsInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_BEDS_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/beds/findBedsInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_BEDS_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateDoctorAvailability = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.UPDATE_DOCTOR_AVAILABILITY_REQUEST });
+    const res = await axios.post(
+      `${API}/doctors/toggleAvailability/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.UPDATE_DOCTOR_AVAILABILITY_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateNurseAvailability = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.UPDATE_NURSE_AVAILABILITY_REQUEST });
+    const res = await axios.post(
+      `${API}/nurses/toggleAvailability/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.UPDATE_NURSE_AVAILABILITY_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllNursesInWard = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_NURSES_IN_WARD_REQUEST });
+    const res = await axios.get(
+      `${API}/nurses/findNursesInWard/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_NURSES_IN_WARD_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllNurses = () => async (dispatch) => {
   try {
     dispatch({ type: types.GET_ALL_NURSES_REQUEST });
@@ -510,6 +637,23 @@ export const getAllNurses = () => async (dispatch) => {
     console.log(res.data);
     dispatch({
       type: types.GET_ALL_NURSES_SUCCESS,
+      payload: res.data,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllDoctorAppointments = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.GET_ALL_DOCTOR_APPOINTMENTS_REQUEST });
+    const res = await axios.get(
+      `${API}/appointments/getAllDoctorAppointments/${id}`
+    );
+    console.log(res.data);
+    dispatch({
+      type: types.GET_ALL_DOCTOR_APPOINTMENTS_SUCCESS,
       payload: res.data,
     });
     return res.data;
@@ -675,6 +819,24 @@ export const DeleteAppointment = (id) => async (dispatch) => {
   }
 };
 
+export const cancleAppointment = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: types.CANCEL_APPOINTMENT_REQUEST });
+    const res = await axios.patch(
+      `${API}/appointments/cancelAppointment/${id}`
+    );
+    console.log(res.data);
+    // return res.data;
+    dispatch({
+      type: types.CANCEL_APPOINTMENT_SUCCESS,
+      payload: id,
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const deleteWard = (id) => async (dispatch) => {
   try {
     dispatch({ type: types.DELETE_WARD_REQUEST });
@@ -764,11 +926,12 @@ export const GetLabReports = () => async (dispatch) => {
   }
 };
 
-export const SearchMedHistory = () => async (dispatch) => {
+export const SearchMedHistory = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.GET_MEDICAL_HISTORY_REQUEST });
-    const res = await axios.get(
-      `${API}/medicalHistory`
+    dispatch({ type: types.SEARCH_MEDICAL_HISTORY_REQUEST });
+    const res = await axios.post(
+      `${API}/medicalHistory/search`,
+      data
     );
     // console.log(res.data);
     return res.data;
@@ -781,11 +944,36 @@ export const SearchMedHistory = () => async (dispatch) => {
   }
 };
 
-export const SearchMyPatient = () => async (dispatch) => {
+export const downloadMedHistory = (data) => async (dispatch) => {
   try {
-    dispatch({ type: types.GET_MY_PATIENTS_REQUEST });
-    const res = await axios.get(
-      `${API}/medicalHistory`
+    dispatch({ type: types.DOWNLOAD_MEDICAL_HISTORY_REQUEST });
+    // const res = await axios.post(
+    //   `${API}/medicalHistory/downloadRep`,
+    //   data
+    // );
+    const res = await axios.post(
+      `${API}/medicalHistory/downloadRep`,
+      data, {
+        responseType: 'blob'
+      }
+    );
+    // console.log(res.data);
+    return res.data;
+    // dispatch({
+    //   type: types.DELETE_APPOINTMENT_SUCCESS,
+    //   payload: id,
+    // });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const SearchPatients = (data) => async (dispatch) => {
+  try {
+    dispatch({ type: types.SEARCH_PATIENTS_REQUEST });
+    const res = await axios.post(
+      `${API}/patients/search`,
+      data
     );
     // console.log(res.data);
     return res.data;

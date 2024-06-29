@@ -21,6 +21,10 @@ const patientSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  
+  fullName: {
+    type: String,
+  },
 
   mobile: {
     type: Number,
@@ -116,6 +120,13 @@ const patientSchema = mongoose.Schema({
   currentDischargeReportID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "admissionReport",
+  }
+
+  ,
+
+  timeStamp: {
+    type: String,
+    default: new Date()
   }
 
 });

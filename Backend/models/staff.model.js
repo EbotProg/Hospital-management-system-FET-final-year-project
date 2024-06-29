@@ -52,7 +52,8 @@ const staffSchema = mongoose.Schema({
   },
 
   timeStamp: {
-    type : String
+    type: String,
+    default: new Date()
   }
 
 });

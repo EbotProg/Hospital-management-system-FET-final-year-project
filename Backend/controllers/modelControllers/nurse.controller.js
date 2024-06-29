@@ -16,8 +16,29 @@ async function findNurseByNurseID(nurseID) {
     return nurse;
 }
 
+async function findNurseByNurseId(_id) {
+    const nurse = await NurseModel.findOne({_id});
+    return nurse;
+}
+
+async function getAllNursesInParticularOrder(wardID) {
+    const nurses = await NurseModel.find({ wardID, isAvailable: { $exists: true } }).populate("wardID")
+    .sort({ isAvailable: 'desc' }) 
+    return nurses;
+}
+
+async function updateNurseAvailability(nurse) {
+    // const doctor = await DoctorModel.updateOne({ _id }, {$set: { isAvailable: value}});
+    nurse.isAvailable = !nurse?.isAvailable
+    const updatedNurse = await nurse.save()
+    return updatedNurse;
+}
+
 module.exports = {
     countAvailableNursesInWard,
     countAllNursesInWard,
-    findNurseByNurseID
+    findNurseByNurseID,
+    getAllNursesInParticularOrder,
+    updateNurseAvailability,
+    findNurseByNurseId
 }

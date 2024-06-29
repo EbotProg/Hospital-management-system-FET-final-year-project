@@ -5,7 +5,7 @@ import { message, Upload, Table } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { NurseRegister, SendPassword } from "../../../../../Redux/auth/action";
-import { getAllNurses } from "../../../../../Redux/Datas/action";
+import { getAllNurses, updateNurseAvailability } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -42,6 +42,7 @@ const Add_Nurse = () => {
   const [fetchedNurses, setFetchedNurses] = useState([])
   const [mappedNurses, setMappedNurses] = useState([])
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isToggled, setIsToggled] = useState(false);
 
 
   const HandleDoctorChange = (e) => {
@@ -57,6 +58,8 @@ const Add_Nurse = () => {
     { title: "Email", dataIndex: "email"},
     { title: "Gender", dataIndex: "gender"},
     { title: "Date of Birth", dataIndex: "DOB"},
+    { title: "", dataIndex: "toggleAvailability"}
+
     // { title: "", dataIndex: "viewMore"}
   ];
 
@@ -74,6 +77,18 @@ const Add_Nurse = () => {
         obj.email = nurse?.email;
         obj.gender = nurse?.gender;
         obj.DOB = nurse?.DOB;
+        obj.toggleAvailability = <button
+        style={{
+          border: "none",
+          color: "green",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => handleToggleAvailability(nurse._id)}
+      >
+        Toggle availability
+      </button>
       //   obj.viewMore = <button
       //   style={{
       //     border: "none",
@@ -97,6 +112,27 @@ const Add_Nurse = () => {
   }
 
 
+  const handleToggleAvailability = (nurseId) => {
+
+    let clickedOk = window.confirm("Warning!!!\nYou are about to change a doctor's availability\nContinue?");
+    if(clickedOk === true) {
+        dispatch(updateNurseAvailability(nurseId)).then((res) => {
+          console.log('res', res)
+            notify(res.message)
+            if(res.message === "nurse availability updated") {
+              setIsToggled(true)
+            }
+          })
+          .catch(err => {
+            notify(err.message)
+          })
+    }
+  
+  }
+
+
+
+
   useEffect(()=> {
     dispatch(getAllNurses()).then(res => {
       console.log('get all nurses res', res)
@@ -106,15 +142,16 @@ const Add_Nurse = () => {
   }, [])
 
   useEffect(()=> {
-    if(isSubmitted === true) {
+    if(isSubmitted === true || isToggled === true) {
       dispatch(getAllNurses()).then(res => {
         console.log('get all nurses res', res)
         setFetchedNurses(res);
       })
     }
     setIsSubmitted(false)
-    
-  }, [isSubmitted])
+    setIsToggled(false)
+
+  }, [isSubmitted, isToggled])
 
   useEffect(()=> {
     console.log('fetchedNurses', fetchedNurses)

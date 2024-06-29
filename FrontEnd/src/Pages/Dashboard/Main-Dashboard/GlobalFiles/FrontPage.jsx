@@ -61,10 +61,10 @@ const FrontPage = () => {
       let obj = { 
         key: ward._id,
         wardName: ward.wardName, 
-        doctors: (<><Link to={"#"}>{ward.doctors[0]}</Link> | <Link to={"#"}>{ward.doctors[1]}</Link></>), 
-        nurses: (<><Link to={"#"}>{ward.nurses[0]}</Link> | <Link to={"#"}>{ward.nurses[1]}</Link></>), 
-        rooms: (<><Link to={"#"}>{ward.rooms[0]}</Link> | <Link to={"#"}>{ward.rooms[1]}</Link></>), 
-        beds: (<><Link to={"#"}>{ward.beds[0]}</Link> | <Link to={"#"}>{ward.beds[1]}</Link></>)
+        doctors: <Link to={`/seeDoctors/${ward.wardName}/${ward._id}`}>{ward.doctors[0]} | {ward.doctors[1]}</Link>, 
+        nurses: <Link to={`/seeNurses/${ward.wardName}/${ward._id}`}>{ward.nurses[0]} | {ward.nurses[1]}</Link>, 
+        rooms: <Link to={`/seeRooms/${ward.wardName}/${ward._id}`}>{ward.rooms[0]} | {ward.rooms[1]}</Link>, 
+        beds: <Link to={`/seeBeds/${ward.wardName}/${ward._id}`}>{ward.beds[0]} | {ward.beds[1]}</Link>
       }
       arr.push(obj)
     }
@@ -178,13 +178,12 @@ const FrontPage = () => {
     // console.log("new change")
     dispatch(GetPatients());
     dispatch(GetAllData());
-    mapWards(data.wardStats)
   }, []);
 
-  // useEffect(()=> {
-  //   console.log("new change")
-  //   mapWards(data.wardStats);
-  // }, [data])
+  useEffect(() => {
+    mapWards(data.wardStats)
+
+  }, [data])
 
   useEffect(()=> {
 

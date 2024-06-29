@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { findWardByName } = require("../controllers/modelControllers/ward.controller")
 const { findHospitalByName } = require("../controllers/modelControllers/hospital.controller")
+const { getAllDoctorsInParticularOrder, updateDoctorAvailability, findDoctorByDoc_Id } = require("../controllers/modelControllers/doctor.controller")
 const nodemailer = require("nodemailer");
 const {generateUserId, generatePassword } = require("../controllers/generatePasswordAndID")
 
@@ -20,6 +21,37 @@ router.get("/", async (req, res) => {
     res.status(400).send({ error: "Something went wrong" });
   }
 });
+
+router.get('/findDoctorsInWard/:wardId', async (req, res)=> {
+  try{
+
+    const { wardId } = req.params
+    const doctors = await getAllDoctorsInParticularOrder(wardId);
+    res.send({ message: "fetched ward doctors", doctors});
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
+
+router.post("/toggleAvailability/:id", async (req, res) => {
+  try{
+
+    const { id } = req.params;
+    const doctor = await findDoctorByDoc_Id(id)
+    if(!doctor) {
+      res.send({ error: "doctor not found"})
+    }
+
+    await updateDoctorAvailability(doctor);
+    res.send({ message: "doctor availability updated", doctor})
+
+  }catch(err) {
+    console.log(err);
+    res.send({ error: "Internal Server Error"})
+  }
+})
 
 router.post("/register", async (req, res) => {
   const { email } = req.body;
@@ -182,5 +214,7 @@ router.delete("/:doctorId", async (req, res) => {
     res.status(400).send({ error: "Something went wrong, unable to Delete." });
   }
 });
+
+
 
 module.exports = router;

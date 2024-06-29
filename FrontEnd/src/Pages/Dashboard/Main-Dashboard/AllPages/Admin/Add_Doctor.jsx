@@ -3,7 +3,7 @@ import "./CSS/Add_Doctor.css";
 import doctor from "../../../../../img/doctoravatar.png";
 import { useDispatch, useSelector } from "react-redux";
 import { DoctorRegister, SendPassword } from "../../../../../Redux/auth/action";
-import { getAllDoctors } from "../../../../../Redux/Datas/action";
+import { getAllDoctors, updateDoctorAvailability } from "../../../../../Redux/Datas/action";
 import Sidebar from "../../GlobalFiles/Sidebar";
 import { Table } from "antd";
 
@@ -39,6 +39,7 @@ const AddDoctor = () => {
   const [fetchedDoctors, setFetchedDoctors] = useState([])
   const [mappedDoctors, setMappedDoctors] = useState([])
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isToggled, setIsToggled] = useState(false);
 
   const HandleDoctorChange = (e) => {
     setDoctorValue({ ...DoctorValue, [e.target.name]: e.target.value });
@@ -53,6 +54,7 @@ const AddDoctor = () => {
     { title: "Email", dataIndex: "email"},
     { title: "Gender", dataIndex: "gender"},
     { title: "Date of Birth", dataIndex: "DOB"},
+    { title: "", dataIndex: "toggleAvailability"}
     // { title: "", dataIndex: "viewMore"}
   ];
 
@@ -70,6 +72,18 @@ const AddDoctor = () => {
         obj.email = doctor?.email;
         obj.gender = doctor?.gender;
         obj.DOB = doctor?.DOB;
+          obj.toggleAvailability = <button
+        style={{
+          border: "none",
+          color: "green",
+          outline: "none",
+          background: "transparent",
+          cursor: "pointer",
+        }}
+        onClick={() => handleToggleAvailability(doctor._id)}
+      >
+        Toggle availability
+      </button>
       //   obj.viewMore = <button
       //   style={{
       //     border: "none",
@@ -93,6 +107,26 @@ const AddDoctor = () => {
   }
 
 
+  const handleToggleAvailability = (docId) => {
+
+    let clickedOk = window.confirm("Warning!!!\nYou are about to change a doctor's availability\nContinue?");
+    if(clickedOk === true) {
+        dispatch(updateDoctorAvailability(docId)).then((res) => {
+          console.log('res from update doc availability', res)
+            notify(res.message)
+            if(res.message === "doctor availability updated") {
+              setIsToggled(true)
+            }
+          })
+          .catch(err => {
+            notify(err.message)
+          })
+    }
+  
+  }
+
+
+
   useEffect(()=> {
     dispatch(getAllDoctors()).then(res => {
       console.log('get all doctors res', res)
@@ -102,15 +136,16 @@ const AddDoctor = () => {
   }, [])
 
   useEffect(()=> {
-    if(isSubmitted === true) {
+    if(isSubmitted === true || isToggled === true) {
       dispatch(getAllDoctors()).then(res => {
         console.log('get all doctors res', res)
         setFetchedDoctors(res);
       })
     }
     setIsSubmitted(false)
+    setIsToggled(false)
     
-  }, [isSubmitted])
+  }, [isSubmitted, isToggled])
 
   useEffect(()=> {
     console.log('fetchedDoctors', fetchedDoctors)
@@ -364,7 +399,7 @@ const AddDoctor = () => {
             </form>
           </div>
 
-          <div className="wardDetails">
+          <div className="wardDetails" style={{maxWidth: "80vw" }}>
           <h1>Doctors</h1>
           <div className="wardBox">
             <Table columns={doctorColumns} dataSource={mappedDoctors} />
