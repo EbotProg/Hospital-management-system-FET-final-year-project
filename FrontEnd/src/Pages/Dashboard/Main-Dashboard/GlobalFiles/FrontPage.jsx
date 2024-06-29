@@ -175,6 +175,7 @@ const FrontPage = () => {
   
 
   useEffect(() => {
+    // console.log("new change")
     dispatch(GetPatients());
     dispatch(GetAllData());
   }, []);
