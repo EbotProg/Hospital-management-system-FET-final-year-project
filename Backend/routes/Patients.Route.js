@@ -60,7 +60,7 @@ router.post("/add", async (req, res) => {
 
     // const patientId = generateUserId("Pt")
     const payload = { ...req.body }
-    payload.patientID = patientId;
+    payload.patientID = userId;
     payload.fullName = `${payload.firstName} ${payload.lastName}` 
     patient = new PatientModel(payload)
     await patient.save();
